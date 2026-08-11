@@ -1,0 +1,78 @@
+{
+  "name": "@ankhorage/deploy",
+  "version": "0.0.0",
+  "description": "Declarative deployment engine for Expo apps across web, iOS, and Android — build, provision, publish, and manage releases from one configuration.",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/ankhorage/deploy#readme",
+  "bugs": {
+    "url": "https://github.com/ankhorage/deploy/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ankhorage/deploy.git"
+  },
+  "keywords": [
+    "ankhorage",
+    "deployment",
+    "expo",
+    "react-native",
+    "eas",
+    "app-store",
+    "google-play",
+    "ios",
+    "android",
+    "web",
+    "typescript",
+    "release-management"
+  ],
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "ankh": {
+    "category": "deploy",
+    "provider": null,
+    "capabilities": []
+  },
+  "scripts": {
+    "build": "rm -rf dist tsconfig.tsbuildinfo tsconfig.build.tsbuildinfo && bun x tsc -p tsconfig.build.json",
+    "typecheck": "bun x tsc --noEmit -p tsconfig.json",
+    "lint": "ankhorage-eslint . --max-warnings=0",
+    "lint:fix": "ankhorage-eslint . --fix --max-warnings=0",
+    "format": "ankhorage-prettier --write .",
+    "format:check": "ankhorage-prettier --check .",
+    "test": "bun test src",
+    "knip": "ankhorage-knip",
+    "docs": "paradox",
+    "changeset": "changeset",
+    "changeset:status": "changeset status --since=origin/main",
+    "version-packages": "changeset version",
+    "prepack": "bun run build"
+  },
+  "devDependencies": {
+    "@ankhorage/devtools": "^1.3.4",
+    "@ankhorage/paradox": "^0.1.20",
+    "@changesets/cli": "^2.31.0",
+    "@types/bun": "^1.3.13",
+    "@types/node": "^25.6.0",
+    "typescript": "^5.9.3"
+  },
+  "sideEffects": false,
+  "packageManager": "bun@1.3.13"
+}
