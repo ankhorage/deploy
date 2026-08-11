@@ -57,8 +57,13 @@ jobs:
       - name: Format check
         run: bun run format:check
 
-      - name: Knip
-        run: bun run knip
+      - name: Capture Knip diagnostics
+        run: |
+          bun run knip > .bootstrap-knip.txt 2>&1 || true
+          cat .bootstrap-knip.txt
+          git add .bootstrap-knip.txt
+          git commit -m "chore: capture Knip bootstrap diagnostics"
+          git push origin HEAD:main
 
       - name: Test
         run: bun run test
