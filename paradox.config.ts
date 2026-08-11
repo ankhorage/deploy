@@ -4,8 +4,7 @@ export default defineParadoxConfig({
   mode: 'write',
   docs: {
     title: '@ankhorage/deploy',
-    description:
-      'Declarative deployment engine for Expo apps across web, iOS, and Android.',
+    description: 'Declarative deployment engine for Expo apps across web, iOS, and Android.',
   },
   package: {
     root: '.',
