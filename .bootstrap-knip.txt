@@ -1,7 +1,0 @@
-$ ankhorage-knip
-Unused files (4)
-.prettierrc.js         
-eslint.config.mjs      
-eslint.local.config.mjs
-paradox.config.ts      
-error: script "knip" exited with code 1
