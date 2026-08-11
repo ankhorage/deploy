@@ -32,6 +32,9 @@ jobs:
       - name: Refresh lockfile
         run: bun install
 
+      - name: Format repository
+        run: bun run format
+
       - name: Commit synchronized repository state
         run: |
           git config user.name "github-actions[bot]"
