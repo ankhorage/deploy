@@ -32,16 +32,6 @@ jobs:
       - name: Refresh lockfile
         run: bun install
 
-      - name: Validate repository
-        run: |
-          bun run build
-          bun run lint
-          bun run format:check
-          bun run knip
-          bun run test
-          bun run typecheck
-          bunx @ankhorage/ankh doctor validate .
-
       - name: Commit synchronized repository state
         run: |
           git config user.name "github-actions[bot]"
@@ -53,3 +43,24 @@ jobs:
           fi
           git commit -m "chore: sync Ankhorage repository tooling"
           git push origin HEAD:main
+
+      - name: Build
+        run: bun run build
+
+      - name: Lint
+        run: bun run lint
+
+      - name: Format check
+        run: bun run format:check
+
+      - name: Knip
+        run: bun run knip
+
+      - name: Test
+        run: bun run test
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Doctor
+        run: bunx @ankhorage/ankh doctor validate .
