@@ -1,4 +1,4 @@
-export interface DeploymentHttpProbeResult {
+interface DeploymentHttpProbeResult {
   readonly status: number;
 }
 

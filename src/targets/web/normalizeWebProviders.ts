@@ -2,12 +2,12 @@ import type { AppDeployProviderSelection } from '@ankhorage/contracts/deploy';
 
 import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 
-export interface NormalizedWebProviders {
+interface NormalizedWebProviders {
   readonly build: 'expo';
   readonly publish: 'eas';
 }
 
-export type NormalizeWebProvidersResult =
+type NormalizeWebProvidersResult =
   | { readonly ok: true; readonly providers: NormalizedWebProviders }
   | { readonly ok: false; readonly failure: DeploymentFailure };
 
