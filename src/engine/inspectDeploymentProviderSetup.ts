@@ -31,9 +31,7 @@ export async function inspectDeploymentProviderSetup(options: {
   );
   if (normalized.ok) return { ok: true, inspection: normalized.inspection };
 
-  const code = normalized.unsafe
-    ? 'PROVIDER_SETUP_UNSAFE_RESULT'
-    : 'PROVIDER_SETUP_INVALID_RESULT';
+  const code = normalized.unsafe ? 'PROVIDER_SETUP_UNSAFE_RESULT' : 'PROVIDER_SETUP_INVALID_RESULT';
   return createProviderSetupFailure(
     code,
     'Provider setup inspection returned an invalid safe result.',
