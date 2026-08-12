@@ -1,0 +1,1 @@
+export const PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION = 1 as const;
