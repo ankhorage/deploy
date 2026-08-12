@@ -10,7 +10,7 @@ export interface AppStoreUploadRequest {
   readonly body: Buffer;
 }
 
-export interface AppStoreUploadResponse {
+interface AppStoreUploadResponse {
   readonly status: number;
 }
 

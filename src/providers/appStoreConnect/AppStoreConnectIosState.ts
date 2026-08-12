@@ -1,10 +1,10 @@
-export interface AppStoreConnectIosBuildState {
+interface AppStoreConnectIosBuildState {
   readonly buildId: string;
   readonly buildNumber: string;
   readonly processingState?: string;
 }
 
-export interface AppStoreConnectIosVersionState {
+interface AppStoreConnectIosVersionState {
   readonly versionId: string;
   readonly version: string;
   readonly build: AppStoreConnectIosBuildState | null;

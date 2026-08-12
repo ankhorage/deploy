@@ -1,6 +1,6 @@
 import type { AppStoreConnectRequest, AppStoreConnectTransport } from './AppStoreConnectTransport';
 
-export type AppStoreConnectBlockingStatus = 401 | 403 | null;
+type AppStoreConnectBlockingStatus = 401 | 403 | null;
 
 export interface AppStoreConnectRequestTracker {
   readonly request: AppStoreConnectTransport;

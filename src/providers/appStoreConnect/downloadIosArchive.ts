@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
-export interface DownloadedIosArchive {
+interface DownloadedIosArchive {
   readonly directory: string;
   readonly filePath: string;
 }
