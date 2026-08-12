@@ -1,4 +1,7 @@
-import { DEPLOYMENT_CAPABILITIES, type DeploymentCapability } from '../../domain/DeploymentCapability';
+import {
+  DEPLOYMENT_CAPABILITIES,
+  type DeploymentCapability,
+} from '../../domain/DeploymentCapability';
 import type { DeploymentProviderCapabilityState } from '../../domain/DeploymentProviderCapabilityState';
 import { isNonEmptyString } from './isNonEmptyString';
 import { isRecord } from './isRecord';
@@ -21,7 +24,9 @@ export function normalizeProviderCapabilityStates(
       ...(raw.reason === undefined ? {} : { reason: raw.reason }),
     });
   }
-  return states.sort((left, right) => capabilityIndex(left.capability) - capabilityIndex(right.capability));
+  return states.sort(
+    (left, right) => capabilityIndex(left.capability) - capabilityIndex(right.capability),
+  );
 }
 
 function isCapability(value: unknown): value is DeploymentCapability {

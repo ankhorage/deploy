@@ -13,14 +13,22 @@ export async function inspectDeploymentProviderSetup(options: {
   readonly adapter: DeploymentProviderSetupAdapter;
   readonly context: DeploymentProviderSetupContext;
 }): Promise<DeploymentProviderSetupInspectionResult> {
-  const provider = options.adapter.provider;
-  const target = options.context.target;
+  const { provider } = options.adapter;
+  const { target } = options.context;
   if (!isNonEmptyString(provider) || (target !== undefined && !isAppDeployTargetId(target))) {
-    return createProviderSetupFailure('INVALID_PROVIDER_SETUP_INPUT', 'Provider setup input is invalid.');
+    return createProviderSetupFailure(
+      'INVALID_PROVIDER_SETUP_INPUT',
+      'Provider setup input is invalid.',
+    );
   }
   const credentials = normalizeCredentialReferences(options.context.credentials, provider);
   if (credentials === null || typeof options.context.resolveSecret !== 'function') {
-    return createProviderSetupFailure('INVALID_PROVIDER_SETUP_INPUT', 'Provider setup input is invalid.', provider, target);
+    return createProviderSetupFailure(
+      'INVALID_PROVIDER_SETUP_INPUT',
+      'Provider setup input is invalid.',
+      provider,
+      target,
+    );
   }
 
   const tracked = createTrackedSecretResolver(options.context.resolveSecret);
@@ -29,13 +37,25 @@ export async function inspectDeploymentProviderSetup(options: {
   try {
     rawInspection = await options.adapter.inspectSetup(context);
   } catch {
-    return createProviderSetupFailure('PROVIDER_SETUP_INSPECTION_FAILED', 'Provider setup inspection failed.', provider, target);
+    return createProviderSetupFailure(
+      'PROVIDER_SETUP_INSPECTION_FAILED',
+      'Provider setup inspection failed.',
+      provider,
+      target,
+    );
   }
 
   const normalized = normalizeProviderSetupInspection(rawInspection, provider, tracked.secrets);
   if (!normalized.ok) {
-    const code = normalized.unsafe ? 'PROVIDER_SETUP_UNSAFE_RESULT' : 'PROVIDER_SETUP_INVALID_RESULT';
-    return createProviderSetupFailure(code, 'Provider setup inspection returned an invalid safe result.', provider, target);
+    const code = normalized.unsafe
+      ? 'PROVIDER_SETUP_UNSAFE_RESULT'
+      : 'PROVIDER_SETUP_INVALID_RESULT';
+    return createProviderSetupFailure(
+      code,
+      'Provider setup inspection returned an invalid safe result.',
+      provider,
+      target,
+    );
   }
   return { ok: true, inspection: normalized.inspection };
 }

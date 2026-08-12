@@ -2,10 +2,7 @@ import { expect, test } from 'bun:test';
 
 import { inspectDeploymentProviderSetup } from './inspectDeploymentProviderSetup';
 import { createSetupInspection } from './providerSetupInspectionFixture.test';
-import {
-  createSetupAdapter,
-  createSetupContext,
-} from './providerSetupTestSupport.test';
+import { createSetupAdapter, createSetupContext } from './providerSetupTestSupport.test';
 
 test('rejects provider identity mismatches from adapters', async () => {
   const adapter = createSetupAdapter(() =>

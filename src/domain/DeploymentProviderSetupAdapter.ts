@@ -3,7 +3,5 @@ import type { DeploymentProviderSetupInspection } from './DeploymentProviderSetu
 
 export interface DeploymentProviderSetupAdapter {
   readonly provider: string;
-  inspectSetup(
-    context: DeploymentProviderSetupContext,
-  ): Promise<DeploymentProviderSetupInspection>;
+  inspectSetup(context: DeploymentProviderSetupContext): Promise<DeploymentProviderSetupInspection>;
 }
