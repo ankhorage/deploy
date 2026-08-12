@@ -23,7 +23,7 @@ export async function publishWebToEas(options: {
   readonly runProcess: DeploymentProcessRunner;
 }): Promise<EasWebPublishResult> {
   if (!isValidIntent(options.intent)) return invalidIntentFailure();
-  const environment = await resolveEasProcessEnvironment(options);
+  const environment = await resolveEasProcessEnvironment({ ...options, target: 'web' });
   if (!environment.ok) return { status: 'action-required', action: environment.action };
 
   const result = await options.runProcess({

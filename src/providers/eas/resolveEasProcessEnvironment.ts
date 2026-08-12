@@ -1,3 +1,5 @@
+import type { AppDeployTargetId } from '@ankhorage/contracts/deploy';
+
 import type { DeploymentCredentialReference } from '../../domain/DeploymentCredentialReference';
 import type { DeploymentAuthenticationRequiredAction } from '../../domain/DeploymentRequiredAction';
 import type { DeploymentSecretResolver } from '../../domain/DeploymentSecretResolver';
@@ -7,6 +9,7 @@ export type EasProcessEnvironmentResult =
   | { readonly ok: false; readonly action: DeploymentAuthenticationRequiredAction };
 
 export async function resolveEasProcessEnvironment(options: {
+  readonly target: AppDeployTargetId;
   readonly credentials: readonly DeploymentCredentialReference[];
   readonly resolveSecret: DeploymentSecretResolver;
 }): Promise<EasProcessEnvironmentResult> {
@@ -15,23 +18,28 @@ export async function resolveEasProcessEnvironment(options: {
   );
   if (reference === undefined) return { ok: true };
 
-  let token: string | null;
+  const token = await safelyResolveToken(options.resolveSecret, reference);
+  if (token !== null && token.length > 0) return { ok: true, env: { EXPO_TOKEN: token } };
+  return { ok: false, action: authenticationAction(options.target) };
+}
+
+async function safelyResolveToken(
+  resolveSecret: DeploymentSecretResolver,
+  reference: DeploymentCredentialReference,
+): Promise<string | null> {
   try {
-    token = await options.resolveSecret(reference);
+    return await resolveSecret(reference);
   } catch {
-    token = null;
+    return null;
   }
-  if (token !== null && token.length > 0) {
-    return { ok: true, env: { EXPO_TOKEN: token } };
-  }
+}
+
+function authenticationAction(target: AppDeployTargetId): DeploymentAuthenticationRequiredAction {
   return {
-    ok: false,
-    action: {
-      type: 'authentication',
-      provider: 'eas',
-      target: 'web',
-      code: 'EAS_AUTHENTICATION_REQUIRED',
-      message: 'EAS authentication is required for Web deployment.',
-    },
+    type: 'authentication',
+    provider: 'eas',
+    target,
+    code: 'EAS_AUTHENTICATION_REQUIRED',
+    message: `EAS authentication is required for ${target} deployment.`,
   };
 }
