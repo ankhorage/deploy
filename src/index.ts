@@ -20,6 +20,8 @@ export * from './domain/DeploymentStepOutcome';
 export * from './domain/DeploymentTargetChange';
 export * from './domain/DeploymentTargetPlanContributor';
 export * from './domain/DeploymentVerificationResult';
+export * from './domain/WebDeploymentPublication';
+export * from './domain/WebDeploymentPublishIntent';
 export * from './engine/createDeploymentChanges';
 export * from './engine/createDeploymentPlan';
 export * from './engine/executeDeploymentPlan';
