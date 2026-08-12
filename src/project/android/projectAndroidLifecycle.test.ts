@@ -4,8 +4,8 @@ import path from 'node:path';
 
 import { expect, test } from 'bun:test';
 
-import type { DeploymentProcessRunner } from '../../runtime/process/DeploymentProcessRunner';
 import type { GooglePlayTransport } from '../../providers/googlePlay/GooglePlayTransport';
+import type { DeploymentProcessRunner } from '../../runtime/process/DeploymentProcessRunner';
 import { createTempProject, createTestManifest } from '../manifestTestSupport.test';
 import { createProjectAndroidDeploymentPlan } from './createProjectAndroidDeploymentPlan';
 import { executeProjectAndroidDeploymentWithRuntime } from './executeProjectAndroidDeployment';
@@ -23,6 +23,17 @@ const INTENT = {
   buildProfile: 'production',
   track: 'internal',
   releaseStatus: 'completed',
+} as const;
+const ACCESS = {
+  credentials: [{ provider: 'google-play', id: 'publisher', kind: 'service-account' }],
+  resolveSecret: () =>
+    Promise.resolve(
+      JSON.stringify({
+        type: 'service_account',
+        client_email: 'robot@example.test',
+        private_key: 'PRIVATE_KEY_SENTINEL',
+      }),
+    ),
 } as const;
 
 function createRuntime(state: AndroidTestState): ProjectAndroidDeploymentRuntime {
@@ -124,7 +135,7 @@ test('project Android lifecycle builds publishes verifies records history then b
   const runtime = createRuntime(state);
   try {
     const inspected = await inspectProjectAndroidDeploymentWithRuntime(
-      { projectRoot, intent: INTENT },
+      { projectRoot, intent: INTENT, ...ACCESS },
       runtime,
     );
     expect(inspected.ok).toBe(true);
@@ -137,7 +148,7 @@ test('project Android lifecycle builds publishes verifies records history then b
       'android:verify',
     ]);
     const deployed = await executeProjectAndroidDeploymentWithRuntime(
-      { inspection: inspected.inspection, plan },
+      { inspection: inspected.inspection, plan, ...ACCESS },
       runtime,
     );
     expect(deployed.execution.status).toBe('completed');
@@ -147,7 +158,7 @@ test('project Android lifecycle builds publishes verifies records history then b
     expect(state.playMutations).toBe(4);
 
     const second = await inspectProjectAndroidDeploymentWithRuntime(
-      { projectRoot, intent: INTENT },
+      { projectRoot, intent: INTENT, ...ACCESS },
       runtime,
     );
     expect(second.ok).toBe(true);
@@ -155,7 +166,7 @@ test('project Android lifecycle builds publishes verifies records history then b
     const secondPlan = createProjectAndroidDeploymentPlan(second.inspection);
     expect(secondPlan.steps).toEqual([]);
     const noChange = await executeProjectAndroidDeploymentWithRuntime(
-      { inspection: second.inspection, plan: secondPlan },
+      { inspection: second.inspection, plan: secondPlan, ...ACCESS },
       runtime,
     );
     expect(noChange.execution.status).toBe('completed');
@@ -172,14 +183,14 @@ test('project Android execution rejects source drift before build or Play mutati
   const runtime = createRuntime(state);
   try {
     const inspected = await inspectProjectAndroidDeploymentWithRuntime(
-      { projectRoot, intent: INTENT },
+      { projectRoot, intent: INTENT, ...ACCESS },
       runtime,
     );
     if (!inspected.ok) throw new Error('inspection failed');
     const plan = createProjectAndroidDeploymentPlan(inspected.inspection);
     state.fingerprint = 'c'.repeat(40);
     const result = await executeProjectAndroidDeploymentWithRuntime(
-      { inspection: inspected.inspection, plan },
+      { inspection: inspected.inspection, plan, ...ACCESS },
       runtime,
     );
     expect(result.execution.status).toBe('failed');
