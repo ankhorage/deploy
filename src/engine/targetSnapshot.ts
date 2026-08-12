@@ -2,6 +2,7 @@ import type {
   AppDeployAndroidTargetConfig,
   AppDeployIosTargetConfig,
   AppDeployManifest,
+  AppDeployProviderSelection,
   AppDeployTargetId,
   AppDeployWebTargetConfig,
 } from '@ankhorage/contracts/deploy';
@@ -54,23 +55,36 @@ export function areTargetSnapshotsEqual(
 function desiredWebTarget(
   config: AppDeployWebTargetConfig | undefined,
 ): DeploymentObservedTarget | null {
-  return config?.enabled === true ? { target: 'web', providers: config.providers } : null;
+  if (config?.enabled !== true) return null;
+  return { target: 'web', ...optionalProviders(config.providers) };
 }
 
 function desiredAndroidTarget(
   config: AppDeployAndroidTargetConfig | undefined,
 ): DeploymentObservedTarget | null {
-  return config?.enabled === true
-    ? { target: 'android', package: config.package, providers: config.providers }
-    : null;
+  if (config?.enabled !== true) return null;
+  return {
+    target: 'android',
+    package: config.package,
+    ...optionalProviders(config.providers),
+  };
 }
 
 function desiredIosTarget(
   config: AppDeployIosTargetConfig | undefined,
 ): DeploymentObservedTarget | null {
-  return config?.enabled === true
-    ? { target: 'ios', bundleIdentifier: config.bundleIdentifier, providers: config.providers }
-    : null;
+  if (config?.enabled !== true) return null;
+  return {
+    target: 'ios',
+    bundleIdentifier: config.bundleIdentifier,
+    ...optionalProviders(config.providers),
+  };
+}
+
+function optionalProviders(
+  providers: AppDeployProviderSelection | undefined,
+): { readonly providers?: AppDeployProviderSelection } {
+  return providers === undefined ? {} : { providers };
 }
 
 function haveSameProviders(
