@@ -78,12 +78,12 @@ test('EAS Android config rejects package mismatch and non-store profiles', async
 });
 
 test('Android fingerprint is generated locally without an EAS command', async () => {
-  let request: DeploymentProcessRequest | null = null;
+  const requests: DeploymentProcessRequest[] = [];
   const result = await generateLocalAndroidFingerprint({
     projectRoot: '/project',
     profileEnvironment: { APP_ENV: 'prod' },
-    runProcess: (value) => {
-      request = value;
+    runProcess: (request) => {
+      requests.push(request);
       return Promise.resolve({
         exitCode: 0,
         stdout: JSON.stringify({ hash: 'a'.repeat(40) }),
@@ -92,10 +92,11 @@ test('Android fingerprint is generated locally without an EAS command', async ()
     },
   });
   expect(result).toEqual({ status: 'completed', fingerprint: 'a'.repeat(40) });
-  expect(request?.command).toBe('node');
-  expect(request?.args[0]).toBe('--input-type=module');
-  expect(request?.env?.APP_ENV).toBe('prod');
-  expect(request?.args.includes('eas')).toBe(false);
+  expect(requests).toHaveLength(1);
+  expect(requests[0]?.command).toBe('node');
+  expect(requests[0]?.args[0]).toBe('--input-type=module');
+  expect(requests[0]?.env?.APP_ENV).toBe('prod');
+  expect(requests[0]?.args.includes('eas')).toBe(false);
 });
 
 test('EAS Android build normalizes one finished AAB build', async () => {
