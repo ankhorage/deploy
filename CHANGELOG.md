@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.5.0
+
+### Minor Changes
+
+- d48cb44: Add first-class Android deployment through EAS Build and Google Play with deterministic revision planning, safe credential handling, transactional publishing, verification, and project-level lifecycle APIs.
+
 ## 0.4.0
 
 ### Minor Changes
