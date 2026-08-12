@@ -1,3 +1,9 @@
+export type {
+  AndroidDeploymentIntent,
+  AndroidDeploymentTrack,
+  AndroidReleaseStatus,
+} from './domain/AndroidDeploymentIntent';
+export type { AndroidDeploymentPublication } from './domain/AndroidDeploymentPublication';
 export * from './domain/DeploymentAuthenticationState';
 export * from './domain/DeploymentCapability';
 export * from './domain/DeploymentCredentialReference';

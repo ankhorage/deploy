@@ -1,3 +1,18 @@
+export { createProjectAndroidDeploymentPlan } from './android/createProjectAndroidDeploymentPlan';
+export {
+  executeProjectAndroidDeployment,
+  type ExecuteProjectAndroidDeploymentOptions,
+} from './android/executeProjectAndroidDeployment';
+export {
+  inspectProjectAndroidDeployment,
+  type InspectProjectAndroidDeploymentOptions,
+} from './android/inspectProjectAndroidDeployment';
+export type { ProjectAndroidDeploymentAccess } from './android/ProjectAndroidDeploymentAccess';
+export type { ProjectAndroidDeploymentExecution } from './android/ProjectAndroidDeploymentExecution';
+export type {
+  ProjectAndroidDeploymentInspection,
+  ProjectAndroidDeploymentInspectionResult,
+} from './android/ProjectAndroidDeploymentInspection';
 export { PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION } from './history/historySchemaVersion';
 export { listProjectDeploymentHistory } from './history/listProjectDeploymentHistory';
 export type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
