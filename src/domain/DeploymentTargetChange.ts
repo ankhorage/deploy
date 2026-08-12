@@ -10,6 +10,7 @@ export const DEPLOYMENT_CHANGE_REASONS = [
   'target-missing',
   'target-not-desired',
   'configuration-changed',
+  'revision-changed',
   'already-current',
 ] as const;
 export type DeploymentChangeReason = (typeof DEPLOYMENT_CHANGE_REASONS)[number];

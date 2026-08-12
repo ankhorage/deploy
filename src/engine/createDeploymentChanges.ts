@@ -1,22 +1,46 @@
-import { APP_DEPLOY_TARGET_IDS, type AppDeployManifest } from '@ankhorage/contracts/deploy';
+import {
+  APP_DEPLOY_TARGET_IDS,
+  type AppDeployManifest,
+  type AppDeployTargetId,
+} from '@ankhorage/contracts/deploy';
 
 import type { DeploymentCurrentState } from '../domain/DeploymentCurrentState';
+import type { DeploymentDesiredRevisions } from '../domain/DeploymentDesiredRevisions';
 import type { DeploymentTargetChange } from '../domain/DeploymentTargetChange';
-import { areTargetSnapshotsEqual, getCurrentTarget, getDesiredTarget } from './targetSnapshot';
+import { areTargetConfigurationsEqual, getCurrentTarget, getDesiredTarget } from './targetSnapshot';
 
 export interface CreateDeploymentChangesInput {
   readonly desired: AppDeployManifest;
   readonly current: DeploymentCurrentState;
+  readonly desiredRevisions?: DeploymentDesiredRevisions;
 }
 
 export function createDeploymentChanges(
   input: CreateDeploymentChangesInput,
 ): readonly DeploymentTargetChange[] {
   return APP_DEPLOY_TARGET_IDS.map((target) => {
-    const desired = getDesiredTarget(input.desired, target);
+    const desired = getDesiredTarget(
+      input.desired,
+      target,
+      getDesiredRevision(input.desiredRevisions, target),
+    );
     const current = getCurrentTarget(input.current, target);
     return createTargetChange(target, desired, current);
   });
+}
+
+function getDesiredRevision(
+  revisions: DeploymentDesiredRevisions | undefined,
+  target: AppDeployTargetId,
+): string | undefined {
+  switch (target) {
+    case 'web':
+      return revisions?.web;
+    case 'android':
+      return revisions?.android;
+    case 'ios':
+      return revisions?.ios;
+  }
 }
 
 function createTargetChange(
@@ -33,8 +57,12 @@ function createTargetChange(
   if (desired === null && current !== null) {
     return { target, kind: 'remove', desired, current, reason: 'target-not-desired' };
   }
-  const equal = desired !== null && current !== null && areTargetSnapshotsEqual(desired, current);
-  return equal
-    ? { target, kind: 'none', desired, current, reason: 'already-current' }
-    : { target, kind: 'update', desired, current, reason: 'configuration-changed' };
+  if (desired === null || current === null) throw new Error('Unreachable target change state.');
+  if (!areTargetConfigurationsEqual(desired, current)) {
+    return { target, kind: 'update', desired, current, reason: 'configuration-changed' };
+  }
+  if (desired.revision !== undefined && desired.revision !== current.revision) {
+    return { target, kind: 'update', desired, current, reason: 'revision-changed' };
+  }
+  return { target, kind: 'none', desired, current, reason: 'already-current' };
 }

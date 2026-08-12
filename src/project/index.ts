@@ -12,3 +12,18 @@ export {
   type ProjectDeploymentConfigUpdater,
   updateProjectDeploymentConfig,
 } from './updateProjectDeploymentConfig';
+export { createProjectWebDeploymentPlan } from './web/createProjectWebDeploymentPlan';
+export {
+  executeProjectWebDeployment,
+  type ExecuteProjectWebDeploymentOptions,
+} from './web/executeProjectWebDeployment';
+export {
+  inspectProjectWebDeployment,
+  type InspectProjectWebDeploymentOptions,
+} from './web/inspectProjectWebDeployment';
+export type { ProjectWebDeploymentAccess } from './web/ProjectWebDeploymentAccess';
+export type { ProjectWebDeploymentExecution } from './web/ProjectWebDeploymentExecution';
+export type {
+  ProjectWebDeploymentInspection,
+  ProjectWebDeploymentInspectionResult,
+} from './web/ProjectWebDeploymentInspection';

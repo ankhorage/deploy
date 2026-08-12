@@ -1,6 +1,7 @@
 import type { AppDeployManifest } from '@ankhorage/contracts/deploy';
 
 import type { DeploymentCurrentState } from '../domain/DeploymentCurrentState';
+import type { DeploymentDesiredRevisions } from '../domain/DeploymentDesiredRevisions';
 import type { DeploymentPlan } from '../domain/DeploymentPlan';
 import type { DeploymentTargetPlanContributors } from '../domain/DeploymentTargetPlanContributor';
 import { createDeploymentChanges } from './createDeploymentChanges';
@@ -9,6 +10,7 @@ import { appendTargetContribution, type MutableDeploymentPlan } from './planCont
 export interface CreateDeploymentPlanInput {
   readonly desired: AppDeployManifest;
   readonly current: DeploymentCurrentState;
+  readonly desiredRevisions?: DeploymentDesiredRevisions;
   readonly contributors: DeploymentTargetPlanContributors;
 }
 

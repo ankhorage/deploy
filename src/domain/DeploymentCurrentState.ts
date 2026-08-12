@@ -1,15 +1,19 @@
 import type { AppDeployProviderSelection } from '@ankhorage/contracts/deploy';
 
-export interface DeploymentObservedWebTarget {
+export interface DeploymentObservedRevision {
+  readonly revision?: string;
+}
+
+export interface DeploymentObservedWebTarget extends DeploymentObservedRevision {
   readonly providers?: AppDeployProviderSelection;
 }
 
-export interface DeploymentObservedAndroidTarget {
+export interface DeploymentObservedAndroidTarget extends DeploymentObservedRevision {
   readonly package: string;
   readonly providers?: AppDeployProviderSelection;
 }
 
-export interface DeploymentObservedIosTarget {
+export interface DeploymentObservedIosTarget extends DeploymentObservedRevision {
   readonly bundleIdentifier: string;
   readonly providers?: AppDeployProviderSelection;
 }
