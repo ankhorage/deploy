@@ -9,7 +9,10 @@ export function createGooglePlaySetupAdapter(options: {
   return {
     provider: 'google-play',
     inspectSetup: async (context) => {
-      const access = await resolveGooglePlayAccessToken({ ...context, createToken: options.createToken });
+      const access = await resolveGooglePlayAccessToken({
+        ...context,
+        createToken: options.createToken,
+      });
       return access.ok ? ready() : required(access.action);
     },
   };

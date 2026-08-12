@@ -29,7 +29,8 @@ export async function inspectGooglePlayTrack(options: {
   if (response.status === 401) return { status: 'action-required', action: authenticationAction() };
   if (response.status === 403) return { status: 'action-required', action: permissionAction() };
   if (response.status === 404) return { status: 'action-required', action: bootstrapAction() };
-  if (response.status < 200 || response.status >= 300) return failure('GOOGLE_PLAY_INSPECTION_FAILED');
+  if (response.status < 200 || response.status >= 300)
+    return failure('GOOGLE_PLAY_INSPECTION_FAILED');
   const state = parseResponse(response.body, options.track);
   return state === null ? failure('GOOGLE_PLAY_INVALID_RESULT') : { status: 'completed', state };
 }
@@ -42,7 +43,10 @@ async function safelyRequest(options: Parameters<typeof inspectGooglePlayTrack>[
   }
 }
 
-function trackUrl(options: { readonly packageName: string; readonly track: AndroidDeploymentTrack }) {
+function trackUrl(options: {
+  readonly packageName: string;
+  readonly track: AndroidDeploymentTrack;
+}) {
   const app = encodeURIComponent(options.packageName);
   const track = encodeURIComponent(options.track);
   return `https://androidpublisher.googleapis.com/androidpublisher/v3/applications/${app}/tracks/${track}/releases`;
@@ -72,7 +76,8 @@ function permissionAction(): DeploymentRequiredAction {
     provider: 'google-play',
     target: 'android',
     code: 'GOOGLE_PLAY_PERMISSION_REQUIRED',
-    message: 'Grant the service account permission to manage this application in Google Play Console.',
+    message:
+      'Grant the service account permission to manage this application in Google Play Console.',
   };
 }
 
@@ -82,7 +87,8 @@ function bootstrapAction(): DeploymentRequiredAction {
     provider: 'google-play',
     target: 'android',
     code: 'GOOGLE_PLAY_APP_BOOTSTRAP_REQUIRED',
-    message: 'Create and bootstrap the Android application in Google Play Console before API delivery.',
+    message:
+      'Create and bootstrap the Android application in Google Play Console before API delivery.',
   };
 }
 

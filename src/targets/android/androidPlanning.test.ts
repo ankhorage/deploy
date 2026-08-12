@@ -32,7 +32,10 @@ test('Android revision is deterministic and intent-bound', () => {
     createAndroidDeploymentRevision('fingerprint-a', { ...BASE_INTENT, track: 'production' }),
   ).not.toBe(revision);
   expect(
-    createAndroidDeploymentRevision('fingerprint-a', { ...BASE_INTENT, releaseStatus: 'completed' }),
+    createAndroidDeploymentRevision('fingerprint-a', {
+      ...BASE_INTENT,
+      releaseStatus: 'completed',
+    }),
   ).not.toBe(revision);
   expect(
     createAndroidDeploymentRevision('fingerprint-a', { ...BASE_INTENT, buildProfile: 'preview' }),

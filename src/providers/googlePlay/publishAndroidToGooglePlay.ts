@@ -5,11 +5,11 @@ import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 import type { DeploymentRequiredAction } from '../../domain/DeploymentRequiredAction';
 import type { DeploymentSecretResolver } from '../../domain/DeploymentSecretResolver';
 import type { EasAndroidBuildArtifact } from '../eas/android/EasAndroidBuildArtifact';
+import { commitGooglePlayEdit } from './commitGooglePlayEdit';
 import type { AndroidArchiveDownloader } from './downloadAndroidArchive';
 import { cleanupAndroidArchive } from './downloadAndroidArchive';
 import type { GooglePlayTokenFactory } from './GooglePlayTokenFactory';
 import type { GooglePlayTransport } from './GooglePlayTransport';
-import { commitGooglePlayEdit } from './commitGooglePlayEdit';
 import { insertGooglePlayEdit } from './insertGooglePlayEdit';
 import { resolveGooglePlayAccessToken } from './resolveGooglePlayAccessToken';
 import { updateGooglePlayTrack } from './updateGooglePlayTrack';
@@ -52,7 +52,12 @@ async function publishArchive(
   if (editId === null) return failure('GOOGLE_PLAY_EDIT_CREATE_FAILED');
   const versionCode = await uploadGooglePlayBundle({ ...shared, editId, filePath });
   if (versionCode !== options.build.versionCode) return failure('GOOGLE_PLAY_VERSION_MISMATCH');
-  const updated = await updateGooglePlayTrack({ ...shared, editId, ...options.intent, versionCode });
+  const updated = await updateGooglePlayTrack({
+    ...shared,
+    editId,
+    ...options.intent,
+    versionCode,
+  });
   if (!updated) return failure('GOOGLE_PLAY_TRACK_UPDATE_FAILED');
   const committed = await commitGooglePlayEdit({ ...shared, editId });
   return committed ? completed(options) : failure('GOOGLE_PLAY_EDIT_COMMIT_FAILED');

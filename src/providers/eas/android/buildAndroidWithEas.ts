@@ -42,7 +42,16 @@ export async function buildAndroidWithEas(options: {
 }
 
 function buildArgs(buildProfile: string): readonly string[] {
-  return ['build', '--platform', 'android', '--profile', buildProfile, '--json', '--non-interactive', '--wait'];
+  return [
+    'build',
+    '--platform',
+    'android',
+    '--profile',
+    buildProfile,
+    '--json',
+    '--non-interactive',
+    '--wait',
+  ];
 }
 
 function failedBuild(stderr: string): EasAndroidBuildResult {

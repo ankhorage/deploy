@@ -34,7 +34,9 @@ export async function executeProjectAndroidDeploymentWithRuntime(
 ): Promise<ProjectAndroidDeploymentExecution> {
   const expected = createProjectAndroidDeploymentPlan(options.inspection);
   if (!areDeploymentPlansEqual(expected, options.plan)) {
-    return fromPreflight(failedOutcome('ANDROID_PLAN_MISMATCH', 'Android deployment plan is invalid.'));
+    return fromPreflight(
+      failedOutcome('ANDROID_PLAN_MISMATCH', 'Android deployment plan is invalid.'),
+    );
   }
   if (options.plan.steps.length === 0) return executeNoChange(options.plan);
   if (options.plan.steps[0]?.id === 'android:remove') return executeRemove(options, runtime);
@@ -56,7 +58,12 @@ async function inspectExecutionSetup(
 ): Promise<DeploymentStepOutcome | null> {
   const [eas, google] = await Promise.all([
     inspectProjectAndroidEasSetup(inspection.projectRoot, access, runtime),
-    inspectProjectAndroidGooglePlay({ packageName, track: inspection.intent.track, access, runtime }),
+    inspectProjectAndroidGooglePlay({
+      packageName,
+      track: inspection.intent.track,
+      access,
+      runtime,
+    }),
   ]);
   return easBlocker(eas) ?? googleBlocker(google.setup);
 }
@@ -179,7 +186,10 @@ function fromPreflight(outcome: DeploymentStepOutcome): ProjectAndroidDeployment
           failure:
             outcome.status === 'failed'
               ? outcome.error
-              : { code: 'ANDROID_PREFLIGHT_FAILED', message: 'Android deployment preflight failed.' },
+              : {
+                  code: 'ANDROID_PREFLIGHT_FAILED',
+                  message: 'Android deployment preflight failed.',
+                },
           records: [],
         };
   return { execution, publication: null, verification: null, historyRecorded: false };

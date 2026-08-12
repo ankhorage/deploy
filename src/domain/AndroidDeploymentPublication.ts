@@ -1,7 +1,4 @@
-import type {
-  AndroidDeploymentTrack,
-  AndroidReleaseStatus,
-} from './AndroidDeploymentIntent';
+import type { AndroidDeploymentTrack, AndroidReleaseStatus } from './AndroidDeploymentIntent';
 
 export interface AndroidDeploymentPublication {
   readonly target: 'android';

@@ -1,7 +1,8 @@
-import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+
+import { expect, test } from 'bun:test';
 
 import type { DeploymentCredentialReference } from '../../domain/DeploymentCredentialReference';
 import type { DeploymentSecretResolver } from '../../domain/DeploymentSecretResolver';
@@ -56,7 +57,10 @@ test('Google Play auth strips untrusted service-account fields', async () => {
     },
   });
   expect(result.ok).toBe(true);
-  expect(received).toEqual({ clientEmail: 'robot@example.test', privateKey: 'PRIVATE_KEY_SENTINEL' });
+  expect(received).toEqual({
+    clientEmail: 'robot@example.test',
+    privateKey: 'PRIVATE_KEY_SENTINEL',
+  });
   expect(JSON.stringify(received)).not.toContain('malicious.example.test');
 });
 
@@ -153,12 +157,21 @@ test('Google Play version mismatch stops before track update and commit', async 
 
 test('Google Play verification accepts a current submitted version', async () => {
   const publication = {
-    target: 'android', revision: 'r'.repeat(64), buildProvider: 'eas', publishProvider: 'google-play',
-    buildId: 'build-1', versionCode: 42, track: 'internal', releaseStatus: 'completed',
+    target: 'android',
+    revision: 'r'.repeat(64),
+    buildProvider: 'eas',
+    publishProvider: 'google-play',
+    buildId: 'build-1',
+    versionCode: 42,
+    track: 'internal',
+    releaseStatus: 'completed',
   } as const;
   const result = await verifyGooglePlayPublication({
-    packageName: 'com.example.app', publication, credentials: [CREDENTIAL],
-    resolveSecret: RESOLVE_SECRET, createToken: () => Promise.resolve('token'),
+    packageName: 'com.example.app',
+    publication,
+    credentials: [CREDENTIAL],
+    resolveSecret: RESOLVE_SECRET,
+    createToken: () => Promise.resolve('token'),
     request: () => Promise.resolve({ status: 200, body: releaseBody(42) }),
   });
   expect(result).toEqual({ status: 'completed', verification: { ok: true } });

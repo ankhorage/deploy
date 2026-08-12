@@ -39,12 +39,30 @@ export async function inspectProjectAndroidDeploymentWithRuntime(
     const normalized = normalizeProjectAndroidDesired(project.deploy);
     if (!normalized.ok) return normalized;
     if (!normalized.enabled || normalized.packageName === undefined) {
-      const current = await readCurrentProjectAndroidDeployment({ projectRoot: project.projectRoot });
-      return success(project.projectRoot, normalized.desired, current, options.intent, undefined, []);
+      const current = await readCurrentProjectAndroidDeployment({
+        projectRoot: project.projectRoot,
+      });
+      return success(
+        project.projectRoot,
+        normalized.desired,
+        current,
+        options.intent,
+        undefined,
+        [],
+      );
     }
-    return inspectEnabledProject(project.projectRoot, normalized.desired, normalized.packageName, options, runtime);
+    return inspectEnabledProject(
+      project.projectRoot,
+      normalized.desired,
+      normalized.packageName,
+      options,
+      runtime,
+    );
   } catch {
-    return failure('ANDROID_PROJECT_INSPECTION_FAILED', 'Android deployment project inspection failed.');
+    return failure(
+      'ANDROID_PROJECT_INSPECTION_FAILED',
+      'Android deployment project inspection failed.',
+    );
   }
 }
 
@@ -74,7 +92,10 @@ async function inspectEnabledProject(
   });
   if (config.status === 'failed') return { ok: false, failure: config.failure };
   if (config.status === 'action-required') {
-    return success(projectRoot, desired, current, options.intent, undefined, [easSetup, google.setup]);
+    return success(projectRoot, desired, current, options.intent, undefined, [
+      easSetup,
+      google.setup,
+    ]);
   }
   const fingerprint = await generateLocalAndroidFingerprint({
     projectRoot,

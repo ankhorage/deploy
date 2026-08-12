@@ -39,7 +39,8 @@ async function prepareStep(
   options: Parameters<typeof executeProjectAndroidStep>[0],
 ): Promise<DeploymentStepOutcome> {
   const expected = options.inspection.desiredRevision;
-  if (expected === undefined) return failed('ANDROID_REVISION_MISSING', 'Planned Android revision is missing.');
+  if (expected === undefined)
+    return failed('ANDROID_REVISION_MISSING', 'Planned Android revision is missing.');
   const config = await inspectEasAndroidConfig({
     projectRoot: options.inspection.projectRoot,
     packageName: options.packageName,
@@ -47,7 +48,8 @@ async function prepareStep(
     ...options.access,
     runProcess: options.runtime.runProcess,
   });
-  if (config.status === 'action-required') return { status: 'action-required', action: config.action };
+  if (config.status === 'action-required')
+    return { status: 'action-required', action: config.action };
   if (config.status === 'failed') return { status: 'failed', error: config.failure };
   const fingerprint = await generateLocalAndroidFingerprint({
     projectRoot: options.inspection.projectRoot,
@@ -55,9 +57,15 @@ async function prepareStep(
     runProcess: options.runtime.runProcess,
   });
   if (fingerprint.status === 'failed') return { status: 'failed', error: fingerprint.failure };
-  const revision = createAndroidDeploymentRevision(fingerprint.fingerprint, options.inspection.intent);
+  const revision = createAndroidDeploymentRevision(
+    fingerprint.fingerprint,
+    options.inspection.intent,
+  );
   if (revision !== expected) {
-    return failed('ANDROID_SOURCE_CHANGED_AFTER_PLAN', 'Android source changed after the deployment plan was created.');
+    return failed(
+      'ANDROID_SOURCE_CHANGED_AFTER_PLAN',
+      'Android source changed after the deployment plan was created.',
+    );
   }
   options.state.fingerprint = fingerprint.fingerprint;
   return { status: 'completed' };
@@ -66,7 +74,8 @@ async function prepareStep(
 async function buildStep(
   options: Parameters<typeof executeProjectAndroidStep>[0],
 ): Promise<DeploymentStepOutcome> {
-  if (options.state.fingerprint === null) return failed('ANDROID_FINGERPRINT_MISSING', 'Prepared Android fingerprint is missing.');
+  if (options.state.fingerprint === null)
+    return failed('ANDROID_FINGERPRINT_MISSING', 'Prepared Android fingerprint is missing.');
   const result = await buildAndroidWithEas({
     projectRoot: options.inspection.projectRoot,
     buildProfile: options.inspection.intent.buildProfile,
@@ -74,7 +83,8 @@ async function buildStep(
     ...options.access,
     runProcess: options.runtime.runProcess,
   });
-  if (result.status === 'action-required') return { status: 'action-required', action: result.action };
+  if (result.status === 'action-required')
+    return { status: 'action-required', action: result.action };
   if (result.status === 'failed') return { status: 'failed', error: result.failure };
   options.state.build = result.artifact;
   return { status: 'completed' };
@@ -97,7 +107,8 @@ async function publishStep(
     request: options.runtime.requestGooglePlay,
     downloadArchive: options.runtime.downloadArchive,
   });
-  if (result.status === 'action-required') return { status: 'action-required', action: result.action };
+  if (result.status === 'action-required')
+    return { status: 'action-required', action: result.action };
   if (result.status === 'failed') return { status: 'failed', error: result.failure };
   options.state.publication = result.publication;
   return { status: 'completed' };
@@ -116,7 +127,8 @@ async function verifyStep(
     createToken: options.runtime.createGooglePlayToken,
     request: options.runtime.requestGooglePlay,
   });
-  if (result.status === 'action-required') return { status: 'action-required', action: result.action };
+  if (result.status === 'action-required')
+    return { status: 'action-required', action: result.action };
   options.state.verification = result.verification;
   return result.verification.ok
     ? { status: 'completed' }

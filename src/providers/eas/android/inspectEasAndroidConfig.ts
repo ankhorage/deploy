@@ -29,7 +29,15 @@ export async function inspectEasAndroidConfig(options: {
   if (!environment.ok) return { status: 'action-required', action: environment.action };
   const result = await options.runProcess({
     command: 'eas',
-    args: ['config', '--platform', 'android', '--profile', options.buildProfile, '--json', '--non-interactive'],
+    args: [
+      'config',
+      '--platform',
+      'android',
+      '--profile',
+      options.buildProfile,
+      '--json',
+      '--non-interactive',
+    ],
     cwd: options.projectRoot,
     ...(environment.env === undefined ? {} : { env: environment.env }),
   });

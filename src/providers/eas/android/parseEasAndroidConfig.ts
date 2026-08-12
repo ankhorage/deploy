@@ -12,10 +12,16 @@ export function parseEasAndroidConfig(
     return failure('EAS_ANDROID_PACKAGE_MISSING');
   }
   if (androidConfig.package !== expectedPackage) {
-    return failure('ANDROID_PACKAGE_MISMATCH', 'EAS Android package does not match deployment config.');
+    return failure(
+      'ANDROID_PACKAGE_MISMATCH',
+      'EAS Android package does not match deployment config.',
+    );
   }
   if (!isStoreProfile(value.buildProfile)) {
-    return failure('EAS_ANDROID_PROFILE_NOT_STORE_READY', 'EAS Android build profile is not store-ready.');
+    return failure(
+      'EAS_ANDROID_PROFILE_NOT_STORE_READY',
+      'EAS Android build profile is not store-ready.',
+    );
   }
   const environment = normalizeEnvironment(value.buildProfile.env);
   if (environment === null) return failure('EAS_ANDROID_CONFIG_INVALID');
@@ -46,7 +52,10 @@ function normalizeEnvironment(value: unknown): Readonly<Record<string, string>> 
   return Object.fromEntries(entries) as Readonly<Record<string, string>>;
 }
 
-function failure(code: string, message = 'EAS Android configuration is invalid.'): EasAndroidConfigResult {
+function failure(
+  code: string,
+  message = 'EAS Android configuration is invalid.',
+): EasAndroidConfigResult {
   return { status: 'failed', failure: { code, message, target: 'android', provider: 'eas' } };
 }
 

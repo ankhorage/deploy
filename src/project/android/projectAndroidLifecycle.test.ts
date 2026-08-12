@@ -19,7 +19,11 @@ interface AndroidTestState {
   deployed: boolean;
 }
 
-const INTENT = { buildProfile: 'production', track: 'internal', releaseStatus: 'completed' } as const;
+const INTENT = {
+  buildProfile: 'production',
+  track: 'internal',
+  releaseStatus: 'completed',
+} as const;
 
 function createRuntime(state: AndroidTestState): ProjectAndroidDeploymentRuntime {
   return {
@@ -39,7 +43,11 @@ function createRuntime(state: AndroidTestState): ProjectAndroidDeploymentRuntime
 function createProcessRunner(state: AndroidTestState): DeploymentProcessRunner {
   return (request) => {
     if (request.command === 'node') {
-      return Promise.resolve({ exitCode: 0, stdout: JSON.stringify({ hash: state.fingerprint }), stderr: '' });
+      return Promise.resolve({
+        exitCode: 0,
+        stdout: JSON.stringify({ hash: state.fingerprint }),
+        stderr: '',
+      });
     }
     const command = request.args[0];
     if (command === 'config') return Promise.resolve(configResult());
@@ -115,15 +123,22 @@ test('project Android lifecycle builds publishes verifies records history then b
   const state = { fingerprint: 'a'.repeat(40), buildCalls: 0, playMutations: 0, deployed: false };
   const runtime = createRuntime(state);
   try {
-    const inspected = await inspectProjectAndroidDeploymentWithRuntime({ projectRoot, intent: INTENT }, runtime);
+    const inspected = await inspectProjectAndroidDeploymentWithRuntime(
+      { projectRoot, intent: INTENT },
+      runtime,
+    );
     expect(inspected.ok).toBe(true);
     if (!inspected.ok) return;
     const plan = createProjectAndroidDeploymentPlan(inspected.inspection);
     expect(plan.steps.map((step) => step.id)).toEqual([
-      'android:prepare', 'android:build', 'android:publish', 'android:verify',
+      'android:prepare',
+      'android:build',
+      'android:publish',
+      'android:verify',
     ]);
     const deployed = await executeProjectAndroidDeploymentWithRuntime(
-      { inspection: inspected.inspection, plan }, runtime,
+      { inspection: inspected.inspection, plan },
+      runtime,
     );
     expect(deployed.execution.status).toBe('completed');
     expect(deployed.verification).toEqual({ ok: true });
@@ -131,13 +146,17 @@ test('project Android lifecycle builds publishes verifies records history then b
     expect(state.buildCalls).toBe(1);
     expect(state.playMutations).toBe(4);
 
-    const second = await inspectProjectAndroidDeploymentWithRuntime({ projectRoot, intent: INTENT }, runtime);
+    const second = await inspectProjectAndroidDeploymentWithRuntime(
+      { projectRoot, intent: INTENT },
+      runtime,
+    );
     expect(second.ok).toBe(true);
     if (!second.ok) return;
     const secondPlan = createProjectAndroidDeploymentPlan(second.inspection);
     expect(secondPlan.steps).toEqual([]);
     const noChange = await executeProjectAndroidDeploymentWithRuntime(
-      { inspection: second.inspection, plan: secondPlan }, runtime,
+      { inspection: second.inspection, plan: secondPlan },
+      runtime,
     );
     expect(noChange.execution.status).toBe('completed');
     expect(state.buildCalls).toBe(1);
@@ -152,12 +171,16 @@ test('project Android execution rejects source drift before build or Play mutati
   const state = { fingerprint: 'b'.repeat(40), buildCalls: 0, playMutations: 0, deployed: false };
   const runtime = createRuntime(state);
   try {
-    const inspected = await inspectProjectAndroidDeploymentWithRuntime({ projectRoot, intent: INTENT }, runtime);
+    const inspected = await inspectProjectAndroidDeploymentWithRuntime(
+      { projectRoot, intent: INTENT },
+      runtime,
+    );
     if (!inspected.ok) throw new Error('inspection failed');
     const plan = createProjectAndroidDeploymentPlan(inspected.inspection);
     state.fingerprint = 'c'.repeat(40);
     const result = await executeProjectAndroidDeploymentWithRuntime(
-      { inspection: inspected.inspection, plan }, runtime,
+      { inspection: inspected.inspection, plan },
+      runtime,
     );
     expect(result.execution.status).toBe('failed');
     if (result.execution.status === 'failed') {

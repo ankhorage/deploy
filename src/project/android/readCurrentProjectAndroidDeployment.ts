@@ -44,7 +44,10 @@ function matchesRequestedPackage(item: AndroidHistoryEvidence, packageName: stri
   return packageName === undefined || item.packageName === packageName;
 }
 
-function matchesRemoteTrack(item: AndroidHistoryEvidence, trackState: GooglePlayTrackState | null | undefined) {
+function matchesRemoteTrack(
+  item: AndroidHistoryEvidence,
+  trackState: GooglePlayTrackState | null | undefined,
+) {
   if (trackState === undefined) return true;
   if (trackState === null) return false;
   return trackState.releases.some((release) => release.versionCodes.includes(item.versionCode));
