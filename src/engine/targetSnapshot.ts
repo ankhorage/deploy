@@ -1,29 +1,27 @@
-import type { AppDeployManifest, AppDeployTargetId } from '@ankhorage/contracts/deploy';
+import type {
+  AppDeployAndroidTargetConfig,
+  AppDeployIosTargetConfig,
+  AppDeployManifest,
+  AppDeployTargetId,
+  AppDeployWebTargetConfig,
+} from '@ankhorage/contracts/deploy';
 
-import type { DeploymentCurrentState, DeploymentObservedTarget } from '../domain/DeploymentCurrentState';
+import type {
+  DeploymentCurrentState,
+  DeploymentObservedTarget,
+} from '../domain/DeploymentCurrentState';
 
 export function getDesiredTarget(
   desired: AppDeployManifest,
   target: AppDeployTargetId,
 ): DeploymentObservedTarget | null {
-  const config = desired.targets[target];
-  if (config === undefined || !config.enabled) return null;
-
   switch (target) {
     case 'web':
-      return { target, providers: desired.targets.web?.providers };
+      return desiredWebTarget(desired.targets.web);
     case 'android':
-      return {
-        target,
-        package: desired.targets.android?.package ?? '',
-        providers: desired.targets.android?.providers,
-      };
+      return desiredAndroidTarget(desired.targets.android);
     case 'ios':
-      return {
-        target,
-        bundleIdentifier: desired.targets.ios?.bundleIdentifier ?? '',
-        providers: desired.targets.ios?.providers,
-      };
+      return desiredIosTarget(desired.targets.ios);
   }
 }
 
@@ -51,6 +49,28 @@ export function areTargetSnapshotsEqual(
     return right.target === 'android' && left.package === right.package;
   }
   return right.target === 'ios' && left.bundleIdentifier === right.bundleIdentifier;
+}
+
+function desiredWebTarget(
+  config: AppDeployWebTargetConfig | undefined,
+): DeploymentObservedTarget | null {
+  return config?.enabled === true ? { target: 'web', providers: config.providers } : null;
+}
+
+function desiredAndroidTarget(
+  config: AppDeployAndroidTargetConfig | undefined,
+): DeploymentObservedTarget | null {
+  return config?.enabled === true
+    ? { target: 'android', package: config.package, providers: config.providers }
+    : null;
+}
+
+function desiredIosTarget(
+  config: AppDeployIosTargetConfig | undefined,
+): DeploymentObservedTarget | null {
+  return config?.enabled === true
+    ? { target: 'ios', bundleIdentifier: config.bundleIdentifier, providers: config.providers }
+    : null;
 }
 
 function haveSameProviders(
