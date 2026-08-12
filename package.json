@@ -37,6 +37,11 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./project": {
+      "types": "./dist/project/index.d.ts",
+      "import": "./dist/project/index.js",
+      "default": "./dist/project/index.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [
