@@ -2,8 +2,8 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import { assertContainedWritePath } from '../io/assertContainedPath';
-import { atomicWriteJson } from '../io/atomicWriteJson';
 import { assertSafeSegment } from '../io/assertSafeSegment';
+import { atomicWriteJson } from '../io/atomicWriteJson';
 import { resolveDeployProject } from '../resolveDeployProject';
 import { parseProjectDeploymentHistoryRecord } from './parseProjectDeploymentHistoryRecord';
 import type { ProjectDeploymentHistoryRecord } from './ProjectDeploymentHistoryRecord';

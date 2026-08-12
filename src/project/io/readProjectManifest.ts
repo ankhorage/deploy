@@ -1,6 +1,7 @@
-import { parseAppManifest, type AppManifest } from '@ankhorage/contracts';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+
+import { type AppManifest, parseAppManifest } from '@ankhorage/contracts';
 
 import { readJsonFile } from './readJsonFile';
 

@@ -1,6 +1,7 @@
-import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+
+import { expect, test } from 'bun:test';
 
 import { expectRejects } from './expectRejects.test';
 import { listProjectDeploymentHistory } from './history/listProjectDeploymentHistory';
@@ -29,10 +30,7 @@ test('duplicate history writes do not change the original record', async () => {
     await recordProjectDeploymentHistory({ projectRoot, record });
     const recordPath = path.join(paths.historyRoot, 'same-id', 'deployment.json');
     const before = await fs.readFile(recordPath, 'utf8');
-    await expectRejects(
-      recordProjectDeploymentHistory({ projectRoot, record }),
-      'already exists',
-    );
+    await expectRejects(recordProjectDeploymentHistory({ projectRoot, record }), 'already exists');
     expect(await fs.readFile(recordPath, 'utf8')).toBe(before);
   } finally {
     await fs.rm(projectRoot, { recursive: true, force: true });

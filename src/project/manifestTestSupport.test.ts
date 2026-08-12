@@ -1,8 +1,9 @@
-import type { AppManifest } from '@ankhorage/contracts';
-import type { AppDeployManifest } from '@ankhorage/contracts/deploy';
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+
+import type { AppManifest } from '@ankhorage/contracts';
+import type { AppDeployManifest } from '@ankhorage/contracts/deploy';
 
 export function createTestManifest(deploy?: AppDeployManifest): AppManifest {
   const manifest: AppManifest = {

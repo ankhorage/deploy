@@ -1,7 +1,8 @@
-import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+
+import { expect, test } from 'bun:test';
 
 import { expectRejects } from './expectRejects.test';
 import { assertSafeSegment } from './io/assertSafeSegment';
@@ -16,9 +17,7 @@ test('resolves the frozen authored deployment layout from one project root', () 
   expect(paths.androidScreenshotsRoot).toBe(
     path.join(root, 'deploy', 'assets', 'android', 'screenshots'),
   );
-  expect(paths.iosScreenshotsRoot).toBe(
-    path.join(root, 'deploy', 'assets', 'ios', 'screenshots'),
-  );
+  expect(paths.iosScreenshotsRoot).toBe(path.join(root, 'deploy', 'assets', 'ios', 'screenshots'));
   expect(paths.productsPath).toBe(path.join(root, 'deploy', 'monetization', 'products.json'));
   expect(paths.releasePath).toBe(path.join(root, 'deploy', 'release.json'));
   expect(paths.historyRoot).toBe(path.join(root, '.ankh', 'deployments'));

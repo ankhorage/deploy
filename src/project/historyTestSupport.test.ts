@@ -1,8 +1,6 @@
 import type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
 
-export function createHistoryRecord(
-  deploymentId: string,
-): ProjectDeploymentHistoryRecord {
+export function createHistoryRecord(deploymentId: string): ProjectDeploymentHistoryRecord {
   return {
     schemaVersion: 1,
     deploymentId,

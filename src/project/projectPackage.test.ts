@@ -1,5 +1,6 @@
-import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
+
+import { expect, test } from 'bun:test';
 
 test('package exposes the dedicated project subpath', async () => {
   const packageUrl = new URL('../../package.json', import.meta.url);

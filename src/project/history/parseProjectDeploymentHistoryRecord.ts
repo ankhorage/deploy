@@ -1,8 +1,8 @@
 import { isAppDeployManifest } from '@ankhorage/contracts/deploy';
 
+import { isSafeSegment } from '../io/assertSafeSegment';
 import { hasOnlyKeys } from '../io/hasOnlyKeys';
 import { isRecord } from '../io/isRecord';
-import { isSafeSegment } from '../io/assertSafeSegment';
 import { PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION } from './historySchemaVersion';
 import type { ProjectDeploymentHistoryRecord } from './ProjectDeploymentHistoryRecord';
 import { isDeploymentExecution } from './validation/execution';
@@ -11,15 +11,22 @@ import { isDeploymentPlan } from './validation/plan';
 import { isDeploymentVerification } from './validation/verification';
 
 const HISTORY_KEYS = new Set([
-  'schemaVersion', 'deploymentId', 'recordedAt', 'desired',
-  'plan', 'execution', 'verification',
+  'schemaVersion',
+  'deploymentId',
+  'recordedAt',
+  'desired',
+  'plan',
+  'execution',
+  'verification',
 ]);
 
 export function parseProjectDeploymentHistoryRecord(
   value: unknown,
 ): ProjectDeploymentHistoryRecord {
   if (isRecord(value) && value.schemaVersion !== PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION) {
-    throw new Error(`Unsupported deployment history schema version: ${String(value.schemaVersion)}`);
+    throw new Error(
+      `Unsupported deployment history schema version: ${String(value.schemaVersion)}`,
+    );
   }
   if (!isHistoryRecord(value)) {
     throw new Error('Deployment history record has an invalid canonical shape.');

@@ -1,7 +1,4 @@
-import {
-  isAppDeployManifest,
-  type AppDeployManifest,
-} from '@ankhorage/contracts/deploy';
+import { type AppDeployManifest, isAppDeployManifest } from '@ankhorage/contracts/deploy';
 
 import { atomicWriteJson } from './io/atomicWriteJson';
 import { resolveDeployProject } from './resolveDeployProject';

@@ -1,6 +1,7 @@
+import { promises as fs } from 'node:fs';
+
 import type { AppDeployManifest } from '@ankhorage/contracts/deploy';
 import { expect, test } from 'bun:test';
-import { promises as fs } from 'node:fs';
 
 import { createTempProject, createTestManifest } from './manifestTestSupport.test';
 import { readProjectDeploymentConfig } from './readProjectDeploymentConfig';

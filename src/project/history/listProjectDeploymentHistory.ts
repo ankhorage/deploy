@@ -1,9 +1,9 @@
-import { promises as fs, type Dirent } from 'node:fs';
+import { type Dirent, promises as fs } from 'node:fs';
 
 import { isMissingPathError } from '../io/isMissingPathError';
 import { resolveDeployProject } from '../resolveDeployProject';
-import { readProjectDeploymentHistory } from './readProjectDeploymentHistory';
 import type { ProjectDeploymentHistoryRecord } from './ProjectDeploymentHistoryRecord';
+import { readProjectDeploymentHistory } from './readProjectDeploymentHistory';
 
 export async function listProjectDeploymentHistory(options: {
   readonly projectRoot: string;

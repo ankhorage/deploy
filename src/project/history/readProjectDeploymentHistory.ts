@@ -13,11 +13,7 @@ export async function readProjectDeploymentHistory(options: {
 }): Promise<ProjectDeploymentHistoryRecord | null> {
   assertSafeSegment(options.deploymentId, 'deployment id');
   const project = await resolveDeployProject({ projectRoot: options.projectRoot });
-  const recordPath = path.join(
-    project.paths.historyRoot,
-    options.deploymentId,
-    'deployment.json',
-  );
+  const recordPath = path.join(project.paths.historyRoot, options.deploymentId, 'deployment.json');
 
   let parsed: unknown;
   try {
