@@ -6,7 +6,7 @@ export interface GooglePlayRequest {
   readonly body?: string | Blob;
 }
 
-export interface GooglePlayResponse {
+interface GooglePlayResponse {
   readonly status: number;
   readonly body: string;
 }
