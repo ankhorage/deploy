@@ -11,7 +11,7 @@ export type AppStoreConnectTokenFactory = (
   now: Date,
 ) => Promise<string | null>;
 
-export const createAppStoreConnectToken: AppStoreConnectTokenFactory = async (credentials, now) => {
+export const createAppStoreConnectToken: AppStoreConnectTokenFactory = (credentials, now) => {
   const issuedAt = Math.floor(now.getTime() / 1000);
   const header = encode({ alg: 'ES256', kid: credentials.keyId, typ: 'JWT' });
   const payload = encode({
@@ -25,7 +25,7 @@ export const createAppStoreConnectToken: AppStoreConnectTokenFactory = async (cr
     key: credentials.privateKey,
     dsaEncoding: 'ieee-p1363',
   });
-  return `${input}.${signature.toString('base64url')}`;
+  return Promise.resolve(`${input}.${signature.toString('base64url')}`);
 };
 
 function encode(value: Readonly<Record<string, string | number>>): string {

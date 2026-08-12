@@ -70,13 +70,20 @@ async function requestJson(
 
 function parseAppId(value: unknown, expectedBundleIdentifier: string): string | null {
   if (!isRecord(value) || !Array.isArray(value.data)) return null;
-  const matches = value.data.filter((item) => {
-    if (!isRecord(item) || item.type !== 'apps' || !isNonEmptyString(item.id)) return false;
-    if (!isRecord(item.attributes)) return false;
-    return item.attributes.bundleId === expectedBundleIdentifier;
-  });
-  if (matches.length !== 1) return null;
-  return (matches[0] as { readonly id: string }).id;
+  let match: string | null = null;
+  for (const candidate of value.data as unknown[]) {
+    const id = matchingAppId(candidate, expectedBundleIdentifier);
+    if (id === null) continue;
+    if (match !== null) return null;
+    match = id;
+  }
+  return match;
+}
+
+function matchingAppId(value: unknown, expectedBundleIdentifier: string): string | null {
+  if (!isRecord(value) || value.type !== 'apps' || !isNonEmptyString(value.id)) return null;
+  if (!isRecord(value.attributes) || value.attributes.bundleId !== expectedBundleIdentifier) return null;
+  return value.id;
 }
 
 function parseVersionState(
@@ -84,13 +91,24 @@ function parseVersionState(
   expectedVersion: string,
 ): AppStoreConnectIosState['version'] | undefined {
   if (!isRecord(value) || !Array.isArray(value.data)) return undefined;
-  const matches = value.data.filter((item) => isMatchingVersion(item, expectedVersion));
-  if (matches.length === 0) return null;
-  if (matches.length !== 1) return undefined;
-  const item = matches[0];
-  if (!isRecord(item) || !isNonEmptyString(item.id)) return undefined;
+  let match: Record<string, unknown> | null = null;
+  for (const candidate of value.data as unknown[]) {
+    if (!isMatchingVersion(candidate, expectedVersion)) continue;
+    if (match !== null || !isRecord(candidate)) return undefined;
+    match = candidate;
+  }
+  if (match === null) return null;
+  return createVersionState(match, value.included, expectedVersion);
+}
+
+function createVersionState(
+  item: Record<string, unknown>,
+  included: unknown,
+  expectedVersion: string,
+): AppStoreConnectIosState['version'] | undefined {
+  if (!isNonEmptyString(item.id)) return undefined;
   const buildId = relationshipBuildId(item);
-  const build = buildId === null ? null : findIncludedBuild(value.included, buildId);
+  const build = buildId === null ? null : findIncludedBuild(included, buildId);
   if (buildId !== null && build === null) return undefined;
   return { versionId: item.id, version: expectedVersion, build };
 }
@@ -115,16 +133,24 @@ function findIncludedBuild(
   buildId: string,
 ): NonNullable<AppStoreConnectIosState['version']>['build'] {
   if (!Array.isArray(included)) return null;
-  const item = included.find(
-    (entry) => isRecord(entry) && entry.type === 'builds' && entry.id === buildId,
-  );
-  if (!isRecord(item) || !isRecord(item.attributes)) return null;
-  if (!isNonEmptyString(item.attributes.version)) return null;
+  for (const candidate of included as unknown[]) {
+    const build = parseIncludedBuild(candidate, buildId);
+    if (build !== null) return build;
+  }
+  return null;
+}
+
+function parseIncludedBuild(
+  value: unknown,
+  buildId: string,
+): NonNullable<AppStoreConnectIosState['version']>['build'] {
+  if (!isRecord(value) || value.type !== 'builds' || value.id !== buildId) return null;
+  if (!isRecord(value.attributes) || !isNonEmptyString(value.attributes.version)) return null;
   return {
     buildId,
-    buildNumber: item.attributes.version,
-    ...(typeof item.attributes.processingState === 'string'
-      ? { processingState: item.attributes.processingState }
+    buildNumber: value.attributes.version,
+    ...(typeof value.attributes.processingState === 'string'
+      ? { processingState: value.attributes.processingState }
       : {}),
   };
 }

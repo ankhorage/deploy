@@ -1,6 +1,10 @@
 import { expect, test } from 'bun:test';
 
-import type { AppStoreConnectRequest } from './AppStoreConnectTransport';
+import type {
+  AppStoreConnectRequest,
+  AppStoreConnectResponse,
+  AppStoreConnectTransport,
+} from './AppStoreConnectTransport';
 import type { AppStoreUploadRequest } from './AppStoreUploadTransport';
 import { parseBuildUploadFileReservation } from './parseBuildUploadFileReservation';
 import { publishIosToAppStoreConnect } from './publishIosToAppStoreConnect';
@@ -53,49 +57,7 @@ test('App Store publication uploads and attaches without review submission', asy
   const apiRequests: AppStoreConnectRequest[] = [];
   const uploadRequests: AppStoreUploadRequest[] = [];
   const file = Buffer.from('test');
-  const request = (input: AppStoreConnectRequest) => {
-    apiRequests.push(input);
-    const index = apiRequests.length;
-    if (index === 1)
-      return Promise.resolve({
-        status: 201,
-        body: JSON.stringify({ data: { type: 'buildUploads', id: 'upload-id' } }),
-      });
-    if (index === 2)
-      return Promise.resolve({ status: 201, body: JSON.stringify(reservation(file.length)) });
-    if (index === 3) return Promise.resolve({ status: 200, body: '{}' });
-    if (index === 4)
-      return Promise.resolve({
-        status: 200,
-        body: JSON.stringify({
-          data: {
-            type: 'buildUploads',
-            id: 'upload-id',
-            attributes: { state: { state: 'COMPLETE' } },
-          },
-          included: [
-            {
-              type: 'builds',
-              id: 'build-id',
-              attributes: { version: '42', processingState: 'VALID' },
-            },
-          ],
-        }),
-      });
-    if (index === 5) return Promise.resolve({ status: 200, body: JSON.stringify({ data: [] }) });
-    if (index === 6)
-      return Promise.resolve({
-        status: 201,
-        body: JSON.stringify({
-          data: {
-            type: 'appStoreVersions',
-            id: 'version-id',
-            attributes: { platform: 'IOS', versionString: '1.2.3' },
-          },
-        }),
-      });
-    return Promise.resolve({ status: 204, body: '' });
-  };
+  const request = createPublishingRequest(apiRequests, file.length);
   const result = await publishIosToAppStoreConnect({
     appId: 'app-id',
     version: '1.2.3',
@@ -140,3 +102,58 @@ test('App Store verification reads back the attached processed build', async () 
   });
   expect(result).toEqual({ status: 'completed', verification: { ok: true } });
 });
+
+function createPublishingRequest(
+  requests: AppStoreConnectRequest[],
+  fileSize: number,
+): AppStoreConnectTransport {
+  return (input) => {
+    requests.push(input);
+    return Promise.resolve(publishingResponse(requests.length, fileSize));
+  };
+}
+
+function publishingResponse(index: number, fileSize: number): AppStoreConnectResponse {
+  if (index === 1) return jsonResponse(201, resource('buildUploads', 'upload-id'));
+  if (index === 2) return jsonResponse(201, reservation(fileSize));
+  if (index === 3) return { status: 200, body: '{}' };
+  if (index === 4) return jsonResponse(200, completedUpload());
+  if (index === 5) return jsonResponse(200, { data: [] });
+  if (index === 6) return jsonResponse(201, createdVersion());
+  return { status: 204, body: '' };
+}
+
+function completedUpload() {
+  return {
+    data: {
+      type: 'buildUploads',
+      id: 'upload-id',
+      attributes: { state: { state: 'COMPLETE' } },
+    },
+    included: [
+      {
+        type: 'builds',
+        id: 'build-id',
+        attributes: { version: '42', processingState: 'VALID' },
+      },
+    ],
+  };
+}
+
+function createdVersion() {
+  return {
+    data: {
+      type: 'appStoreVersions',
+      id: 'version-id',
+      attributes: { platform: 'IOS', versionString: '1.2.3' },
+    },
+  };
+}
+
+function resource(type: string, id: string) {
+  return { data: { type, id } };
+}
+
+function jsonResponse(status: number, value: unknown): AppStoreConnectResponse {
+  return { status, body: JSON.stringify(value) };
+}

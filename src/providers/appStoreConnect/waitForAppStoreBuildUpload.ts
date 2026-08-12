@@ -65,12 +65,17 @@ function parseState(value: unknown): string | null {
 
 function findBuild(value: unknown, expectedBuildNumber: string): ProcessedAppStoreBuild | null {
   if (!Array.isArray(value)) return null;
-  const item = value.find((entry) => {
-    if (!isRecord(entry) || entry.type !== 'builds' || !isRecord(entry.attributes)) return false;
-    return entry.attributes.version === expectedBuildNumber;
-  });
-  if (!isRecord(item) || !isNonEmptyString(item.id)) return null;
-  return { buildId: item.id, buildNumber: expectedBuildNumber };
+  for (const candidate of value as unknown[]) {
+    const build = parseBuild(candidate, expectedBuildNumber);
+    if (build !== null) return build;
+  }
+  return null;
+}
+
+function parseBuild(value: unknown, expectedBuildNumber: string): ProcessedAppStoreBuild | null {
+  if (!isRecord(value) || value.type !== 'builds' || !isRecord(value.attributes)) return null;
+  if (value.attributes.version !== expectedBuildNumber || !isNonEmptyString(value.id)) return null;
+  return { buildId: value.id, buildNumber: expectedBuildNumber };
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
