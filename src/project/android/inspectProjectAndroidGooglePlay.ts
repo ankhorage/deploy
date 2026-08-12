@@ -1,3 +1,4 @@
+import type { AndroidDeploymentTrack } from '../../domain/AndroidDeploymentIntent';
 import type { DeploymentProviderSetupInspectionResult } from '../../domain/DeploymentProviderSetupInspectionResult';
 import type { DeploymentRequiredAction } from '../../domain/DeploymentRequiredAction';
 import { inspectDeploymentProviderSetup } from '../../engine/inspectDeploymentProviderSetup';
@@ -6,7 +7,7 @@ import type { GooglePlayTrackState } from '../../providers/googlePlay/GooglePlay
 import { inspectGooglePlayTrack } from '../../providers/googlePlay/inspectGooglePlayTrack';
 import type { ProjectAndroidDeploymentRuntime } from './ProjectAndroidDeploymentRuntime';
 import type { ResolvedProjectAndroidDeploymentAccess } from './resolveProjectAndroidDeploymentAccess';
-import type { AndroidDeploymentTrack } from '../../domain/AndroidDeploymentIntent';
+import { scopeProjectAndroidDeploymentAccess } from './scopeProjectAndroidDeploymentAccess';
 
 export interface ProjectAndroidGooglePlayInspection {
   readonly setup: DeploymentProviderSetupInspectionResult;
@@ -19,15 +20,16 @@ export async function inspectProjectAndroidGooglePlay(options: {
   readonly access: ResolvedProjectAndroidDeploymentAccess;
   readonly runtime: ProjectAndroidDeploymentRuntime;
 }): Promise<ProjectAndroidGooglePlayInspection> {
+  const access = scopeProjectAndroidDeploymentAccess(options.access, 'google-play');
   const setup = await inspectDeploymentProviderSetup({
     adapter: createGooglePlaySetupAdapter({ createToken: options.runtime.createGooglePlayToken }),
-    context: { target: 'android', ...options.access },
+    context: { target: 'android', ...access },
   });
   if (!isReady(setup)) return { setup, trackState: null };
   const inspected = await inspectGooglePlayTrack({
     packageName: options.packageName,
     track: options.track,
-    ...options.access,
+    ...access,
     createToken: options.runtime.createGooglePlayToken,
     request: options.runtime.requestGooglePlay,
   });
