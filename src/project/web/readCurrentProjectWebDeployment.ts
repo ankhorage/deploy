@@ -1,14 +1,17 @@
-import type { DeploymentCurrentState, DeploymentObservedWebTarget } from '../../domain/DeploymentCurrentState';
-import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
+import type {
+  DeploymentCurrentState,
+  DeploymentObservedWebTarget,
+} from '../../domain/DeploymentCurrentState';
 import { listProjectDeploymentHistory } from '../history/listProjectDeploymentHistory';
+import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
 
 export async function readCurrentProjectWebDeployment(
   projectRoot: string,
 ): Promise<DeploymentCurrentState> {
   const history = await listProjectDeploymentHistory({ projectRoot });
-  const record = [...history]
+  const [record] = [...history]
     .filter(isSuccessfulWebRecord)
-    .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt))[0];
+    .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt));
   const web = record === undefined ? null : observedWebTarget(record);
   return { targets: web === null ? {} : { web } };
 }
