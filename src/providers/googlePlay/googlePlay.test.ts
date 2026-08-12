@@ -116,9 +116,9 @@ test('Google Play publish performs edit bundle track commit and cleans archive',
   expect(result.status).toBe('completed');
   expect(requests.map((request) => request.method)).toEqual(['POST', 'POST', 'PUT', 'POST']);
   const trackBody = requests[2]?.body;
-  expect(typeof trackBody).toBe('string');
-  expect(String(trackBody)).not.toContain('userFraction');
-  expect(String(trackBody)).toContain('"status":"draft"');
+  if (typeof trackBody !== 'string') throw new Error('Expected serialized track payload.');
+  expect(trackBody).not.toContain('userFraction');
+  expect(trackBody).toContain('"status":"draft"');
   expect(await exists(directory)).toBe(false);
 });
 
