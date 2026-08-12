@@ -1,6 +1,6 @@
 import { GoogleAuth } from 'google-auth-library';
 
-export const GOOGLE_PLAY_SCOPE = 'https://www.googleapis.com/auth/androidpublisher';
+const GOOGLE_PLAY_SCOPE = 'https://www.googleapis.com/auth/androidpublisher';
 
 export interface GooglePlayServiceAccountCredentials {
   readonly clientEmail: string;
