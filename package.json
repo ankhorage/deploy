@@ -65,6 +65,9 @@
     "version-packages": "changeset version",
     "prepack": "bun run build"
   },
+  "dependencies": {
+    "@ankhorage/contracts": "^7.5.0"
+  },
   "devDependencies": {
     "@ankhorage/devtools": "^1.4.1",
     "@ankhorage/paradox": "^0.1.21",

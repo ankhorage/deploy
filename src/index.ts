@@ -1,6 +1,15 @@
-/**
- * Headless deployment engine for Ankhorage-compatible projects.
- *
- * The public deployment API will be introduced through the deployment roadmap.
- */
-export {};
+export * from './domain/DeploymentCapability';
+export * from './domain/DeploymentCurrentState';
+export * from './domain/DeploymentExecutionResult';
+export * from './domain/DeploymentFailure';
+export * from './domain/DeploymentPlan';
+export * from './domain/DeploymentPlanDiagnostic';
+export * from './domain/DeploymentPlanStep';
+export * from './domain/DeploymentRequiredAction';
+export * from './domain/DeploymentStepOutcome';
+export * from './domain/DeploymentTargetChange';
+export * from './domain/DeploymentTargetPlanContributor';
+export * from './domain/DeploymentVerificationResult';
+export * from './engine/createDeploymentChanges';
+export * from './engine/createDeploymentPlan';
+export * from './engine/executeDeploymentPlan';
