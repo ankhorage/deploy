@@ -1,4 +1,8 @@
-import { APP_DEPLOY_TARGET_IDS, type AppDeployManifest } from '@ankhorage/contracts/deploy';
+import {
+  APP_DEPLOY_TARGET_IDS,
+  type AppDeployManifest,
+  type AppDeployTargetId,
+} from '@ankhorage/contracts/deploy';
 
 import type { DeploymentCurrentState } from '../domain/DeploymentCurrentState';
 import type { DeploymentDesiredRevisions } from '../domain/DeploymentDesiredRevisions';
@@ -15,10 +19,28 @@ export function createDeploymentChanges(
   input: CreateDeploymentChangesInput,
 ): readonly DeploymentTargetChange[] {
   return APP_DEPLOY_TARGET_IDS.map((target) => {
-    const desired = getDesiredTarget(input.desired, target, input.desiredRevisions?.[target]);
+    const desired = getDesiredTarget(
+      input.desired,
+      target,
+      getDesiredRevision(input.desiredRevisions, target),
+    );
     const current = getCurrentTarget(input.current, target);
     return createTargetChange(target, desired, current);
   });
+}
+
+function getDesiredRevision(
+  revisions: DeploymentDesiredRevisions | undefined,
+  target: AppDeployTargetId,
+): string | undefined {
+  switch (target) {
+    case 'web':
+      return revisions?.web;
+    case 'android':
+      return revisions?.android;
+    case 'ios':
+      return revisions?.ios;
+  }
 }
 
 function createTargetChange(
