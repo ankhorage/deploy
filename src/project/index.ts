@@ -18,6 +18,21 @@ export { listProjectDeploymentHistory } from './history/listProjectDeploymentHis
 export type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
 export { readProjectDeploymentHistory } from './history/readProjectDeploymentHistory';
 export { recordProjectDeploymentHistory } from './history/recordProjectDeploymentHistory';
+export { createProjectIosDeploymentPlan } from './ios/createProjectIosDeploymentPlan';
+export {
+  executeProjectIosDeployment,
+  type ExecuteProjectIosDeploymentOptions,
+} from './ios/executeProjectIosDeployment';
+export {
+  inspectProjectIosDeployment,
+  type InspectProjectIosDeploymentOptions,
+} from './ios/inspectProjectIosDeployment';
+export type { ProjectIosDeploymentAccess } from './ios/ProjectIosDeploymentAccess';
+export type { ProjectIosDeploymentExecution } from './ios/ProjectIosDeploymentExecution';
+export type {
+  ProjectIosDeploymentInspection,
+  ProjectIosDeploymentInspectionResult,
+} from './ios/ProjectIosDeploymentInspection';
 export type { ProjectDeploymentPaths } from './ProjectDeploymentPaths';
 export { readProjectDeploymentConfig } from './readProjectDeploymentConfig';
 export type { ResolvedDeployProject } from './ResolvedDeployProject';
