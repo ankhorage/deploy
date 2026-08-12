@@ -47,20 +47,22 @@ function releaseBody(versionCode = 42): string {
 }
 
 test('Google Play auth strips untrusted service-account fields', async () => {
-  let received: GooglePlayServiceAccountCredentials | null = null;
+  const received: GooglePlayServiceAccountCredentials[] = [];
   const result = await resolveGooglePlayAccessToken({
     credentials: [CREDENTIAL],
     resolveSecret: RESOLVE_SECRET,
     createToken: (credentials) => {
-      received = credentials;
+      received.push(credentials);
       return Promise.resolve('ACCESS_TOKEN_SENTINEL');
     },
   });
   expect(result.ok).toBe(true);
-  expect(received).toEqual({
-    clientEmail: 'robot@example.test',
-    privateKey: 'PRIVATE_KEY_SENTINEL',
-  });
+  expect(received).toEqual([
+    {
+      clientEmail: 'robot@example.test',
+      privateKey: 'PRIVATE_KEY_SENTINEL',
+    },
+  ]);
   expect(JSON.stringify(received)).not.toContain('malicious.example.test');
 });
 
