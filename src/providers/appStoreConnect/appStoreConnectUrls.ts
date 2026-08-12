@@ -23,3 +23,28 @@ export function appStoreConnectVersionsUrl(appId: string): string {
 export function appStoreConnectVersionBuildUrl(versionId: string): string {
   return `${BASE}/appStoreVersions/${encodeURIComponent(versionId)}/build?fields[builds]=version,processingState`;
 }
+
+export function appStoreConnectVersionBuildRelationshipUrl(versionId: string): string {
+  return `${BASE}/appStoreVersions/${encodeURIComponent(versionId)}/relationships/build`;
+}
+
+export function appStoreConnectBuildUploadsUrl(): string {
+  return `${BASE}/buildUploads`;
+}
+
+export function appStoreConnectBuildUploadUrl(buildUploadId: string): string {
+  const id = encodeURIComponent(buildUploadId);
+  return `${BASE}/buildUploads/${id}?include=build&fields[builds]=version,processingState`;
+}
+
+export function appStoreConnectBuildUploadFilesUrl(): string {
+  return `${BASE}/buildUploadFiles`;
+}
+
+export function appStoreConnectBuildUploadFileUrl(fileId: string): string {
+  return `${BASE}/buildUploadFiles/${encodeURIComponent(fileId)}`;
+}
+
+export function appStoreConnectAppStoreVersionsUrl(): string {
+  return `${BASE}/appStoreVersions`;
+}
