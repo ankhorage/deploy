@@ -7,7 +7,7 @@ export interface AppStoreUploadRequest {
   readonly method: string;
   readonly url: string;
   readonly headers: readonly AppStoreUploadHeader[];
-  readonly body: Blob;
+  readonly body: Buffer;
 }
 
 export interface AppStoreUploadResponse {

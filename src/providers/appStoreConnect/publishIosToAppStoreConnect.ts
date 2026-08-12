@@ -18,7 +18,7 @@ export async function publishIosToAppStoreConnect(options: {
   readonly appId: string;
   readonly version: string;
   readonly buildNumber: string;
-  readonly file: Blob;
+  readonly file: Buffer;
   readonly credentials: readonly DeploymentCredentialReference[];
   readonly resolveSecret: DeploymentSecretResolver;
   readonly createToken: AppStoreConnectTokenFactory;
@@ -39,7 +39,7 @@ export async function publishIosToAppStoreConnect(options: {
   if (buildUploadId === null) return providerFailure(tracked.blockingStatus(), 'APP_STORE_BUILD_UPLOAD_CREATE_FAILED');
   const reservation = await reserveAppStoreBuildUploadFile({
     buildUploadId,
-    fileSize: options.file.size,
+    fileSize: options.file.length,
     token: access.token,
     request: tracked.request,
   });

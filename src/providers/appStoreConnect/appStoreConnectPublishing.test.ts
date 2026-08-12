@@ -49,12 +49,12 @@ test('build upload reservation rejects gaps and out of bounds chunks', () => {
 test('App Store publication uploads and attaches without review submission', async () => {
   const apiRequests: AppStoreConnectRequest[] = [];
   const uploadRequests: AppStoreUploadRequest[] = [];
-  const file = new Blob(['test']);
+  const file = Buffer.from('test');
   const request = (input: AppStoreConnectRequest) => {
     apiRequests.push(input);
     const index = apiRequests.length;
     if (index === 1) return Promise.resolve({ status: 201, body: JSON.stringify({ data: { type: 'buildUploads', id: 'upload-id' } }) });
-    if (index === 2) return Promise.resolve({ status: 201, body: JSON.stringify(reservation(file.size)) });
+    if (index === 2) return Promise.resolve({ status: 201, body: JSON.stringify(reservation(file.length)) });
     if (index === 3) return Promise.resolve({ status: 200, body: '{}' });
     if (index === 4) return Promise.resolve({
       status: 200,

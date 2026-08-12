@@ -1,3 +1,5 @@
+import { promises as fs } from 'node:fs';
+
 import { createAppStoreConnectToken } from '../../providers/appStoreConnect/AppStoreConnectTokenFactory';
 import type { AppStoreConnectTokenFactory } from '../../providers/appStoreConnect/AppStoreConnectTokenFactory';
 import { fetchAppStoreConnect } from '../../providers/appStoreConnect/AppStoreConnectTransport';
@@ -18,7 +20,7 @@ export interface ProjectIosDeploymentRuntime {
   readonly requestAppStoreConnect: AppStoreConnectTransport;
   readonly uploadAppStore: AppStoreUploadTransport;
   readonly downloadArchive: IosArchiveDownloader;
-  readonly readArchive: (filePath: string) => Blob;
+  readonly readArchive: (filePath: string) => Promise<Buffer>;
   readonly cleanupArchive: (directory: string) => Promise<void>;
   readonly waitForAppStoreProcessing: () => Promise<void>;
   readonly maxAppStoreProcessingAttempts: number;
@@ -31,7 +33,7 @@ export const projectIosDeploymentRuntime: ProjectIosDeploymentRuntime = {
   requestAppStoreConnect: fetchAppStoreConnect,
   uploadAppStore: fetchAppStoreUpload,
   downloadArchive: downloadIosArchive,
-  readArchive: (filePath) => Bun.file(filePath),
+  readArchive: (filePath) => fs.readFile(filePath),
   cleanupArchive: cleanupIosArchive,
   waitForAppStoreProcessing: () => delay(5_000),
   maxAppStoreProcessingAttempts: 120,

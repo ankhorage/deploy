@@ -42,7 +42,7 @@ function createRuntime(state: IosTestState): ProjectIosDeploymentRuntime {
       await fs.writeFile(filePath, 'ipa');
       return { directory, filePath };
     },
-    readArchive: (filePath) => Bun.file(filePath),
+    readArchive: (filePath) => fs.readFile(filePath),
     cleanupArchive: (directory) => fs.rm(directory, { recursive: true, force: true }),
     waitForAppStoreProcessing: () => Promise.resolve(),
     maxAppStoreProcessingAttempts: 2,
@@ -53,11 +53,7 @@ function createRuntime(state: IosTestState): ProjectIosDeploymentRuntime {
 function createProcessRunner(state: IosTestState): DeploymentProcessRunner {
   return (request) => {
     if (request.command === 'node') {
-      return Promise.resolve({
-        exitCode: 0,
-        stdout: JSON.stringify({ hash: state.fingerprint }),
-        stderr: '',
-      });
+      return Promise.resolve({ exitCode: 0, stdout: JSON.stringify({ hash: state.fingerprint }), stderr: '' });
     }
     const command = request.args[0];
     if (command === 'config') return Promise.resolve(configResult());
@@ -72,10 +68,7 @@ function createProcessRunner(state: IosTestState): DeploymentProcessRunner {
 function configResult() {
   return {
     exitCode: 0,
-    stdout: JSON.stringify({
-      buildProfile: {},
-      appConfig: { ios: { bundleIdentifier: 'com.example.app' } },
-    }),
+    stdout: JSON.stringify({ buildProfile: {}, appConfig: { ios: { bundleIdentifier: 'com.example.app' } } }),
     stderr: '',
   };
 }
@@ -83,18 +76,16 @@ function configResult() {
 function buildResult(fingerprint: string) {
   return {
     exitCode: 0,
-    stdout: JSON.stringify([
-      {
-        id: 'ios-build-1',
-        status: 'FINISHED',
-        platform: 'IOS',
-        buildProfile: 'production',
-        appVersion: '1.2.3',
-        appBuildVersion: '42',
-        fingerprint: { hash: fingerprint },
-        artifacts: { applicationArchiveUrl: 'https://example.test/app.ipa' },
-      },
-    ]),
+    stdout: JSON.stringify([{
+      id: 'ios-build-1',
+      status: 'FINISHED',
+      platform: 'IOS',
+      buildProfile: 'production',
+      appVersion: '1.2.3',
+      appBuildVersion: '42',
+      fingerprint: { hash: fingerprint },
+      artifacts: { applicationArchiveUrl: 'https://example.test/app.ipa' },
+    }]),
     stderr: '',
   };
 }
@@ -129,9 +120,7 @@ function createAppStoreConnectTransport(state: IosTestState): AppStoreConnectTra
 }
 
 function appState(): string {
-  return JSON.stringify({
-    data: [{ type: 'apps', id: 'app-id', attributes: { bundleId: 'com.example.app' } }],
-  });
+  return JSON.stringify({ data: [{ type: 'apps', id: 'app-id', attributes: { bundleId: 'com.example.app' } }] });
 }
 
 function versionState(deployed: boolean): string {
@@ -165,11 +154,7 @@ function completedBuildUpload(): string {
 
 function attachedBuild(): string {
   return JSON.stringify({
-    data: {
-      type: 'builds',
-      id: 'apple-build-id',
-      attributes: { version: '42', processingState: 'VALID' },
-    },
+    data: { type: 'builds', id: 'apple-build-id', attributes: { version: '42', processingState: 'VALID' } },
   });
 }
 
@@ -208,28 +193,14 @@ function createdVersion(): string {
 
 test('project iOS lifecycle builds publishes verifies records history then becomes no-change', async () => {
   const projectRoot = await createIosProject();
-  const state = {
-    fingerprint: 'a'.repeat(40),
-    buildCalls: 0,
-    appStoreMutations: 0,
-    uploadCalls: 0,
-    deployed: false,
-  };
+  const state = { fingerprint: 'a'.repeat(40), buildCalls: 0, appStoreMutations: 0, uploadCalls: 0, deployed: false };
   const runtime = createRuntime(state);
   try {
-    const inspected = await inspectProjectIosDeploymentWithRuntime(
-      { projectRoot, intent: INTENT, ...ACCESS },
-      runtime,
-    );
+    const inspected = await inspectProjectIosDeploymentWithRuntime({ projectRoot, intent: INTENT, ...ACCESS }, runtime);
     expect(inspected.ok).toBe(true);
     if (!inspected.ok) return;
     const plan = createProjectIosDeploymentPlan(inspected.inspection);
-    expect(plan.steps.map((step) => step.id)).toEqual([
-      'ios:prepare',
-      'ios:build',
-      'ios:publish',
-      'ios:verify',
-    ]);
+    expect(plan.steps.map((step) => step.id)).toEqual(['ios:prepare', 'ios:build', 'ios:publish', 'ios:verify']);
     const deployed = await executeProjectIosDeploymentWithRuntime(
       { inspection: inspected.inspection, plan, ...ACCESS },
       runtime,
@@ -240,11 +211,7 @@ test('project iOS lifecycle builds publishes verifies records history then becom
     expect(state.buildCalls).toBe(1);
     expect(state.appStoreMutations).toBe(5);
     expect(state.uploadCalls).toBe(1);
-
-    const second = await inspectProjectIosDeploymentWithRuntime(
-      { projectRoot, intent: INTENT, ...ACCESS },
-      runtime,
-    );
+    const second = await inspectProjectIosDeploymentWithRuntime({ projectRoot, intent: INTENT, ...ACCESS }, runtime);
     expect(second.ok).toBe(true);
     if (!second.ok) return;
     const secondPlan = createProjectIosDeploymentPlan(second.inspection);
@@ -263,19 +230,10 @@ test('project iOS lifecycle builds publishes verifies records history then becom
 
 test('project iOS execution rejects source drift before build or App Store mutation', async () => {
   const projectRoot = await createIosProject();
-  const state = {
-    fingerprint: 'b'.repeat(40),
-    buildCalls: 0,
-    appStoreMutations: 0,
-    uploadCalls: 0,
-    deployed: false,
-  };
+  const state = { fingerprint: 'b'.repeat(40), buildCalls: 0, appStoreMutations: 0, uploadCalls: 0, deployed: false };
   const runtime = createRuntime(state);
   try {
-    const inspected = await inspectProjectIosDeploymentWithRuntime(
-      { projectRoot, intent: INTENT, ...ACCESS },
-      runtime,
-    );
+    const inspected = await inspectProjectIosDeploymentWithRuntime({ projectRoot, intent: INTENT, ...ACCESS }, runtime);
     if (!inspected.ok) throw new Error('inspection failed');
     const plan = createProjectIosDeploymentPlan(inspected.inspection);
     state.fingerprint = 'c'.repeat(40);
@@ -296,8 +254,6 @@ test('project iOS execution rejects source drift before build or App Store mutat
 
 function createIosProject(): Promise<string> {
   return createTempProject(
-    createTestManifest({
-      targets: { ios: { enabled: true, bundleIdentifier: 'com.example.app' } },
-    }),
+    createTestManifest({ targets: { ios: { enabled: true, bundleIdentifier: 'com.example.app' } } }),
   );
 }

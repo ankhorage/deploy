@@ -1,11 +1,11 @@
 import type { DeploymentPlanStep } from '../../domain/DeploymentPlanStep';
 import type { DeploymentStepOutcome } from '../../domain/DeploymentStepOutcome';
-import { buildIosWithEas } from '../../providers/eas/ios/buildIosWithEas';
-import { generateLocalIosFingerprint } from '../../providers/eas/ios/generateLocalIosFingerprint';
-import { inspectEasIosConfig } from '../../providers/eas/ios/inspectEasIosConfig';
 import { inspectAppStoreConnectIos } from '../../providers/appStoreConnect/inspectAppStoreConnectIos';
 import { publishIosToAppStoreConnect } from '../../providers/appStoreConnect/publishIosToAppStoreConnect';
 import { verifyAppStoreConnectPublication } from '../../providers/appStoreConnect/verifyAppStoreConnectPublication';
+import { buildIosWithEas } from '../../providers/eas/ios/buildIosWithEas';
+import { generateLocalIosFingerprint } from '../../providers/eas/ios/generateLocalIosFingerprint';
+import { inspectEasIosConfig } from '../../providers/eas/ios/inspectEasIosConfig';
 import { createIosDeploymentRevision } from '../../targets/ios/createIosDeploymentRevision';
 import type { ProjectIosDeploymentInspection } from './ProjectIosDeploymentInspection';
 import type { ProjectIosDeploymentRuntime } from './ProjectIosDeploymentRuntime';
@@ -111,7 +111,7 @@ async function publishStep(
       appId: app.state.appId,
       version: build.version,
       buildNumber: build.buildNumber,
-      file: options.runtime.readArchive(archive.filePath),
+      file: await options.runtime.readArchive(archive.filePath),
       ...access,
       createToken: options.runtime.createAppStoreConnectToken,
       request: options.runtime.requestAppStoreConnect,
