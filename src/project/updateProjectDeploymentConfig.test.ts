@@ -3,6 +3,7 @@ import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
+import { expectRejects } from './expectRejects.test';
 import { createTempProject } from './manifestTestSupport.test';
 import { resolveDeployProject } from './resolveDeployProject';
 import { updateProjectDeploymentConfig } from './updateProjectDeploymentConfig';
@@ -47,9 +48,10 @@ test('invalid updater output is rejected before the manifest is written', async 
   try {
     const original = await fs.readFile(manifestPath, 'utf8');
     const invalid = { targets: { web: { enabled: 'yes' } } } as unknown as AppDeployManifest;
-    await expect(
+    await expectRejects(
       updateProjectDeploymentConfig({ projectRoot, update: () => invalid }),
-    ).rejects.toThrow('invalid canonical AppDeployManifest');
+      'invalid canonical AppDeployManifest',
+    );
     expect(await fs.readFile(manifestPath, 'utf8')).toBe(original);
   } finally {
     await fs.rm(projectRoot, { recursive: true, force: true });

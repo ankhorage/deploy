@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
+import { expectRejects } from './expectRejects.test';
 import { assertSafeSegment } from './io/assertSafeSegment';
 import { atomicWriteJson } from './io/atomicWriteJson';
 import { resolveProjectDeploymentPaths } from './resolveProjectDeploymentPaths';
@@ -35,13 +36,14 @@ test('safe writer rejects an existing symlink that escapes the project root', as
   const outsideRoot = await fs.mkdtemp(path.join(tmpdir(), 'ankh-deploy-outside-'));
   try {
     await fs.symlink(outsideRoot, path.join(projectRoot, 'deploy'));
-    await expect(
+    await expectRejects(
       atomicWriteJson({
         projectRoot,
         filePath: path.join(projectRoot, 'deploy', 'release.json'),
         value: { safe: true },
       }),
-    ).rejects.toThrow('resolves outside project root');
+      'resolves outside project root',
+    );
   } finally {
     await fs.rm(projectRoot, { recursive: true, force: true });
     await fs.rm(outsideRoot, { recursive: true, force: true });

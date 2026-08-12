@@ -2,9 +2,10 @@ import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
-import { createHistoryRecord } from './historyTestSupport.test';
+import { expectRejects } from './expectRejects.test';
 import { readProjectDeploymentHistory } from './history/readProjectDeploymentHistory';
 import { recordProjectDeploymentHistory } from './history/recordProjectDeploymentHistory';
+import { createHistoryRecord } from './historyTestSupport.test';
 import { createTempProject } from './manifestTestSupport.test';
 import { resolveProjectDeploymentPaths } from './resolveProjectDeploymentPaths';
 
@@ -35,9 +36,10 @@ test('rejects unsupported history schema versions', async () => {
       path.join(recordRoot, 'deployment.json'),
       `${JSON.stringify({ ...createHistoryRecord('unsupported'), schemaVersion: 2 })}\n`,
     );
-    await expect(
+    await expectRejects(
       readProjectDeploymentHistory({ projectRoot, deploymentId: 'unsupported' }),
-    ).rejects.toThrow('Unsupported deployment history schema version');
+      'Unsupported deployment history schema version',
+    );
   } finally {
     await fs.rm(projectRoot, { recursive: true, force: true });
   }
@@ -46,9 +48,10 @@ test('rejects unsupported history schema versions', async () => {
 test('rejects unsafe history ids before filesystem access', async () => {
   const projectRoot = await createTempProject();
   try {
-    await expect(
+    await expectRejects(
       readProjectDeploymentHistory({ projectRoot, deploymentId: '../outside' }),
-    ).rejects.toThrow('one safe path segment');
+      'one safe path segment',
+    );
   } finally {
     await fs.rm(projectRoot, { recursive: true, force: true });
   }

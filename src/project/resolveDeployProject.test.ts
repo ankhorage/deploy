@@ -3,6 +3,7 @@ import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 
+import { expectRejects } from './expectRejects.test';
 import { createTempProject } from './manifestTestSupport.test';
 import { resolveDeployProject } from './resolveDeployProject';
 
@@ -23,7 +24,8 @@ test('resolves an explicit canonical project root without synthesizing deploy co
 test('rejects a missing canonical project manifest', async () => {
   const projectRoot = await fs.mkdtemp(path.join(tmpdir(), 'ankh-deploy-missing-'));
   try {
-    await expect(resolveDeployProject({ projectRoot })).rejects.toThrow(
+    await expectRejects(
+      resolveDeployProject({ projectRoot }),
       'Deploy project manifest does not exist',
     );
   } finally {
@@ -35,7 +37,7 @@ test('rejects malformed project manifest JSON distinctly', async () => {
   const projectRoot = await createTempProject();
   try {
     await fs.writeFile(path.join(projectRoot, 'ankh.config.json'), '{broken');
-    await expect(resolveDeployProject({ projectRoot })).rejects.toThrow('is not valid JSON');
+    await expectRejects(resolveDeployProject({ projectRoot }), 'is not valid JSON');
   } finally {
     await fs.rm(projectRoot, { recursive: true, force: true });
   }
@@ -45,9 +47,7 @@ test('rejects structurally invalid project manifests through Contracts', async (
   const projectRoot = await createTempProject();
   try {
     await fs.writeFile(path.join(projectRoot, 'ankh.config.json'), '{}\n');
-    await expect(resolveDeployProject({ projectRoot })).rejects.toThrow(
-      'invalid canonical shape',
-    );
+    await expectRejects(resolveDeployProject({ projectRoot }), 'invalid canonical shape');
   } finally {
     await fs.rm(projectRoot, { recursive: true, force: true });
   }

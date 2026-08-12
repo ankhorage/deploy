@@ -2,9 +2,10 @@ import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
-import { createHistoryRecord } from './historyTestSupport.test';
+import { expectRejects } from './expectRejects.test';
 import { listProjectDeploymentHistory } from './history/listProjectDeploymentHistory';
 import { recordProjectDeploymentHistory } from './history/recordProjectDeploymentHistory';
+import { createHistoryRecord } from './historyTestSupport.test';
 import { createTempProject } from './manifestTestSupport.test';
 import { resolveProjectDeploymentPaths } from './resolveProjectDeploymentPaths';
 
@@ -28,7 +29,8 @@ test('duplicate history writes do not change the original record', async () => {
     await recordProjectDeploymentHistory({ projectRoot, record });
     const recordPath = path.join(paths.historyRoot, 'same-id', 'deployment.json');
     const before = await fs.readFile(recordPath, 'utf8');
-    await expect(recordProjectDeploymentHistory({ projectRoot, record })).rejects.toThrow(
+    await expectRejects(
+      recordProjectDeploymentHistory({ projectRoot, record }),
       'already exists',
     );
     expect(await fs.readFile(recordPath, 'utf8')).toBe(before);
@@ -44,7 +46,8 @@ test('history writer rejects extra credential payload fields', async () => {
       ...createHistoryRecord('no-secrets'),
       credentials: { token: 'must-not-persist' },
     };
-    await expect(recordProjectDeploymentHistory({ projectRoot, record })).rejects.toThrow(
+    await expectRejects(
+      recordProjectDeploymentHistory({ projectRoot, record }),
       'invalid canonical shape',
     );
     expect(await listProjectDeploymentHistory({ projectRoot })).toEqual([]);
