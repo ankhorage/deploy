@@ -51,15 +51,21 @@ test('App Store Connect inspection resolves exact app version and attached build
       return Promise.resolve({
         status: 200,
         body: JSON.stringify({
-          data: [{
-            type: 'appStoreVersions', id: 'version-id',
-            attributes: { platform: 'IOS', versionString: '1.2.3' },
-            relationships: { build: { data: { type: 'builds', id: 'build-id' } } },
-          }],
-          included: [{
-            type: 'builds', id: 'build-id',
-            attributes: { version: '42', processingState: 'VALID' },
-          }],
+          data: [
+            {
+              type: 'appStoreVersions',
+              id: 'version-id',
+              attributes: { platform: 'IOS', versionString: '1.2.3' },
+              relationships: { build: { data: { type: 'builds', id: 'build-id' } } },
+            },
+          ],
+          included: [
+            {
+              type: 'builds',
+              id: 'build-id',
+              attributes: { version: '42', processingState: 'VALID' },
+            },
+          ],
         }),
       });
     },
@@ -73,18 +79,21 @@ test('App Store Connect inspection resolves exact app version and attached build
 
 test('App Store Connect absent app is a typed manual action', async () => {
   const result = await inspectAppStoreConnectIos({
-    bundleIdentifier: 'com.example.app', version: '1.2.3',
+    bundleIdentifier: 'com.example.app',
+    version: '1.2.3',
     request: () => Promise.resolve({ status: 200, body: JSON.stringify({ data: [] }) }),
     ...ACCESS,
   });
   expect(result.status).toBe('action-required');
-  if (result.status === 'action-required') expect(result.action.code).toBe('APP_STORE_APP_REQUIRED');
+  if (result.status === 'action-required')
+    expect(result.action.code).toBe('APP_STORE_APP_REQUIRED');
 });
 
 test('App Store Connect 401 and 403 are normalized without body leakage', async () => {
   for (const status of [401, 403]) {
     const result = await inspectAppStoreConnectIos({
-      bundleIdentifier: 'com.example.app', version: '1.2.3',
+      bundleIdentifier: 'com.example.app',
+      version: '1.2.3',
       request: () => Promise.resolve({ status, body: PRIVATE_KEY }),
       ...ACCESS,
     });

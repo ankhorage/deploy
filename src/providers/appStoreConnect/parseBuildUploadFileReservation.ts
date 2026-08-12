@@ -1,14 +1,11 @@
-import type {
-  BuildUploadFileReservation,
-  BuildUploadOperation,
-} from './BuildUploadOperation';
+import type { BuildUploadFileReservation, BuildUploadOperation } from './BuildUploadOperation';
 
 export function parseBuildUploadFileReservation(
   value: unknown,
   fileSize: number,
 ): BuildUploadFileReservation | null {
   if (!isRecord(value) || !isRecord(value.data)) return null;
-  const data = value.data;
+  const { data } = value;
   if (data.type !== 'buildUploadFiles' || !isNonEmptyString(data.id)) return null;
   if (!isRecord(data.attributes) || data.attributes.uti !== 'com.apple.ipa') return null;
   if (!Array.isArray(data.attributes.uploadOperations)) return null;

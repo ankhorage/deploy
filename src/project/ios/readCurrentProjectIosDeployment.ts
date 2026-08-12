@@ -37,7 +37,12 @@ function parseEvidence(record: ProjectDeploymentHistoryRecord): IosHistoryEviden
   if (buildNumber === undefined || buildNumber.length === 0 || revision === undefined) return null;
   const desired = record.plan.changes.find((change) => change.target === 'ios')?.desired;
   if (desired?.target !== 'ios') return null;
-  return { revision, buildNumber, bundleIdentifier: desired.bundleIdentifier, recordedAt: record.recordedAt };
+  return {
+    revision,
+    buildNumber,
+    bundleIdentifier: desired.bundleIdentifier,
+    recordedAt: record.recordedAt,
+  };
 }
 
 function matchesRequestedBundle(item: IosHistoryEvidence, bundleIdentifier: string | undefined) {

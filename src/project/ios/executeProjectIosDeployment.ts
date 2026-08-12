@@ -40,10 +40,17 @@ export async function executeProjectIosDeploymentWithRuntime(
   if (options.plan.steps[0]?.id === 'ios:remove') return executeRemove(options, runtime);
   const bundleIdentifier = desiredBundleIdentifier(options.inspection);
   if (bundleIdentifier === null) {
-    return fromPreflight(failedOutcome('IOS_BUNDLE_IDENTIFIER_MISSING', 'iOS bundle identifier is missing.'));
+    return fromPreflight(
+      failedOutcome('IOS_BUNDLE_IDENTIFIER_MISSING', 'iOS bundle identifier is missing.'),
+    );
   }
   const access = resolveProjectIosDeploymentAccess(options);
-  const blocker = await inspectExecutionSetup(options.inspection, bundleIdentifier, access, runtime);
+  const blocker = await inspectExecutionSetup(
+    options.inspection,
+    bundleIdentifier,
+    access,
+    runtime,
+  );
   if (blocker !== null) return fromPreflight(blocker);
   return executeMutablePlan(options, bundleIdentifier, access, runtime);
 }
@@ -116,7 +123,11 @@ async function finalizeExecution(
   state: ProjectIosExecutionState,
   runtime: ProjectIosDeploymentRuntime,
 ): Promise<ProjectIosDeploymentExecution> {
-  if (execution.status !== 'completed' || state.publication === null || state.verification?.ok !== true) {
+  if (
+    execution.status !== 'completed' ||
+    state.publication === null ||
+    state.verification?.ok !== true
+  ) {
     return result(execution, state, false);
   }
   const history = await recordProjectIosDeployment({

@@ -12,7 +12,10 @@ export function parseEasIosConfig(
     return failure('EAS_IOS_BUNDLE_IDENTIFIER_MISSING');
   }
   if (iosConfig.bundleIdentifier !== expectedBundleIdentifier) {
-    return failure('IOS_BUNDLE_IDENTIFIER_MISMATCH', 'EAS iOS bundle identifier does not match deployment config.');
+    return failure(
+      'IOS_BUNDLE_IDENTIFIER_MISMATCH',
+      'EAS iOS bundle identifier does not match deployment config.',
+    );
   }
   if (!isStoreProfile(value.buildProfile)) {
     return failure('EAS_IOS_PROFILE_NOT_STORE_READY', 'EAS iOS build profile is not store-ready.');

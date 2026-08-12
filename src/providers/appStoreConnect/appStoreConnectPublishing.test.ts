@@ -10,7 +10,8 @@ const TOKEN = 'JWT_SENTINEL';
 const CREDENTIAL = { provider: 'app-store-connect', id: 'delivery', kind: 'api-key' } as const;
 const ACCESS = {
   credentials: [CREDENTIAL],
-  resolveSecret: () => Promise.resolve(JSON.stringify({ keyId: 'key', issuerId: 'issuer', privateKey: 'pk' })),
+  resolveSecret: () =>
+    Promise.resolve(JSON.stringify({ keyId: 'key', issuerId: 'issuer', privateKey: 'pk' })),
   createToken: () => Promise.resolve(TOKEN),
   now: new Date('2026-08-12T20:00:00Z'),
 } as const;
@@ -22,13 +23,15 @@ function reservation(fileSize: number) {
       id: 'file-id',
       attributes: {
         uti: 'com.apple.ipa',
-        uploadOperations: [{
-          offset: 0,
-          length: fileSize,
-          method: 'PUT',
-          url: 'https://upload.example.test/part',
-          requestHeaders: [{ name: 'x-test', value: 'yes' }],
-        }],
+        uploadOperations: [
+          {
+            offset: 0,
+            length: fileSize,
+            method: 'PUT',
+            url: 'https://upload.example.test/part',
+            requestHeaders: [{ name: 'x-test', value: 'yes' }],
+          },
+        ],
       },
     },
   };
@@ -53,21 +56,44 @@ test('App Store publication uploads and attaches without review submission', asy
   const request = (input: AppStoreConnectRequest) => {
     apiRequests.push(input);
     const index = apiRequests.length;
-    if (index === 1) return Promise.resolve({ status: 201, body: JSON.stringify({ data: { type: 'buildUploads', id: 'upload-id' } }) });
-    if (index === 2) return Promise.resolve({ status: 201, body: JSON.stringify(reservation(file.length)) });
+    if (index === 1)
+      return Promise.resolve({
+        status: 201,
+        body: JSON.stringify({ data: { type: 'buildUploads', id: 'upload-id' } }),
+      });
+    if (index === 2)
+      return Promise.resolve({ status: 201, body: JSON.stringify(reservation(file.length)) });
     if (index === 3) return Promise.resolve({ status: 200, body: '{}' });
-    if (index === 4) return Promise.resolve({
-      status: 200,
-      body: JSON.stringify({
-        data: { type: 'buildUploads', id: 'upload-id', attributes: { state: { state: 'COMPLETE' } } },
-        included: [{ type: 'builds', id: 'build-id', attributes: { version: '42', processingState: 'VALID' } }],
-      }),
-    });
+    if (index === 4)
+      return Promise.resolve({
+        status: 200,
+        body: JSON.stringify({
+          data: {
+            type: 'buildUploads',
+            id: 'upload-id',
+            attributes: { state: { state: 'COMPLETE' } },
+          },
+          included: [
+            {
+              type: 'builds',
+              id: 'build-id',
+              attributes: { version: '42', processingState: 'VALID' },
+            },
+          ],
+        }),
+      });
     if (index === 5) return Promise.resolve({ status: 200, body: JSON.stringify({ data: [] }) });
-    if (index === 6) return Promise.resolve({
-      status: 201,
-      body: JSON.stringify({ data: { type: 'appStoreVersions', id: 'version-id', attributes: { platform: 'IOS', versionString: '1.2.3' } } }),
-    });
+    if (index === 6)
+      return Promise.resolve({
+        status: 201,
+        body: JSON.stringify({
+          data: {
+            type: 'appStoreVersions',
+            id: 'version-id',
+            attributes: { platform: 'IOS', versionString: '1.2.3' },
+          },
+        }),
+      });
     return Promise.resolve({ status: 204, body: '' });
   };
   const result = await publishIosToAppStoreConnect({
@@ -99,16 +125,17 @@ test('App Store verification reads back the attached processed build', async () 
       buildNumber: '42',
       version: '1.2.3',
     },
-    request: () => Promise.resolve({
-      status: 200,
-      body: JSON.stringify({
-        data: {
-          type: 'builds',
-          id: 'build-id',
-          attributes: { version: '42', processingState: 'VALID' },
-        },
+    request: () =>
+      Promise.resolve({
+        status: 200,
+        body: JSON.stringify({
+          data: {
+            type: 'builds',
+            id: 'build-id',
+            attributes: { version: '42', processingState: 'VALID' },
+          },
+        }),
       }),
-    }),
     ...ACCESS,
   });
   expect(result).toEqual({ status: 'completed', verification: { ok: true } });

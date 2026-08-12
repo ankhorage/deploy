@@ -41,7 +41,8 @@ async function prepareStep(
   options: Parameters<typeof executeProjectIosStep>[0],
 ): Promise<DeploymentStepOutcome> {
   const expected = options.inspection.desiredRevision;
-  if (expected === undefined) return failed('IOS_REVISION_MISSING', 'Planned iOS revision is missing.');
+  if (expected === undefined)
+    return failed('IOS_REVISION_MISSING', 'Planned iOS revision is missing.');
   const config = await inspectEasIosConfig({
     projectRoot: options.inspection.projectRoot,
     bundleIdentifier: options.bundleIdentifier,
@@ -49,7 +50,8 @@ async function prepareStep(
     ...options.access,
     runProcess: options.runtime.runProcess,
   });
-  if (config.status === 'action-required') return { status: 'action-required', action: config.action };
+  if (config.status === 'action-required')
+    return { status: 'action-required', action: config.action };
   if (config.status === 'failed') return { status: 'failed', error: config.failure };
   const fingerprint = await generateLocalIosFingerprint({
     projectRoot: options.inspection.projectRoot,
@@ -59,7 +61,10 @@ async function prepareStep(
   if (fingerprint.status === 'failed') return { status: 'failed', error: fingerprint.failure };
   const revision = createIosDeploymentRevision(fingerprint.fingerprint, options.inspection.intent);
   if (revision !== expected) {
-    return failed('IOS_SOURCE_CHANGED_AFTER_PLAN', 'iOS source changed after the deployment plan was created.');
+    return failed(
+      'IOS_SOURCE_CHANGED_AFTER_PLAN',
+      'iOS source changed after the deployment plan was created.',
+    );
   }
   options.state.fingerprint = fingerprint.fingerprint;
   return { status: 'completed' };
@@ -79,7 +84,8 @@ async function buildStep(
     ...options.access,
     runProcess: options.runtime.runProcess,
   });
-  if (result.status === 'action-required') return { status: 'action-required', action: result.action };
+  if (result.status === 'action-required')
+    return { status: 'action-required', action: result.action };
   if (result.status === 'failed') return { status: 'failed', error: result.failure };
   options.state.build = result.artifact;
   return { status: 'completed' };
@@ -105,7 +111,8 @@ async function publishStep(
   if (app.status === 'action-required') return { status: 'action-required', action: app.action };
   if (app.status === 'failed') return { status: 'failed', error: app.failure };
   const archive = await options.runtime.downloadArchive(build.archiveUrl);
-  if (archive === null) return failed('IOS_ARCHIVE_DOWNLOAD_FAILED', 'iOS archive could not be downloaded.');
+  if (archive === null)
+    return failed('IOS_ARCHIVE_DOWNLOAD_FAILED', 'iOS archive could not be downloaded.');
   try {
     const result = await publishIosToAppStoreConnect({
       appId: app.state.appId,
@@ -120,7 +127,8 @@ async function publishStep(
       maxAttempts: options.runtime.maxAppStoreProcessingAttempts,
       now: options.runtime.now(),
     });
-    if (result.status === 'action-required') return { status: 'action-required', action: result.action };
+    if (result.status === 'action-required')
+      return { status: 'action-required', action: result.action };
     if (result.status === 'failed') return { status: 'failed', error: result.failure };
     options.state.appStorePublication = result.publication;
     options.state.publication = {
@@ -152,7 +160,8 @@ async function verifyStep(
     request: options.runtime.requestAppStoreConnect,
     now: options.runtime.now(),
   });
-  if (result.status === 'action-required') return { status: 'action-required', action: result.action };
+  if (result.status === 'action-required')
+    return { status: 'action-required', action: result.action };
   options.state.verification = result.verification;
   return result.verification.ok
     ? { status: 'completed' }

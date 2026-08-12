@@ -37,7 +37,8 @@ export async function inspectProjectIosAppStoreConnect(options: {
     now: options.runtime.now(),
   });
   if (inspected.status === 'completed') return { setup, state: inspected.state };
-  if (inspected.status === 'failed') return { setup: { ok: false, failure: inspected.failure }, state: null };
+  if (inspected.status === 'failed')
+    return { setup: { ok: false, failure: inspected.failure }, state: null };
   return { setup: actionSetup(inspected.action), state: null };
 }
 

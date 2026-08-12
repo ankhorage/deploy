@@ -9,7 +9,9 @@ export async function verifyAppStoreVersionBuild(options: {
   readonly request: AppStoreConnectTransport;
 }): Promise<boolean> {
   const response = await options.request({
-    method: 'GET', url: appStoreConnectVersionBuildUrl(options.versionId), token: options.token,
+    method: 'GET',
+    url: appStoreConnectVersionBuildUrl(options.versionId),
+    token: options.token,
   });
   if (response.status < 200 || response.status >= 300) return false;
   try {

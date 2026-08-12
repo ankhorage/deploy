@@ -104,7 +104,7 @@ function isMatchingVersion(value: unknown, expectedVersion: string): boolean {
 
 function relationshipBuildId(value: Record<string, unknown>): string | null {
   if (!isRecord(value.relationships) || !isRecord(value.relationships.build)) return null;
-  const data = value.relationships.build.data;
+  const { data } = value.relationships.build;
   if (data === null || data === undefined) return null;
   if (!isRecord(data) || data.type !== 'builds' || !isNonEmptyString(data.id)) return null;
   return data.id;
@@ -133,7 +133,9 @@ function authenticationRequired(): InspectAppStoreConnectIosResult {
   return {
     status: 'action-required',
     action: {
-      type: 'authentication', provider: 'app-store-connect', target: 'ios',
+      type: 'authentication',
+      provider: 'app-store-connect',
+      target: 'ios',
       code: 'APP_STORE_CONNECT_AUTHENTICATION_REQUIRED',
       message: 'App Store Connect API-key authentication is required for iOS deployment.',
     },
@@ -144,7 +146,9 @@ function permissionRequired(): InspectAppStoreConnectIosResult {
   return {
     status: 'action-required',
     action: {
-      type: 'manual-action', target: 'ios', provider: 'app-store-connect',
+      type: 'manual-action',
+      target: 'ios',
+      provider: 'app-store-connect',
       code: 'APP_STORE_CONNECT_PERMISSION_REQUIRED',
       message: 'The App Store Connect team API key needs permission for iOS deployment.',
     },
@@ -155,7 +159,9 @@ function appRequired(): InspectAppStoreConnectIosResult {
   return {
     status: 'action-required',
     action: {
-      type: 'manual-action', target: 'ios', provider: 'app-store-connect',
+      type: 'manual-action',
+      target: 'ios',
+      provider: 'app-store-connect',
       code: 'APP_STORE_APP_REQUIRED',
       message: 'Create the matching app in App Store Connect before iOS deployment.',
     },
@@ -166,8 +172,10 @@ function failure(code: string): InspectAppStoreConnectIosResult {
   return {
     status: 'failed',
     failure: {
-      code, message: 'App Store Connect iOS state could not be inspected.',
-      target: 'ios', provider: 'app-store-connect',
+      code,
+      message: 'App Store Connect iOS state could not be inspected.',
+      target: 'ios',
+      provider: 'app-store-connect',
     },
   };
 }

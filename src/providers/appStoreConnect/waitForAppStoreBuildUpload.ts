@@ -35,7 +35,9 @@ async function readBuildUpload(options: {
   readonly request: AppStoreConnectTransport;
 }): Promise<BuildUploadRead> {
   const response = await options.request({
-    method: 'GET', url: appStoreConnectBuildUploadUrl(options.buildUploadId), token: options.token,
+    method: 'GET',
+    url: appStoreConnectBuildUploadUrl(options.buildUploadId),
+    token: options.token,
   });
   if (response.status < 200 || response.status >= 300) return { status: 'failed' };
   try {

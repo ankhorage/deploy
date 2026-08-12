@@ -36,14 +36,16 @@ export async function publishIosToAppStoreConnect(options: {
     token: access.token,
     request: tracked.request,
   });
-  if (buildUploadId === null) return providerFailure(tracked.blockingStatus(), 'APP_STORE_BUILD_UPLOAD_CREATE_FAILED');
+  if (buildUploadId === null)
+    return providerFailure(tracked.blockingStatus(), 'APP_STORE_BUILD_UPLOAD_CREATE_FAILED');
   const reservation = await reserveAppStoreBuildUploadFile({
     buildUploadId,
     fileSize: options.file.length,
     token: access.token,
     request: tracked.request,
   });
-  if (reservation === null) return providerFailure(tracked.blockingStatus(), 'APP_STORE_BUILD_UPLOAD_FILE_FAILED');
+  if (reservation === null)
+    return providerFailure(tracked.blockingStatus(), 'APP_STORE_BUILD_UPLOAD_FILE_FAILED');
   const uploaded = await executeBuildUploadOperations({
     file: options.file,
     operations: reservation.operations,
@@ -55,7 +57,8 @@ export async function publishIosToAppStoreConnect(options: {
     token: access.token,
     request: tracked.request,
   });
-  if (!committed) return providerFailure(tracked.blockingStatus(), 'APP_STORE_BUILD_UPLOAD_COMMIT_FAILED');
+  if (!committed)
+    return providerFailure(tracked.blockingStatus(), 'APP_STORE_BUILD_UPLOAD_COMMIT_FAILED');
   return finishPublication(options, access.token, buildUploadId, tracked);
 }
 
@@ -73,20 +76,23 @@ async function finishPublication(
     wait: options.wait,
     maxAttempts: options.maxAttempts,
   });
-  if (build === null) return providerFailure(tracked.blockingStatus(), 'APP_STORE_BUILD_PROCESSING_FAILED');
+  if (build === null)
+    return providerFailure(tracked.blockingStatus(), 'APP_STORE_BUILD_PROCESSING_FAILED');
   const versionId = await prepareAppStoreVersion({
     ...options,
     token,
     request: tracked.request,
   });
-  if (versionId === null) return providerFailure(tracked.blockingStatus(), 'APP_STORE_VERSION_PREPARATION_FAILED');
+  if (versionId === null)
+    return providerFailure(tracked.blockingStatus(), 'APP_STORE_VERSION_PREPARATION_FAILED');
   const attached = await attachAppStoreVersionBuild({
     versionId,
     buildId: build.buildId,
     token,
     request: tracked.request,
   });
-  if (!attached) return providerFailure(tracked.blockingStatus(), 'APP_STORE_VERSION_BUILD_ATTACH_FAILED');
+  if (!attached)
+    return providerFailure(tracked.blockingStatus(), 'APP_STORE_VERSION_BUILD_ATTACH_FAILED');
   return {
     status: 'completed',
     publication: {

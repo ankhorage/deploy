@@ -1,6 +1,9 @@
 import { expect, test } from 'bun:test';
 
-import type { DeploymentProcessRequest, DeploymentProcessRunner } from '../../../runtime/process/DeploymentProcessRunner';
+import type {
+  DeploymentProcessRequest,
+  DeploymentProcessRunner,
+} from '../../../runtime/process/DeploymentProcessRunner';
 import { buildIosWithEas } from './buildIosWithEas';
 import { generateLocalIosFingerprint } from './generateLocalIosFingerprint';
 import { inspectEasIosConfig } from './inspectEasIosConfig';
@@ -30,7 +33,13 @@ test('EAS iOS config validates bundle identity and store profile safely', async 
   });
   expect(result.status).toBe('completed');
   expect(requests[0]?.args).toEqual([
-    'config', '--platform', 'ios', '--profile', 'production', '--json', '--non-interactive',
+    'config',
+    '--platform',
+    'ios',
+    '--profile',
+    'production',
+    '--json',
+    '--non-interactive',
   ]);
   expect(requests[0]?.env?.EXPO_TOKEN).toBe(SECRET);
   expect(JSON.stringify(result)).not.toContain(SECRET);
@@ -49,11 +58,12 @@ test('EAS iOS config rejects bundle mismatch and simulator profile', async () =>
     projectRoot: '/project',
     bundleIdentifier: 'com.example.app',
     buildProfile: 'preview',
-    runProcess: () => Promise.resolve({
-      exitCode: 0,
-      stdout: successfulConfig({ ios: { simulator: true } }),
-      stderr: '',
-    }),
+    runProcess: () =>
+      Promise.resolve({
+        exitCode: 0,
+        stdout: successfulConfig({ ios: { simulator: true } }),
+        stderr: '',
+      }),
     ...ACCESS,
   });
   expect(simulator.status).toBe('failed');
@@ -66,7 +76,11 @@ test('iOS fingerprint is generated locally without an EAS command', async () => 
     profileEnvironment: { APP_ENV: 'prod' },
     runProcess: (request) => {
       requests.push(request);
-      return Promise.resolve({ exitCode: 0, stdout: JSON.stringify({ hash: 'a'.repeat(40) }), stderr: '' });
+      return Promise.resolve({
+        exitCode: 0,
+        stdout: JSON.stringify({ hash: 'a'.repeat(40) }),
+        stderr: '',
+      });
     },
   });
   expect(result).toEqual({ status: 'completed', fingerprint: 'a'.repeat(40) });
@@ -77,11 +91,18 @@ test('iOS fingerprint is generated locally without an EAS command', async () => 
 test('EAS iOS build normalizes one finished IPA build', async () => {
   const fingerprint = 'b'.repeat(40);
   const requests: DeploymentProcessRequest[] = [];
-  const stdout = JSON.stringify([{
-    id: 'build-id', status: 'FINISHED', platform: 'IOS', buildProfile: 'production',
-    appVersion: '1.2.3', appBuildVersion: '42', fingerprint: { hash: fingerprint },
-    artifacts: { applicationArchiveUrl: 'https://example.test/app.ipa' },
-  }]);
+  const stdout = JSON.stringify([
+    {
+      id: 'build-id',
+      status: 'FINISHED',
+      platform: 'IOS',
+      buildProfile: 'production',
+      appVersion: '1.2.3',
+      appBuildVersion: '42',
+      fingerprint: { hash: fingerprint },
+      artifacts: { applicationArchiveUrl: 'https://example.test/app.ipa' },
+    },
+  ]);
   const result = await buildIosWithEas({
     projectRoot: '/project',
     buildProfile: 'production',
@@ -95,16 +116,26 @@ test('EAS iOS build normalizes one finished IPA build', async () => {
   });
   expect(result.status).toBe('completed');
   expect(requests[0]?.args).toEqual([
-    'build', '--platform', 'ios', '--profile', 'production', '--json', '--non-interactive', '--wait',
+    'build',
+    '--platform',
+    'ios',
+    '--profile',
+    'production',
+    '--json',
+    '--non-interactive',
+    '--wait',
   ]);
   expect(JSON.stringify(result)).not.toContain(SECRET);
 });
 
 test('EAS iOS signing failure becomes an action without stderr leakage', async () => {
   const result = await buildIosWithEas({
-    projectRoot: '/project', buildProfile: 'production', expectedFingerprint: 'c'.repeat(40),
+    projectRoot: '/project',
+    buildProfile: 'production',
+    expectedFingerprint: 'c'.repeat(40),
     expectedVersion: '1.2.3',
-    runProcess: () => Promise.resolve({ exitCode: 1, stdout: '', stderr: `${SECRET} provisioning profile` }),
+    runProcess: () =>
+      Promise.resolve({ exitCode: 1, stdout: '', stderr: `${SECRET} provisioning profile` }),
     ...ACCESS,
   });
   expect(result.status).toBe('action-required');

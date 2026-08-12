@@ -40,7 +40,14 @@ export async function inspectProjectIosDeploymentWithRuntime(
     if (!normalized.ok) return normalized;
     if (!normalized.enabled || normalized.bundleIdentifier === undefined) {
       const current = await readCurrentProjectIosDeployment({ projectRoot: project.projectRoot });
-      return success(project.projectRoot, normalized.desired, current, options.intent, undefined, []);
+      return success(
+        project.projectRoot,
+        normalized.desired,
+        current,
+        options.intent,
+        undefined,
+        [],
+      );
     }
     return inspectEnabledProject(
       project.projectRoot,
@@ -85,7 +92,10 @@ async function inspectEnabledProject(
   });
   if (config.status === 'failed') return { ok: false, failure: config.failure };
   if (config.status === 'action-required') {
-    return success(projectRoot, desired, current, options.intent, undefined, [easSetup, appStore.setup]);
+    return success(projectRoot, desired, current, options.intent, undefined, [
+      easSetup,
+      appStore.setup,
+    ]);
   }
   const fingerprint = await generateLocalIosFingerprint({
     projectRoot,
@@ -94,7 +104,10 @@ async function inspectEnabledProject(
   });
   if (fingerprint.status === 'failed') return { ok: false, failure: fingerprint.failure };
   const revision = createIosDeploymentRevision(fingerprint.fingerprint, options.intent);
-  return success(projectRoot, desired, current, options.intent, revision, [easSetup, appStore.setup]);
+  return success(projectRoot, desired, current, options.intent, revision, [
+    easSetup,
+    appStore.setup,
+  ]);
 }
 
 function success(

@@ -1,6 +1,6 @@
-import type { BuildUploadFileReservation } from './BuildUploadOperation';
 import type { AppStoreConnectTransport } from './AppStoreConnectTransport';
 import { appStoreConnectBuildUploadFilesUrl } from './appStoreConnectUrls';
+import type { BuildUploadFileReservation } from './BuildUploadOperation';
 import { parseBuildUploadFileReservation } from './parseBuildUploadFileReservation';
 
 export async function reserveAppStoreBuildUploadFile(options: {
@@ -23,7 +23,10 @@ export async function reserveAppStoreBuildUploadFile(options: {
     },
   });
   const response = await options.request({
-    method: 'POST', url: appStoreConnectBuildUploadFilesUrl(), token: options.token, body,
+    method: 'POST',
+    url: appStoreConnectBuildUploadFilesUrl(),
+    token: options.token,
+    body,
   });
   if (response.status !== 201) return null;
   try {

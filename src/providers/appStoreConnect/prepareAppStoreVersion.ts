@@ -20,7 +20,10 @@ export async function prepareAppStoreVersion(options: {
     },
   });
   const response = await options.request({
-    method: 'POST', url: appStoreConnectAppStoreVersionsUrl(), token: options.token, body,
+    method: 'POST',
+    url: appStoreConnectAppStoreVersionsUrl(),
+    token: options.token,
+    body,
   });
   return response.status === 201 ? parseCreatedVersion(response.body, options.version) : null;
 }
@@ -32,7 +35,9 @@ async function findVersion(options: {
   readonly request: AppStoreConnectTransport;
 }): Promise<string | null | undefined> {
   const response = await options.request({
-    method: 'GET', url: appStoreConnectVersionsUrl(options.appId), token: options.token,
+    method: 'GET',
+    url: appStoreConnectVersionsUrl(options.appId),
+    token: options.token,
   });
   if (response.status < 200 || response.status >= 300) return null;
   try {
@@ -40,7 +45,8 @@ async function findVersion(options: {
     if (!isRecord(value) || !Array.isArray(value.data)) return null;
     const matches = value.data.filter((item) => isVersion(item, options.version));
     if (matches.length === 0) return undefined;
-    if (matches.length !== 1 || !isRecord(matches[0]) || !isNonEmptyString(matches[0].id)) return null;
+    if (matches.length !== 1 || !isRecord(matches[0]) || !isNonEmptyString(matches[0].id))
+      return null;
     return matches[0].id;
   } catch {
     return null;
@@ -50,7 +56,8 @@ async function findVersion(options: {
 function parseCreatedVersion(body: string, expectedVersion: string): string | null {
   try {
     const value = JSON.parse(body) as unknown;
-    if (!isRecord(value) || !isRecord(value.data) || !isVersion(value.data, expectedVersion)) return null;
+    if (!isRecord(value) || !isRecord(value.data) || !isVersion(value.data, expectedVersion))
+      return null;
     return isNonEmptyString(value.data.id) ? value.data.id : null;
   } catch {
     return null;
@@ -58,7 +65,8 @@ function parseCreatedVersion(body: string, expectedVersion: string): string | nu
 }
 
 function isVersion(value: unknown, expectedVersion: string): boolean {
-  if (!isRecord(value) || value.type !== 'appStoreVersions' || !isRecord(value.attributes)) return false;
+  if (!isRecord(value) || value.type !== 'appStoreVersions' || !isRecord(value.attributes))
+    return false;
   return value.attributes.platform === 'IOS' && value.attributes.versionString === expectedVersion;
 }
 

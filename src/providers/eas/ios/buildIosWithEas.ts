@@ -48,12 +48,25 @@ export async function buildIosWithEas(options: {
 }
 
 function buildArgs(buildProfile: string): readonly string[] {
-  return ['build', '--platform', 'ios', '--profile', buildProfile, '--json', '--non-interactive', '--wait'];
+  return [
+    'build',
+    '--platform',
+    'ios',
+    '--profile',
+    buildProfile,
+    '--json',
+    '--non-interactive',
+    '--wait',
+  ];
 }
 
 function failedBuild(stderr: string): EasIosBuildResult {
   const lower = stderr.toLowerCase();
-  if (lower.includes('provisioning profile') || lower.includes('distribution certificate') || lower.includes('credential')) {
+  if (
+    lower.includes('provisioning profile') ||
+    lower.includes('distribution certificate') ||
+    lower.includes('credential')
+  ) {
     return {
       status: 'action-required',
       action: {

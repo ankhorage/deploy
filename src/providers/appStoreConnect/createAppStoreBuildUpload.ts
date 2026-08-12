@@ -20,7 +20,10 @@ export async function createAppStoreBuildUpload(options: {
     },
   });
   const response = await options.request({
-    method: 'POST', url: appStoreConnectBuildUploadsUrl(), token: options.token, body,
+    method: 'POST',
+    url: appStoreConnectBuildUploadsUrl(),
+    token: options.token,
+    body,
   });
   if (response.status !== 201) return null;
   return parseResourceId(response.body, 'buildUploads');
