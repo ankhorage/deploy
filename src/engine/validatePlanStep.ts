@@ -13,13 +13,28 @@ export function validatePlanStep(
     return diagnostic('INVALID_STEP_ID', change, 'Deployment plan step IDs must be non-empty.');
   }
   if (step.target !== change.target) {
-    return diagnostic('STEP_TARGET_MISMATCH', change, 'A target planner emitted a step for another target.', step.id);
+    return diagnostic(
+      'STEP_TARGET_MISMATCH',
+      change,
+      'A target planner emitted a step for another target.',
+      step.id,
+    );
   }
   if (!contributor.capabilities.includes(step.phase)) {
-    return diagnostic('UNDECLARED_CAPABILITY', change, 'A plan step uses a capability not declared by its contributor.', step.id);
+    return diagnostic(
+      'UNDECLARED_CAPABILITY',
+      change,
+      'A plan step uses a capability not declared by its contributor.',
+      step.id,
+    );
   }
   if (stepIds.has(step.id)) {
-    return diagnostic('DUPLICATE_STEP_ID', change, 'Deployment plan step IDs must be globally unique.', step.id);
+    return diagnostic(
+      'DUPLICATE_STEP_ID',
+      change,
+      'Deployment plan step IDs must be globally unique.',
+      step.id,
+    );
   }
   return null;
 }

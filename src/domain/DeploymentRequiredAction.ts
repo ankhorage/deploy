@@ -18,5 +18,4 @@ export interface DeploymentManualAction {
 }
 
 export type DeploymentRequiredAction =
-  | DeploymentAuthenticationRequiredAction
-  | DeploymentManualAction;
+  DeploymentAuthenticationRequiredAction | DeploymentManualAction;

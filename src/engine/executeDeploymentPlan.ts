@@ -1,11 +1,12 @@
-import type { DeploymentExecutionResult, DeploymentStepExecutionRecord } from '../domain/DeploymentExecutionResult';
+import type {
+  DeploymentExecutionResult,
+  DeploymentStepExecutionRecord,
+} from '../domain/DeploymentExecutionResult';
 import type { DeploymentPlan } from '../domain/DeploymentPlan';
 import type { DeploymentPlanStep } from '../domain/DeploymentPlanStep';
 import type { DeploymentStepOutcome } from '../domain/DeploymentStepOutcome';
 
-export type DeploymentStepExecutor = (
-  step: DeploymentPlanStep,
-) => Promise<DeploymentStepOutcome>;
+export type DeploymentStepExecutor = (step: DeploymentPlanStep) => Promise<DeploymentStepOutcome>;
 
 export interface ExecuteDeploymentPlanInput {
   readonly plan: DeploymentPlan;

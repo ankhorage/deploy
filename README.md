@@ -15,3 +15,5 @@ Declarative deployment engine for Expo apps across web, iOS, and Android.
 - [Architecture overview](././paradox/diagrams/architecture-overview.mmd)
 - [Module relationships](././paradox/diagrams/module-relationships.mmd)
 - [Export graph](././paradox/diagrams/export-graph.mmd)
+- [createDeploymentPlan sequence](././paradox/diagrams/sequences/create-deployment-plan.mmd)
+- [executeDeploymentPlan sequence](././paradox/diagrams/sequences/execute-deployment-plan.mmd)

@@ -1,6 +1,5 @@
-import { expect, test } from 'bun:test';
-
 import type { AppDeployManifest, AppDeployTargetId } from '@ankhorage/contracts/deploy';
+import { expect, test } from 'bun:test';
 
 import type { DeploymentPlanStep } from '../domain/DeploymentPlanStep';
 import type { DeploymentTargetPlanContributor } from '../domain/DeploymentTargetPlanContributor';

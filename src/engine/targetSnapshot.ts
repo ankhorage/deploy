@@ -81,9 +81,9 @@ function desiredIosTarget(
   };
 }
 
-function optionalProviders(
-  providers: AppDeployProviderSelection | undefined,
-): { readonly providers?: AppDeployProviderSelection } {
+function optionalProviders(providers: AppDeployProviderSelection | undefined): {
+  readonly providers?: AppDeployProviderSelection;
+} {
   return providers === undefined ? {} : { providers };
 }
 
