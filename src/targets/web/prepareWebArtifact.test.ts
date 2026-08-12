@@ -20,9 +20,9 @@ test('web artifact preparation uses project-local Expo and returns a revision', 
   expect(result.ok).toBe(true);
   if (!result.ok) return;
   expect(result.artifact.revision).toHaveLength(64);
-  await expect(fs.stat(result.artifact.directory)).resolves.toBeDefined();
+  expect(await pathExists(result.artifact.directory)).toBe(true);
   await cleanupWebArtifact(result.artifact.directory);
-  await expect(fs.stat(result.artifact.directory)).rejects.toBeDefined();
+  expect(await pathExists(result.artifact.directory)).toBe(false);
 });
 
 test('failed Expo export cleans its temporary directory', async () => {
@@ -34,6 +34,15 @@ test('failed Expo export cleans its temporary directory', async () => {
   const result = await prepareWebArtifact({ projectRoot: '/project', runProcess: runner });
   expect(result.ok).toBe(false);
   expect(output.length).toBeGreaterThan(0);
-  await expect(fs.stat(output)).rejects.toBeDefined();
+  expect(await pathExists(output)).toBe(false);
   expect(JSON.stringify(result)).not.toContain('secret output');
 });
+
+async function pathExists(filePath: string): Promise<boolean> {
+  try {
+    await fs.stat(filePath);
+    return true;
+  } catch {
+    return false;
+  }
+}
