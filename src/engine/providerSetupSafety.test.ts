@@ -10,17 +10,17 @@ import {
 } from './providerSetupTestSupport.test';
 
 test('supplies secret material only through the injected resolver', async () => {
-  let resolvedId: string | null = null;
+  const resolvedIds: string[] = [];
   const adapter = createSetupAdapter(async (context) => {
     const [reference] = context.credentials;
     if (reference === undefined) throw new Error('missing credential');
-    resolvedId = reference.id;
+    resolvedIds.push(reference.id);
     await context.resolveSecret(reference);
     return createSetupInspection();
   });
 
   const result = await inspectDeploymentProviderSetup({ adapter, context: createSetupContext() });
-  expect(resolvedId).toBe(FIXTURE_CREDENTIAL.id);
+  expect(resolvedIds).toEqual([FIXTURE_CREDENTIAL.id]);
   expect(result.ok).toBe(true);
   expect(JSON.stringify(result)).not.toContain(FIXTURE_SECRET);
 });
