@@ -1,6 +1,6 @@
 import type { AndroidDeploymentTrack } from '../../domain/AndroidDeploymentIntent';
 
-export interface GooglePlayReleaseState {
+interface GooglePlayReleaseState {
   readonly lifecycle: string;
   readonly versionCodes: readonly number[];
 }
