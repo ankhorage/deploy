@@ -38,13 +38,15 @@ function parseOperation(value: unknown): BuildUploadOperation | null {
 function rangesAreValid(operations: readonly BuildUploadOperation[], fileSize: number): boolean {
   if (!Number.isSafeInteger(fileSize) || fileSize <= 0 || operations.length === 0) return false;
   const ranges = [...operations].sort((left, right) => left.offset - right.offset);
-  let previousEnd = 0;
+  let expectedOffset = 0;
   for (const operation of ranges) {
     const end = operation.offset + operation.length;
-    if (!Number.isSafeInteger(end) || end > fileSize || operation.offset < previousEnd) return false;
-    previousEnd = end;
+    if (!Number.isSafeInteger(end) || operation.offset !== expectedOffset || end > fileSize) {
+      return false;
+    }
+    expectedOffset = end;
   }
-  return true;
+  return expectedOffset === fileSize;
 }
 
 function parseHeader(value: unknown): { readonly name: string; readonly value: string } | null {
