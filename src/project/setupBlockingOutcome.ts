@@ -22,7 +22,7 @@ export function projectSetupBlockingOutcome(
   if (result.inspection.authentication.status === 'required') {
     return { status: 'action-required', action: result.inspection.authentication.action };
   }
-  const requirement = result.inspection.provisioning[0];
+  const [requirement] = result.inspection.provisioning;
   if (requirement !== undefined) return provisioningOutcome(requirement, options);
   const capability = result.inspection.capabilities.find(
     (item) => item.capability === options.capability,
