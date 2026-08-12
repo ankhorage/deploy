@@ -2,6 +2,7 @@ export * from './domain/DeploymentAuthenticationState';
 export * from './domain/DeploymentCapability';
 export * from './domain/DeploymentCredentialReference';
 export * from './domain/DeploymentCurrentState';
+export * from './domain/DeploymentDesiredRevisions';
 export * from './domain/DeploymentExecutionResult';
 export * from './domain/DeploymentFailure';
 export * from './domain/DeploymentPlan';

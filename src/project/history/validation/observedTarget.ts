@@ -3,22 +3,27 @@ import { isRecord } from '../../io/isRecord';
 import { isProviderSelection } from './providerSelection';
 import { isNonEmptyString } from './shared';
 
-const WEB_KEYS = new Set(['target', 'providers']);
-const ANDROID_KEYS = new Set(['target', 'package', 'providers']);
-const IOS_KEYS = new Set(['target', 'bundleIdentifier', 'providers']);
+const WEB_KEYS = new Set(['target', 'providers', 'revision']);
+const ANDROID_KEYS = new Set(['target', 'package', 'providers', 'revision']);
+const IOS_KEYS = new Set(['target', 'bundleIdentifier', 'providers', 'revision']);
 
 export function isObservedTarget(value: unknown): boolean {
   if (!isRecord(value)) return false;
 
   if (value.target === 'web') {
-    return hasOnlyKeys(value, WEB_KEYS) && isProviderSelection(value.providers);
+    return (
+      hasOnlyKeys(value, WEB_KEYS) &&
+      isProviderSelection(value.providers) &&
+      isOptionalRevision(value.revision)
+    );
   }
 
   if (value.target === 'android') {
     return (
       hasOnlyKeys(value, ANDROID_KEYS) &&
       isNonEmptyString(value.package) &&
-      isProviderSelection(value.providers)
+      isProviderSelection(value.providers) &&
+      isOptionalRevision(value.revision)
     );
   }
 
@@ -26,6 +31,11 @@ export function isObservedTarget(value: unknown): boolean {
     value.target === 'ios' &&
     hasOnlyKeys(value, IOS_KEYS) &&
     isNonEmptyString(value.bundleIdentifier) &&
-    isProviderSelection(value.providers)
+    isProviderSelection(value.providers) &&
+    isOptionalRevision(value.revision)
   );
+}
+
+function isOptionalRevision(value: unknown): boolean {
+  return value === undefined || isNonEmptyString(value);
 }
