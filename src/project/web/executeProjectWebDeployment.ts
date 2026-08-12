@@ -63,7 +63,9 @@ async function executeMutableWebPlan(
         executeProjectWebStep({
           step,
           projectRoot: options.inspection.projectRoot,
-          expectedRevision: options.inspection.desiredRevision,
+          ...(options.inspection.desiredRevision === undefined
+            ? {}
+            : { expectedRevision: options.inspection.desiredRevision }),
           intent: options.intent ?? { mode: 'preview' },
           access,
           runtime,
