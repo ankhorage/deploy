@@ -1,7 +1,6 @@
 import { spawn } from 'node:child_process';
 
 import type {
-  DeploymentProcessRequest,
   DeploymentProcessResult,
   DeploymentProcessRunner,
 } from './DeploymentProcessRunner';
