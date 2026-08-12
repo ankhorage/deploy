@@ -12,6 +12,21 @@ export {
   type ProjectDeploymentConfigUpdater,
   updateProjectDeploymentConfig,
 } from './updateProjectDeploymentConfig';
+export { createProjectAndroidDeploymentPlan } from './android/createProjectAndroidDeploymentPlan';
+export {
+  executeProjectAndroidDeployment,
+  type ExecuteProjectAndroidDeploymentOptions,
+} from './android/executeProjectAndroidDeployment';
+export {
+  inspectProjectAndroidDeployment,
+  type InspectProjectAndroidDeploymentOptions,
+} from './android/inspectProjectAndroidDeployment';
+export type { ProjectAndroidDeploymentAccess } from './android/ProjectAndroidDeploymentAccess';
+export type { ProjectAndroidDeploymentExecution } from './android/ProjectAndroidDeploymentExecution';
+export type {
+  ProjectAndroidDeploymentInspection,
+  ProjectAndroidDeploymentInspectionResult,
+} from './android/ProjectAndroidDeploymentInspection';
 export { createProjectWebDeploymentPlan } from './web/createProjectWebDeploymentPlan';
 export {
   executeProjectWebDeployment,
