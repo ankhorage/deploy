@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.3.0
+
+### Minor Changes
+
+- ced9190: Add provider-neutral provisioning, authentication, credential-reference, injected secret-resolution, capability inspection, and safe provider setup orchestration foundations.
+
 ## 0.2.0
 
 ### Minor Changes
