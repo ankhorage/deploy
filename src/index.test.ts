@@ -12,5 +12,6 @@ test('package entrypoint exposes the canonical deployment domain', () => {
     'createDeploymentChanges',
     'createDeploymentPlan',
     'executeDeploymentPlan',
+    'inspectDeploymentProviderSetup',
   ]);
 });
