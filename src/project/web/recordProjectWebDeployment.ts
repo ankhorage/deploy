@@ -7,8 +7,7 @@ import { recordProjectDeploymentHistory } from '../history/recordProjectDeployme
 import type { ProjectWebDeploymentInspection } from './ProjectWebDeploymentInspection';
 
 export type RecordProjectWebHistoryResult =
-  | { readonly recorded: true }
-  | { readonly recorded: false; readonly failure: DeploymentFailure };
+  { readonly recorded: true } | { readonly recorded: false; readonly failure: DeploymentFailure };
 
 export async function recordProjectWebDeployment(options: {
   readonly inspection: ProjectWebDeploymentInspection;

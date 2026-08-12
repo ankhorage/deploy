@@ -54,5 +54,10 @@ export async function cleanupWebArtifact(directory: string): Promise<void> {
 }
 
 function projectExpoCommand(projectRoot: string): string {
-  return path.join(projectRoot, 'node_modules', '.bin', process.platform === 'win32' ? 'expo.cmd' : 'expo');
+  return path.join(
+    projectRoot,
+    'node_modules',
+    '.bin',
+    process.platform === 'win32' ? 'expo.cmd' : 'expo',
+  );
 }

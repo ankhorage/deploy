@@ -15,7 +15,12 @@ function webChange(kind: 'create' | 'update' | 'remove'): DeploymentTargetChange
     kind,
     desired: kind === 'remove' ? null : desired,
     current: kind === 'create' ? null : current,
-    reason: kind === 'create' ? 'target-missing' : kind === 'remove' ? 'target-not-desired' : 'revision-changed',
+    reason:
+      kind === 'create'
+        ? 'target-missing'
+        : kind === 'remove'
+          ? 'target-not-desired'
+          : 'revision-changed',
   };
 }
 

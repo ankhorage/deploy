@@ -1,6 +1,7 @@
-import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+
+import { expect, test } from 'bun:test';
 
 import type { DeploymentProcessRunner } from '../../runtime/process/DeploymentProcessRunner';
 import { cleanupWebArtifact, prepareWebArtifact } from './prepareWebArtifact';

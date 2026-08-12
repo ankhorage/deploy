@@ -19,9 +19,13 @@ test('web verification accepts reachable responses below 500', async () => {
 });
 
 test('web verification rejects 5xx and network failures safely', async () => {
-  const unavailable = await verifyWebPublication(PUBLICATION, () => Promise.resolve({ status: 503 }));
+  const unavailable = await verifyWebPublication(PUBLICATION, () =>
+    Promise.resolve({ status: 503 }),
+  );
   expect(unavailable.ok).toBe(false);
-  const failed = await verifyWebPublication(PUBLICATION, () => Promise.reject(new Error('private')));
+  const failed = await verifyWebPublication(PUBLICATION, () =>
+    Promise.reject(new Error('private')),
+  );
   expect(failed.ok).toBe(false);
   expect(JSON.stringify(failed)).not.toContain('private');
 });

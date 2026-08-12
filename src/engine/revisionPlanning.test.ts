@@ -1,6 +1,5 @@
-import { expect, test } from 'bun:test';
-
 import type { AppDeployManifest } from '@ankhorage/contracts/deploy';
+import { expect, test } from 'bun:test';
 
 import { createDeploymentChanges } from './createDeploymentChanges';
 

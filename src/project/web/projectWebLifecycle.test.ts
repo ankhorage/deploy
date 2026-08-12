@@ -1,6 +1,7 @@
-import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+
+import { expect, test } from 'bun:test';
 
 import type { DeploymentProcessRunner } from '../../runtime/process/DeploymentProcessRunner';
 import { createTempProject, createTestManifest } from '../manifestTestSupport.test';
@@ -9,7 +10,10 @@ import { executeProjectWebDeploymentWithRuntime } from './executeProjectWebDeplo
 import { inspectProjectWebDeploymentWithRuntime } from './inspectProjectWebDeployment';
 import type { ProjectWebDeploymentRuntime } from './ProjectWebDeploymentRuntime';
 
-function createRuntime(state: { source: string; deployCalls: number }): ProjectWebDeploymentRuntime {
+function createRuntime(state: {
+  source: string;
+  deployCalls: number;
+}): ProjectWebDeploymentRuntime {
   const runProcess: DeploymentProcessRunner = async (request) => {
     if (request.args[0] === 'export') {
       const output = request.args[request.args.indexOf('--output-dir') + 1];

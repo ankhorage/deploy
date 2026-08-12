@@ -1,9 +1,6 @@
 import { spawn } from 'node:child_process';
 
-import type {
-  DeploymentProcessResult,
-  DeploymentProcessRunner,
-} from './DeploymentProcessRunner';
+import type { DeploymentProcessResult, DeploymentProcessRunner } from './DeploymentProcessRunner';
 
 export const runDeploymentProcess: DeploymentProcessRunner = async (
   request,

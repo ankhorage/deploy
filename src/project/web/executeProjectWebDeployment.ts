@@ -84,7 +84,11 @@ async function finalizeExecution(
   state: ProjectWebExecutionState,
   runtime: ProjectWebDeploymentRuntime,
 ): Promise<ProjectWebDeploymentExecution> {
-  if (execution.status !== 'completed' || state.publication === null || state.verification?.ok !== true) {
+  if (
+    execution.status !== 'completed' ||
+    state.publication === null ||
+    state.verification?.ok !== true
+  ) {
     return result(execution, state, false);
   }
   const history = await recordProjectWebDeployment({

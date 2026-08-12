@@ -55,7 +55,9 @@ function authenticationRequired(
   return {
     provider: 'eas',
     authentication: { status: 'required', action },
-    capabilities: [{ capability: 'publish', status: 'unavailable', reason: 'Authentication required.' }],
+    capabilities: [
+      { capability: 'publish', status: 'unavailable', reason: 'Authentication required.' },
+    ],
     provisioning: [{ type: 'authentication', action }],
   };
 }
@@ -73,7 +75,9 @@ function projectLinkRequired(): DeploymentProviderSetupInspection {
   return {
     provider: 'eas',
     authentication: { status: 'authenticated' },
-    capabilities: [{ capability: 'publish', status: 'unavailable', reason: 'EAS project link required.' }],
+    capabilities: [
+      { capability: 'publish', status: 'unavailable', reason: 'EAS project link required.' },
+    ],
     provisioning: [
       {
         type: 'manual-action',

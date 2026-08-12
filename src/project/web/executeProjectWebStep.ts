@@ -44,7 +44,10 @@ async function prepareStep(
   if (!result.ok) return { status: 'failed', error: result.failure };
   if (result.artifact.revision !== options.expectedRevision) {
     await cleanupWebArtifact(result.artifact.directory);
-    return failed('WEB_SOURCE_CHANGED_AFTER_PLAN', 'Web source changed after the deployment plan was created.');
+    return failed(
+      'WEB_SOURCE_CHANGED_AFTER_PLAN',
+      'Web source changed after the deployment plan was created.',
+    );
   }
   options.state.artifact = result.artifact;
   return { status: 'completed' };
