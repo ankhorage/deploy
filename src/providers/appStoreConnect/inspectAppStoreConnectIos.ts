@@ -82,10 +82,7 @@ function parseAppId(value: unknown, expectedBundleIdentifier: string): string | 
 
 function matchingAppId(value: unknown, expectedBundleIdentifier: string): string | null {
   if (!isRecord(value) || value.type !== 'apps' || !isNonEmptyString(value.id)) return null;
-  if (
-    !isRecord(value.attributes) ||
-    value.attributes.bundleId !== expectedBundleIdentifier
-  )
+  if (!isRecord(value.attributes) || value.attributes.bundleId !== expectedBundleIdentifier)
     return null;
   return value.id;
 }
