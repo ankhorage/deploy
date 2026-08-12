@@ -2,15 +2,14 @@ import type { AppDeployManifest } from '@ankhorage/contracts/deploy';
 
 import type { DeploymentCurrentState } from '../../domain/DeploymentCurrentState';
 import type { DeploymentProviderSetupInspectionResult } from '../../domain/DeploymentProviderSetupInspectionResult';
-import { inspectDeploymentProviderSetup } from '../../engine/inspectDeploymentProviderSetup';
-import { createEasHostingSetupAdapter } from '../../providers/eas/createEasHostingSetupAdapter';
 import { cleanupWebArtifact, prepareWebArtifact } from '../../targets/web/prepareWebArtifact';
 import { resolveDeployProject } from '../resolveDeployProject';
+import { inspectProjectWebSetup } from './inspectProjectWebSetup';
+import { normalizeProjectWebDesired } from './normalizeProjectWebDesired';
 import type { ProjectWebDeploymentAccess } from './ProjectWebDeploymentAccess';
 import type { ProjectWebDeploymentInspectionResult } from './ProjectWebDeploymentInspection';
 import type { ProjectWebDeploymentRuntime } from './ProjectWebDeploymentRuntime';
 import { projectWebDeploymentRuntime } from './ProjectWebDeploymentRuntime';
-import { normalizeProjectWebDesired } from './normalizeProjectWebDesired';
 import { readCurrentProjectWebDeployment } from './readCurrentProjectWebDeployment';
 import { resolveProjectWebDeploymentAccess } from './resolveProjectWebDeploymentAccess';
 
@@ -41,16 +40,10 @@ export async function inspectProjectWebDeploymentWithRuntime(
       runProcess: runtime.runProcess,
     });
     if (!artifact.ok) return artifact;
-    const revision = artifact.artifact.revision;
-    await cleanupWebArtifact(artifact.artifact.directory);
+    const { directory, revision } = artifact.artifact;
+    await cleanupWebArtifact(directory);
     const access = resolveProjectWebDeploymentAccess(options);
-    const setup = await inspectDeploymentProviderSetup({
-      adapter: createEasHostingSetupAdapter({
-        projectRoot: project.projectRoot,
-        runProcess: runtime.runProcess,
-      }),
-      context: { target: 'web', ...access },
-    });
+    const setup = await inspectProjectWebSetup(project.projectRoot, access, runtime);
     return success(project.projectRoot, normalized.desired, current, revision, setup);
   } catch {
     return {
