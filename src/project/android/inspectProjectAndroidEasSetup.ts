@@ -3,6 +3,7 @@ import { inspectDeploymentProviderSetup } from '../../engine/inspectDeploymentPr
 import { createEasSetupAdapter } from '../../providers/eas/createEasSetupAdapter';
 import type { ProjectAndroidDeploymentRuntime } from './ProjectAndroidDeploymentRuntime';
 import type { ResolvedProjectAndroidDeploymentAccess } from './resolveProjectAndroidDeploymentAccess';
+import { scopeProjectAndroidDeploymentAccess } from './scopeProjectAndroidDeploymentAccess';
 
 export function inspectProjectAndroidEasSetup(
   projectRoot: string,
@@ -16,6 +17,9 @@ export function inspectProjectAndroidEasSetup(
       target: 'android',
       capability: 'build',
     }),
-    context: { target: 'android', ...access },
+    context: {
+      target: 'android',
+      ...scopeProjectAndroidDeploymentAccess(access, 'eas'),
+    },
   });
 }
