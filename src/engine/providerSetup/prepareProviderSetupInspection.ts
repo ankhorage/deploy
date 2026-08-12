@@ -27,25 +27,11 @@ export function prepareProviderSetupInspection(
   const { provider } = adapter;
   const { target } = context;
   if (!isNonEmptyString(provider) || (target !== undefined && !isAppDeployTargetId(target))) {
-    return {
-      ok: false,
-      result: createProviderSetupFailure(
-        'INVALID_PROVIDER_SETUP_INPUT',
-        'Provider setup input is invalid.',
-      ),
-    };
+    return invalidInput();
   }
   const credentials = normalizeCredentialReferences(context.credentials, provider);
   if (credentials === null || typeof context.resolveSecret !== 'function') {
-    return {
-      ok: false,
-      result: createProviderSetupFailure(
-        'INVALID_PROVIDER_SETUP_INPUT',
-        'Provider setup input is invalid.',
-        provider,
-        target,
-      ),
-    };
+    return invalidInput(provider, target);
   }
   const tracked = createTrackedSecretResolver(context.resolveSecret);
   return {
@@ -54,5 +40,20 @@ export function prepareProviderSetupInspection(
     target,
     context: createProviderSetupContext(credentials, tracked.resolve, target),
     secrets: tracked.secrets,
+  };
+}
+
+function invalidInput(
+  provider?: string,
+  target?: AppDeployTargetId,
+): PreparedProviderSetupInspection {
+  return {
+    ok: false,
+    result: createProviderSetupFailure(
+      'INVALID_PROVIDER_SETUP_INPUT',
+      'Provider setup input is invalid.',
+      provider,
+      target,
+    ),
   };
 }
