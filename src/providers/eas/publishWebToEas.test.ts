@@ -7,7 +7,7 @@ const SECRET = 'PUBLISH_SECRET_SENTINEL';
 const CREDENTIAL = { provider: 'eas', id: 'hosting', kind: 'expo-token' } as const;
 
 test('EAS publish maps production intent and normalizes JSON output', async () => {
-  let request: DeploymentProcessRequest | null = null;
+  const requests: DeploymentProcessRequest[] = [];
   const result = await publishWebToEas({
     projectRoot: '/project',
     exportDirectory: '/tmp/export',
@@ -16,22 +16,29 @@ test('EAS publish maps production intent and normalizes JSON output', async () =
     credentials: [CREDENTIAL],
     resolveSecret: () => Promise.resolve(SECRET),
     runProcess: (value) => {
-      request = value;
+      requests.push(value);
       return Promise.resolve({
         exitCode: 0,
-        stdout: JSON.stringify({ identifier: 'deploy-id', url: 'https://example.expo.app', extra: SECRET }),
+        stdout: JSON.stringify({
+          identifier: 'deploy-id',
+          url: 'https://example.expo.app',
+          extra: SECRET,
+        }),
         stderr: '',
       });
     },
   });
+  const [request] = requests;
+  expect(request).toBeDefined();
+  if (request === undefined) throw new Error('Expected EAS deploy request.');
   expect(result.status).toBe('completed');
-  expect(request?.args).toContain('--json');
-  expect(request?.args).toContain('--non-interactive');
-  expect(request?.args).toContain('--prod');
-  expect(request?.args).toContain('--alias');
-  expect(request?.args).toContain('--environment');
-  expect(request?.env?.EXPO_TOKEN).toBe(SECRET);
-  expect(request?.args.includes(SECRET)).toBe(false);
+  expect(request.args).toContain('--json');
+  expect(request.args).toContain('--non-interactive');
+  expect(request.args).toContain('--prod');
+  expect(request.args).toContain('--alias');
+  expect(request.args).toContain('--environment');
+  expect(request.env?.EXPO_TOKEN).toBe(SECRET);
+  expect(request.args.includes(SECRET)).toBe(false);
   expect(JSON.stringify(result)).not.toContain(SECRET);
 });
 
