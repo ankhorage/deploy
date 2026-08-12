@@ -1,4 +1,5 @@
 export * from './domain/AndroidDeploymentIntent';
+export * from './domain/AndroidDeploymentPublication';
 export * from './domain/DeploymentAuthenticationState';
 export * from './domain/DeploymentCapability';
 export * from './domain/DeploymentCredentialReference';
