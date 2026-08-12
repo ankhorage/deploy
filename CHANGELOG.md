@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.4.0
+
+### Minor Changes
+
+- 8f476cf: Add revision-aware deployment planning and the first production Web deployment lifecycle with Expo export, EAS Hosting publication, verification, and immutable project history.
+
 ## 0.3.0
 
 ### Minor Changes
