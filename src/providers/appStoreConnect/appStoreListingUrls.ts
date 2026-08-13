@@ -21,46 +21,6 @@ export function versionLocalizationsUrl(versionId: string): string {
   return `${BASE}/appStoreVersions/${segment(versionId)}/appStoreVersionLocalizations?limit=200`;
 }
 
-export function appInfoLocalizationCollectionUrl(): string {
-  return `${BASE}/appInfoLocalizations`;
-}
-
-export function versionLocalizationCollectionUrl(): string {
-  return `${BASE}/appStoreVersionLocalizations`;
-}
-
-export function appInfoLocalizationUrl(id: string): string {
-  return `${BASE}/appInfoLocalizations/${segment(id)}`;
-}
-
-export function versionLocalizationUrl(id: string): string {
-  return `${BASE}/appStoreVersionLocalizations/${segment(id)}`;
-}
-
-export function screenshotSetsUrl(versionLocalizationId: string): string {
-  return `${BASE}/appStoreVersionLocalizations/${segment(versionLocalizationId)}/appScreenshotSets?limit=50`;
-}
-
-export function screenshotSetCollectionUrl(): string {
-  return `${BASE}/appScreenshotSets`;
-}
-
-export function screenshotsUrl(setId: string): string {
-  return `${BASE}/appScreenshotSets/${segment(setId)}/appScreenshots?limit=200`;
-}
-
-export function screenshotCollectionUrl(): string {
-  return `${BASE}/appScreenshots`;
-}
-
-export function screenshotUrl(id: string): string {
-  return `${BASE}/appScreenshots/${segment(id)}`;
-}
-
-export function screenshotRelationshipUrl(setId: string): string {
-  return `${BASE}/appScreenshotSets/${segment(setId)}/relationships/appScreenshots`;
-}
-
 function segment(value: string): string {
   return encodeURIComponent(value);
 }

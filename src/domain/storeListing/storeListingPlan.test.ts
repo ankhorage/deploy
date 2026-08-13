@@ -1,5 +1,6 @@
 import { expect, test } from 'bun:test';
 
+import { createStoreListingCurrentRevision } from './createStoreListingCurrentRevision';
 import { createStoreListingPlan } from './createStoreListingPlan';
 import type { StoreListingDesiredState } from './StoreListingDesiredState';
 import type { StoreListingTargetState } from './StoreListingTargetState';
@@ -40,6 +41,12 @@ const current: StoreListingTargetState = {
   supportedFields: ['name', 'summary', 'description', 'promoVideoUrl'],
   diagnostics: [],
 };
+
+test('store listing current revision is deterministic', () => {
+  const revision = createStoreListingCurrentRevision([current]);
+  expect(revision).toHaveLength(64);
+  expect(createStoreListingCurrentRevision([current])).toBe(revision);
+});
 
 test('store listing plan is no-change for matching managed state', () => {
   const plan = createStoreListingPlan({ desired, currentRevision: 'current', states: [current] });
