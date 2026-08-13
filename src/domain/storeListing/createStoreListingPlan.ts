@@ -1,5 +1,8 @@
 import type { StoreListingAsset, StoreListingTarget } from './StoreListingAsset';
-import type { StoreListingCurrentAsset, StoreListingTargetCurrentState } from './StoreListingCurrentState';
+import type {
+  StoreListingCurrentAsset,
+  StoreListingTargetCurrentState,
+} from './StoreListingCurrentState';
 import type { StoreListingDesiredState } from './StoreListingDesiredState';
 import type { StoreListingDiagnostic } from './StoreListingDiagnostic';
 import type { StoreListingField } from './StoreListingField';
@@ -13,8 +16,10 @@ export function createStoreListingPlan(input: {
   readonly current: readonly StoreListingTargetCurrentState[];
   readonly diagnostics?: readonly StoreListingDiagnostic[];
 }): StoreListingPlan {
-  const operations = TARGET_ORDER.flatMap((target) => createTargetOperations(input.desired, targetState(input.current, target)));
-  const sorted = operations.toSorted(compareOperations);
+  const operations = TARGET_ORDER.flatMap((target) =>
+    createTargetOperations(input.desired, targetState(input.current, target)),
+  );
+  const sorted = [...operations].sort(compareOperations);
   return {
     revision: input.desired.revision,
     operations: sorted,
@@ -30,7 +35,10 @@ function createTargetOperations(
   if (current === null) return [];
   return [
     ...metadataOperations(desired.locales, current),
-    ...assetOperations(desired.assets.filter((asset) => asset.target === current.target), current),
+    ...assetOperations(
+      desired.assets.filter((asset) => asset.target === current.target),
+      current,
+    ),
   ];
 }
 
@@ -40,9 +48,18 @@ function metadataOperations(
 ): StoreListingPlanOperation[] {
   return desired.map((locale) => {
     const existing = current.locales.find((item) => item.locale === locale.locale);
-    const action = existing === undefined ? 'create' : metadataEqual(locale, existing, current.supportedFields) ? 'no-change' : 'update';
+    const action = metadataAction(locale, existing, current.supportedFields);
     return { target: current.target, locale: locale.locale, resourceKind: 'metadata', action };
   });
+}
+
+function metadataAction(
+  desired: StoreListingLocale,
+  current: StoreListingLocale | undefined,
+  fields: readonly StoreListingField[],
+): StoreListingPlanOperation['action'] {
+  if (current === undefined) return 'create';
+  return metadataEqual(desired, current, fields) ? 'no-change' : 'update';
 }
 
 function assetOperations(
@@ -58,16 +75,15 @@ function createAssetOperation(
   desired: readonly StoreListingAsset[],
   current: StoreListingTargetCurrentState,
 ): StoreListingPlanOperation {
-  const wanted = desired.filter((asset) => assetGroupKey(asset) === key).toSorted(byPath);
+  const wanted = desired.filter((asset) => assetGroupKey(asset) === key).sort(byPath);
   const observed = current.assets.filter((asset) => assetGroupKey(asset) === key);
   const sample = wanted[0] ?? observed[0];
   if (sample === undefined) throw new Error('Store listing asset group cannot be empty.');
-  const action = assetAction(wanted, observed);
   return {
     target: current.target,
     locale: sample.locale,
     resourceKind: 'asset',
-    action,
+    action: assetAction(wanted, observed),
     ...(sample.variant === null ? {} : { variant: sample.variant }),
     paths: wanted.map((asset) => asset.relativePath),
   };
@@ -79,11 +95,11 @@ function assetAction(
 ): StoreListingPlanOperation['action'] {
   if (desired.length === 0) return 'delete';
   if (current.length === 0) return 'create';
-  const desiredChecksums = desired.map((asset) => assetChecksum(asset, current[0]?.checksumAlgorithm ?? 'sha256'));
+  const algorithm = current[0]?.checksumAlgorithm ?? 'sha256';
+  const desiredChecksums = desired.map((asset) => assetChecksum(asset, algorithm));
   const currentChecksums = current.map((asset) => asset.remoteChecksum);
   if (sameSequence(desiredChecksums, currentChecksums)) return 'no-change';
-  if (sameSet(desiredChecksums, currentChecksums)) return 'reorder';
-  return 'update';
+  return sameSet(desiredChecksums, currentChecksums) ? 'reorder' : 'update';
 }
 
 function metadataEqual(
@@ -107,7 +123,10 @@ function sameSequence(left: readonly string[], right: readonly string[]): boolea
 }
 
 function sameSet(left: readonly string[], right: readonly string[]): boolean {
-  return left.length === right.length && [...left].sort().every((value, index) => value === [...right].sort()[index]);
+  if (left.length !== right.length) return false;
+  const sortedLeft = [...left].sort();
+  const sortedRight = [...right].sort();
+  return sortedLeft.every((value, index) => value === sortedRight[index]);
 }
 
 function targetState(

@@ -1,21 +1,26 @@
 import { createHash } from 'node:crypto';
-import { promises as fs } from 'node:fs';
+import { promises as fs, type Dirent } from 'node:fs';
 import path from 'node:path';
 
-import type { StoreListingAsset, StoreListingTarget } from '../../domain/storeListing/StoreListingAsset';
+import type {
+  StoreListingAsset,
+  StoreListingTarget,
+} from '../../domain/storeListing/StoreListingAsset';
 import { normalizeStoreListingLocale } from '../../domain/storeListing/normalizeStoreListingLocale';
-import type { ProjectDeploymentPaths } from '../ProjectDeploymentPaths';
 import { assertSafeSegment } from '../io/assertSafeSegment';
+import type { ProjectDeploymentPaths } from '../ProjectDeploymentPaths';
 
 const IMAGE_EXTENSIONS = new Set(['.png', '.jpg', '.jpeg']);
 
-export async function discoverStoreListingAssets(paths: ProjectDeploymentPaths): Promise<readonly StoreListingAsset[]> {
+export async function discoverStoreListingAssets(
+  paths: ProjectDeploymentPaths,
+): Promise<readonly StoreListingAsset[]> {
   const assets = [
     ...(await discoverAndroidTopLevel(paths)),
     ...(await discoverScreenshots('android', paths.androidScreenshotsRoot, paths.projectRoot)),
     ...(await discoverScreenshots('ios', paths.iosScreenshotsRoot, paths.projectRoot)),
   ];
-  return assets.toSorted((left, right) => left.relativePath.localeCompare(right.relativePath));
+  return assets.sort((left, right) => left.relativePath.localeCompare(right.relativePath));
 }
 
 async function discoverAndroidTopLevel(paths: ProjectDeploymentPaths): Promise<StoreListingAsset[]> {
@@ -25,7 +30,9 @@ async function discoverAndroidTopLevel(paths: ProjectDeploymentPaths): Promise<S
   ] as const;
   const results: StoreListingAsset[] = [];
   for (const [kind, filePath] of candidates) {
-    if (await fileExists(filePath)) results.push(await createAsset('android', kind, null, null, filePath, paths.projectRoot));
+    if (await fileExists(filePath)) {
+      results.push(await createAsset('android', kind, null, null, filePath, paths.projectRoot));
+    }
   }
   return results;
 }
@@ -40,15 +47,35 @@ async function discoverScreenshots(
   for (const localeEntry of await sortedDirectories(root)) {
     const locale = normalizeStoreListingLocale(localeEntry.name);
     if (locale === null) throw new Error(`Invalid screenshot locale: ${localeEntry.name}`);
-    for (const variantEntry of await sortedDirectories(path.join(root, localeEntry.name))) {
-      assertSafeSegment(variantEntry.name, 'screenshot variant');
-      const variantRoot = path.join(root, localeEntry.name, variantEntry.name);
-      for (const file of await sortedImageFiles(variantRoot)) {
-        results.push(await createAsset(target, 'screenshot', locale, variantEntry.name, path.join(variantRoot, file.name), projectRoot));
-      }
-    }
+    await addLocaleScreenshots(results, target, locale, localeEntry.name, root, projectRoot);
   }
   return results;
+}
+
+async function addLocaleScreenshots(
+  results: StoreListingAsset[],
+  target: StoreListingTarget,
+  locale: string,
+  authoredLocale: string,
+  root: string,
+  projectRoot: string,
+): Promise<void> {
+  for (const variantEntry of await sortedDirectories(path.join(root, authoredLocale))) {
+    assertSafeSegment(variantEntry.name, 'screenshot variant');
+    const variantRoot = path.join(root, authoredLocale, variantEntry.name);
+    for (const file of await sortedImageFiles(variantRoot)) {
+      results.push(
+        await createAsset(
+          target,
+          'screenshot',
+          locale,
+          variantEntry.name,
+          path.join(variantRoot, file.name),
+          projectRoot,
+        ),
+      );
+    }
+  }
 }
 
 async function createAsset(
@@ -61,7 +88,9 @@ async function createAsset(
 ): Promise<StoreListingAsset> {
   const bytes = await fs.readFile(filePath);
   const relativePath = path.relative(projectRoot, filePath).split(path.sep).join('/');
-  if (relativePath.startsWith('../') || path.isAbsolute(relativePath)) throw new Error('Store listing asset escapes project root.');
+  if (relativePath.startsWith('../') || path.isAbsolute(relativePath)) {
+    throw new Error('Store listing asset escapes project root.');
+  }
   return {
     target,
     kind,
@@ -74,16 +103,16 @@ async function createAsset(
   };
 }
 
-async function sortedDirectories(root: string): Promise<import('node:fs').Dirent[]> {
+async function sortedDirectories(root: string): Promise<Dirent[]> {
   const entries = await fs.readdir(root, { withFileTypes: true });
-  return entries.filter((entry) => entry.isDirectory()).toSorted((a, b) => a.name.localeCompare(b.name));
+  return entries.filter((entry) => entry.isDirectory()).sort((a, b) => a.name.localeCompare(b.name));
 }
 
-async function sortedImageFiles(root: string): Promise<import('node:fs').Dirent[]> {
+async function sortedImageFiles(root: string): Promise<Dirent[]> {
   const entries = await fs.readdir(root, { withFileTypes: true });
   return entries
     .filter((entry) => entry.isFile() && IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase()))
-    .toSorted((a, b) => a.name.localeCompare(b.name));
+    .sort((a, b) => a.name.localeCompare(b.name));
 }
 
 async function fileExists(filePath: string): Promise<boolean> {
