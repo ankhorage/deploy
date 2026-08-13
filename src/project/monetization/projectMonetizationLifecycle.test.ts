@@ -46,6 +46,7 @@ test('project monetization lifecycle inspects both stores and remains no-change'
   try {
     const result = await inspectProjectMonetizationWithRuntime({ projectRoot, ...ACCESS }, runtime);
     expect(result.ok).toBe(true);
+    expect(JSON.stringify(result)).not.toContain('PRIVATE_KEY_SENTINEL');
     if (!result.ok) return;
     expect(result.inspection.states.map((state) => state.target)).toEqual(['android', 'ios']);
     const plan = createProjectMonetizationPlan(result.inspection);

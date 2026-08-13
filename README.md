@@ -3,7 +3,7 @@
 
 # @ankhorage/deploy
 
-![license: MIT](././paradox/badges/license.svg) ![npm: v0.6.0](././paradox/badges/npm.svg) ![runtime: bun](././paradox/badges/runtime.svg) ![typescript: strict](././paradox/badges/typescript.svg) ![eslint: checked](././paradox/badges/eslint.svg) ![prettier: checked](././paradox/badges/prettier.svg) ![build: checked](././paradox/badges/build.svg) ![tests: checked](././paradox/badges/tests.svg) ![docs: paradox](././paradox/badges/docs.svg)
+![license: MIT](././paradox/badges/license.svg) ![npm: v0.7.0](././paradox/badges/npm.svg) ![runtime: bun](././paradox/badges/runtime.svg) ![typescript: strict](././paradox/badges/typescript.svg) ![eslint: checked](././paradox/badges/eslint.svg) ![prettier: checked](././paradox/badges/prettier.svg) ![build: checked](././paradox/badges/build.svg) ![tests: checked](././paradox/badges/tests.svg) ![docs: paradox](././paradox/badges/docs.svg)
 
 Declarative deployment engine for Expo apps across web, iOS, and Android.
 
@@ -16,3 +16,6 @@ Declarative deployment engine for Expo apps across web, iOS, and Android.
 - [Module relationships](././paradox/diagrams/module-relationships.mmd)
 - [Export graph](././paradox/diagrams/export-graph.mmd)
 - [createDeploymentPlan sequence](././paradox/diagrams/sequences/create-deployment-plan.mmd)
+- [createProjectMonetizationPlan sequence](././paradox/diagrams/sequences/create-project-monetization-plan.mmd)
+- [readProjectDeploymentConfig sequence](././paradox/diagrams/sequences/read-project-deployment-config.mmd)
+- [resolveDeployProject sequence](././paradox/diagrams/sequences/resolve-deploy-project.mmd)

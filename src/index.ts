@@ -28,6 +28,22 @@ export * from './domain/DeploymentTargetPlanContributor';
 export * from './domain/DeploymentVerificationResult';
 export type { IosDeploymentIntent } from './domain/IosDeploymentIntent';
 export type { IosDeploymentPublication } from './domain/IosDeploymentPublication';
+export type { MonetizationBasePrice } from './domain/monetization/MonetizationBasePrice';
+export type { MonetizationDesiredState } from './domain/monetization/MonetizationDesiredState';
+export type { MonetizationDiagnostic } from './domain/monetization/MonetizationDiagnostic';
+export type { MonetizationLocalization } from './domain/monetization/MonetizationLocalization';
+export type { MonetizationObservedProduct } from './domain/monetization/MonetizationObservedProduct';
+export type { MonetizationPlan } from './domain/monetization/MonetizationPlan';
+export type { MonetizationPlanStep } from './domain/monetization/MonetizationPlanStep';
+export type {
+  MonetizationProduct,
+  MonetizationProductKind,
+} from './domain/monetization/MonetizationProduct';
+export type {
+  MonetizationSubscription,
+  MonetizationSubscriptionPeriod,
+} from './domain/monetization/MonetizationSubscription';
+export type { MonetizationTargetState } from './domain/monetization/MonetizationTargetState';
 export * from './domain/WebDeploymentPublication';
 export * from './domain/WebDeploymentPublishIntent';
 export * from './engine/createDeploymentChanges';
