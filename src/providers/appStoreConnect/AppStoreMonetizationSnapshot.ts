@@ -14,6 +14,8 @@ export interface AppStoreMonetizationProductResource {
   readonly localizations: readonly AppStoreMonetizationLocalizationResource[];
   readonly basePriceMatches: boolean;
   readonly state?: string;
+  readonly versionId?: string;
+  readonly versionState?: string;
   readonly family?: string;
   readonly familyId?: string;
   readonly period?: MonetizationSubscriptionPeriod;

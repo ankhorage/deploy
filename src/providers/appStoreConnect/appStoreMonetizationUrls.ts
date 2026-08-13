@@ -14,10 +14,14 @@ export const appStoreMonetizationUrls = {
     });
     return `${V1}/apps/${segment(appId)}/subscriptionGroups?${query.toString()}`;
   },
-  iapLocalizations: (id: string) =>
-    `${V2}/inAppPurchases/${segment(id)}/inAppPurchaseLocalizations?limit=200`,
-  subscriptionLocalizations: (id: string) =>
-    `${V1}/subscriptions/${segment(id)}/subscriptionLocalizations?limit=200`,
+  iapVersions: (id: string) =>
+    `${V2}/inAppPurchases/${segment(id)}/versions?fields[inAppPurchaseVersions]=version,state&limit=200`,
+  subscriptionVersions: (id: string) =>
+    `${V1}/subscriptions/${segment(id)}/versions?fields[subscriptionVersions]=version,state&limit=200`,
+  iapVersionLocalizations: (id: string) =>
+    `${V1}/inAppPurchaseVersions/${segment(id)}/localizations?limit=200`,
+  subscriptionVersionLocalizations: (id: string) =>
+    `${V1}/subscriptionVersions/${segment(id)}/localizations?limit=200`,
   iapPricePoints: (id: string, territory: string) =>
     pricePointUrl(
       `${V2}/inAppPurchases/${segment(id)}/pricePoints`,
@@ -50,6 +54,18 @@ export const appStoreMonetizationUrls = {
     });
     return `${V1}/subscriptions/${segment(id)}/prices?${query.toString()}`;
   },
+  createIap: () => `${V2}/inAppPurchases`,
+  createSubscriptionGroup: () => `${V1}/subscriptionGroups`,
+  createSubscription: () => `${V1}/subscriptions`,
+  updateSubscription: (id: string) => `${V1}/subscriptions/${segment(id)}`,
+  createIapVersion: () => `${V1}/inAppPurchaseVersions`,
+  createSubscriptionVersion: () => `${V1}/subscriptionVersions`,
+  createIapLocalization: () => `${V2}/inAppPurchaseLocalizations`,
+  createSubscriptionLocalization: () => `${V2}/subscriptionLocalizations`,
+  updateIapLocalization: (id: string) => `${V2}/inAppPurchaseLocalizations/${segment(id)}`,
+  updateSubscriptionLocalization: (id: string) => `${V2}/subscriptionLocalizations/${segment(id)}`,
+  createIapPriceSchedule: () => `${V1}/inAppPurchasePriceSchedules`,
+  createSubscriptionPrice: () => `${V1}/subscriptionPrices`,
 };
 
 function pricePointUrl(base: string, territory: string, fieldsKey: string): string {

@@ -105,10 +105,16 @@ function responseFor(
   if (url.includes('/inAppPurchasesV2?')) return ok(iapCatalog());
   if (url.includes('/subscriptionGroups?'))
     return ok(subscriptionCatalog(period, subscriptionState));
-  if (url.includes('/inAppPurchases/iap-1/inAppPurchaseLocalizations')) {
+  if (url.includes('/inAppPurchases/iap-1/versions')) {
+    return ok(versions('inAppPurchaseVersions', 'iap-version'));
+  }
+  if (url.includes('/inAppPurchaseVersions/iap-version/localizations')) {
     return ok(localizations('iap-localization'));
   }
-  if (url.includes('/subscriptions/sub-1/subscriptionLocalizations')) {
+  if (url.includes('/subscriptions/sub-1/versions')) {
+    return ok(versions('subscriptionVersions', 'sub-version'));
+  }
+  if (url.includes('/subscriptionVersions/sub-version/localizations')) {
     return ok(localizations('sub-localization'));
   }
   if (url.includes('/inAppPurchases/iap-1/pricePoints'))
@@ -163,6 +169,18 @@ function subscriptionCatalog(period: string, state: string): unknown {
         relationships: {
           group: { data: { type: 'subscriptionGroups', id: 'group-1' } },
         },
+      },
+    ],
+  };
+}
+
+function versions(type: string, id: string): unknown {
+  return {
+    data: [
+      {
+        type,
+        id,
+        attributes: { version: 1, state: 'PREPARE_FOR_SUBMISSION' },
       },
     ],
   };

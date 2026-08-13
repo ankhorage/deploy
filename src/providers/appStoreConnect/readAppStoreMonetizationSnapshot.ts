@@ -5,7 +5,6 @@ import type { AppStoreConnectTransport } from './AppStoreConnectTransport';
 import { appStoreConnectAppsUrl } from './appStoreConnectUrls';
 import type {
   AppStoreMonetizationFamilyResource,
-  AppStoreMonetizationLocalizationResource,
   AppStoreMonetizationProductResource,
   AppStoreMonetizationSnapshot,
 } from './AppStoreMonetizationSnapshot';
@@ -15,6 +14,12 @@ import { parseAppStoreAppId } from './parseAppStoreAppId';
 import { readAppStoreCollection } from './readAppStoreCollection';
 import { readAppStoreJson } from './readAppStoreJson';
 import { readAppStoreMonetizationPrice } from './readAppStoreMonetizationPrice';
+import { readAppStoreProductVersion } from './readAppStoreProductVersion';
+
+interface ReadProductResult {
+  readonly products: readonly AppStoreMonetizationProductResource[];
+  readonly diagnostics: readonly MonetizationDiagnostic[];
+}
 
 export async function readAppStoreMonetizationSnapshot(options: {
   readonly bundleIdentifier: string;
@@ -48,8 +53,7 @@ async function resolveAppId(
     token: options.token,
     request: options.request,
   });
-  if (value === null) return undefined;
-  return parseAppStoreAppId(value, options.bundleIdentifier);
+  return value === null ? undefined : parseAppStoreAppId(value, options.bundleIdentifier);
 }
 
 async function readCatalog(options: {
@@ -57,8 +61,8 @@ async function readCatalog(options: {
   readonly token: string;
   readonly request: AppStoreConnectTransport;
 }): Promise<{
-  iaps: Awaited<ReturnType<typeof readAppStoreCollection>> & {};
-  groups: Awaited<ReturnType<typeof readAppStoreCollection>> & {};
+  iaps: { readonly data: readonly unknown[]; readonly included: readonly unknown[] };
+  groups: { readonly data: readonly unknown[]; readonly included: readonly unknown[] };
 } | null> {
   const [iaps, groups] = await Promise.all([
     readAppStoreCollection({
@@ -85,10 +89,7 @@ async function readDesiredProduct(options: {
   readonly token: string;
   readonly request: AppStoreConnectTransport;
   readonly now: Date;
-}): Promise<{
-  products: readonly AppStoreMonetizationProductResource[];
-  diagnostics: readonly MonetizationDiagnostic[];
-}> {
+}): Promise<ReadProductResult> {
   const iap = findProduct(options.catalog.iaps.data, options.desired.id);
   const subscription = findProduct(options.catalog.groups.included, options.desired.id);
   if (iap !== undefined && subscription !== undefined) {
@@ -108,50 +109,43 @@ async function readDesiredProduct(options: {
 async function readIap(
   options: Parameters<typeof readDesiredProduct>[0],
   value: unknown,
-): Promise<{
-  products: readonly AppStoreMonetizationProductResource[];
-  diagnostics: readonly MonetizationDiagnostic[];
-}> {
+): Promise<ReadProductResult> {
   const base = parseIap(value);
   if (base === null) return invalid(options.desired.id);
-  const localizations = await readLocalizations({
-    url: appStoreMonetizationUrls.iapLocalizations(base.resourceId),
-    token: options.token,
-    request: options.request,
-  });
-  if (localizations === null) return invalid(options.desired.id);
-  const price = await readAppStoreMonetizationPrice({
+  const version = await readAppStoreProductVersion({
     kind: 'iap',
-    resourceId: base.resourceId,
-    productId: options.desired.id,
-    price: options.desired.basePrice,
+    productId: base.resourceId,
     token: options.token,
     request: options.request,
-    now: options.now,
   });
-  return {
-    products: [{ ...base, localizations, basePriceMatches: price.matches }],
-    diagnostics: price.diagnostics,
-  };
+  if (version === null) return invalid(options.desired.id);
+  return withPrice(options, base, version, 'iap');
 }
 
 async function readSubscription(
   options: Parameters<typeof readDesiredProduct>[0],
   value: unknown,
-): Promise<{
-  products: readonly AppStoreMonetizationProductResource[];
-  diagnostics: readonly MonetizationDiagnostic[];
-}> {
+): Promise<ReadProductResult> {
   const base = parseSubscription(value, options.families);
   if (base === null) return invalid(options.desired.id);
-  const localizations = await readLocalizations({
-    url: appStoreMonetizationUrls.subscriptionLocalizations(base.resourceId),
+  const version = await readAppStoreProductVersion({
+    kind: 'subscription',
+    productId: base.resourceId,
     token: options.token,
     request: options.request,
   });
-  if (localizations === null) return invalid(options.desired.id);
+  if (version === null) return invalid(options.desired.id);
+  return withPrice(options, base, version, 'subscription');
+}
+
+async function withPrice(
+  options: Parameters<typeof readDesiredProduct>[0],
+  base: Omit<AppStoreMonetizationProductResource, 'localizations' | 'basePriceMatches'>,
+  version: Exclude<Awaited<ReturnType<typeof readAppStoreProductVersion>>, null>,
+  kind: 'iap' | 'subscription',
+): Promise<ReadProductResult> {
   const price = await readAppStoreMonetizationPrice({
-    kind: 'subscription',
+    kind,
     resourceId: base.resourceId,
     productId: options.desired.id,
     price: options.desired.basePrice,
@@ -160,7 +154,16 @@ async function readSubscription(
     now: options.now,
   });
   return {
-    products: [{ ...base, localizations, basePriceMatches: price.matches }],
+    products: [
+      {
+        ...base,
+        localizations: version?.localizations ?? [],
+        basePriceMatches: price.matches,
+        ...(version === undefined
+          ? {}
+          : { versionId: version.resourceId, versionState: version.state }),
+      },
+    ],
     diagnostics: price.diagnostics,
   };
 }
@@ -204,25 +207,6 @@ function parseSubscription(
   };
 }
 
-async function readLocalizations(options: {
-  readonly url: string;
-  readonly token: string;
-  readonly request: AppStoreConnectTransport;
-}): Promise<readonly AppStoreMonetizationLocalizationResource[] | null> {
-  const page = await readAppStoreCollection(options);
-  if (page === null) return null;
-  const result: AppStoreMonetizationLocalizationResource[] = [];
-  for (const item of page.data) {
-    if (!isRecord(item) || !isString(item.id) || !isRecord(item.attributes)) return null;
-    const locale = normalizeLocale(item.attributes.locale);
-    const { name } = item.attributes;
-    const { description } = item.attributes;
-    if (locale === null || !isString(name) || !isString(description)) return null;
-    result.push({ resourceId: item.id, locale, name, description });
-  }
-  return result.sort((a, b) => a.locale.localeCompare(b.locale));
-}
-
 function parseFamilies(
   values: readonly unknown[],
 ): readonly AppStoreMonetizationFamilyResource[] | null {
@@ -253,27 +237,15 @@ function relationshipId(value: unknown): string | null {
   return value.data.id;
 }
 
-function normalizeLocale(value: unknown): string | null {
-  if (!isString(value)) return null;
-  try {
-    return Intl.getCanonicalLocales(value)[0] ?? null;
-  } catch {
-    return null;
-  }
-}
-
-function empty(): {
-  products: readonly AppStoreMonetizationProductResource[];
-  diagnostics: readonly MonetizationDiagnostic[];
-} {
+function empty(): ReadProductResult {
   return { products: [], diagnostics: [] };
 }
 
-function invalid(productId: string): {
-  products: readonly AppStoreMonetizationProductResource[];
-  diagnostics: readonly MonetizationDiagnostic[];
-} {
-  return { products: [], diagnostics: [diagnostic(productId, 'APP_STORE_PRODUCT_STATE_INVALID')] };
+function invalid(productId: string): ReadProductResult {
+  return {
+    products: [],
+    diagnostics: [diagnostic(productId, 'APP_STORE_PRODUCT_STATE_INVALID')],
+  };
 }
 
 function diagnostic(productId: string, code: string): MonetizationDiagnostic {

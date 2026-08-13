@@ -33,14 +33,12 @@ function normalizeProduct(
 ): MonetizationObservedProduct[] {
   const current = snapshot.products.find((item) => item.productId === desired.id);
   if (current === undefined) return [];
-  if (desired.kind === 'subscription') {
-    validateSubscription(desired, current, diagnostics);
-  }
+  if (desired.kind === 'subscription') validateSubscription(desired, current, diagnostics);
   return [
     {
       id: current.productId,
       kind: current.kind,
-      localizations: current.localizations.map(({ resourceId: _resourceId, ...item }) => item),
+      localizations: managedLocalizations(desired, current),
       ...(current.basePriceMatches ? { basePrice: desired.basePrice } : {}),
       ...(current.kind === 'subscription' &&
       current.family !== undefined &&
@@ -55,6 +53,17 @@ function normalizeProduct(
         : {}),
     },
   ];
+}
+
+function managedLocalizations(
+  desired: MonetizationProduct,
+  current: AppStoreMonetizationProductResource,
+): MonetizationObservedProduct['localizations'] {
+  return current.localizations
+    .filter((item) =>
+      desired.localizations.some((desiredItem) => desiredItem.locale === item.locale),
+    )
+    .map(({ resourceId: _resourceId, ...item }) => item);
 }
 
 function validateSubscription(
