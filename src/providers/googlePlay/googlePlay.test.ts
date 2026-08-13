@@ -6,14 +6,18 @@ import { expect, test } from 'bun:test';
 
 import type { DeploymentCredentialReference } from '../../domain/DeploymentCredentialReference';
 import type { DeploymentSecretResolver } from '../../domain/DeploymentSecretResolver';
+import type { StoreListingDesiredState } from '../../domain/storeListing/StoreListingDesiredState';
 import type { EasAndroidBuildArtifact } from '../eas/android/EasAndroidBuildArtifact';
 import type { GooglePlayServiceAccountCredentials } from './GooglePlayTokenFactory';
 import type { GooglePlayRequest, GooglePlayTransport } from './GooglePlayTransport';
 import { googlePlayInsertEditUrl } from './googlePlayUrls';
+import { inspectGooglePlayStoreListing } from './inspectGooglePlayStoreListing';
 import { inspectGooglePlayTrack } from './inspectGooglePlayTrack';
 import { publishAndroidToGooglePlay } from './publishAndroidToGooglePlay';
+import { replaceGooglePlayImages } from './replaceGooglePlayImages';
 import { resolveGooglePlayAccessToken } from './resolveGooglePlayAccessToken';
 import { verifyGooglePlayPublication } from './verifyGooglePlayPublication';
+import { writeGooglePlayListing } from './writeGooglePlayListing';
 
 const SECRET = JSON.stringify({
   type: 'service_account',
@@ -200,3 +204,72 @@ async function exists(filePath: string): Promise<boolean> {
     return false;
   }
 }
+
+test('Google Play store listing inspection normalizes metadata and image hashes', async () => {
+  const desired: StoreListingDesiredState = {
+    revision: 'listing-revision',
+    locales: [{ locale: 'de-CH', name: 'Ankh', summary: 'Kurz' }],
+    assetSets: [{ target: 'android', locale: 'de-CH', variant: 'phone', assets: [] }],
+  };
+  const requests: GooglePlayRequest[] = [];
+  const result = await inspectGooglePlayStoreListing({
+    packageName: 'com.example.app',
+    desired,
+    credentials: [CREDENTIAL],
+    resolveSecret: RESOLVE_SECRET,
+    createToken: () => Promise.resolve('token'),
+    request: (request) => {
+      requests.push(request);
+      if (requests.length === 1) {
+        return Promise.resolve({ status: 200, body: JSON.stringify({ id: 'edit-1' }) });
+      }
+      if (requests.length === 2) {
+        return Promise.resolve({
+          status: 200,
+          body: JSON.stringify({
+            listings: [{ language: 'de-CH', title: 'Ankh', shortDescription: 'Kurz' }],
+          }),
+        });
+      }
+      return Promise.resolve({
+        status: 200,
+        body: JSON.stringify({ images: [{ sha256: 'remote-sha' }] }),
+      });
+    },
+  });
+
+  expect(result.status).toBe('completed');
+  expect(requests.map((request) => request.method)).toEqual(['POST', 'GET', 'GET']);
+  if (result.status === 'completed') {
+    expect(result.state.assetSets[0]?.hashes).toEqual(['remote-sha']);
+  }
+});
+
+test('Google Play listing writers update metadata and replace managed image sets', async () => {
+  const requests: GooglePlayRequest[] = [];
+  const request: GooglePlayTransport = (item) => {
+    requests.push(item);
+    return Promise.resolve({ status: 200, body: '{}' });
+  };
+  const metadata = await writeGooglePlayListing({
+    packageName: 'com.example.app',
+    editId: 'edit-1',
+    token: 'token',
+    operation: 'update-locale',
+    listing: { locale: 'de-CH', name: 'Ankh', summary: 'Kurz' },
+    request,
+  });
+  const images = await replaceGooglePlayImages({
+    packageName: 'com.example.app',
+    editId: 'edit-1',
+    locale: 'de-CH',
+    variant: 'phone',
+    assets: [],
+    token: 'token',
+    request,
+  });
+
+  expect(metadata).toBe(true);
+  expect(images).toBe(true);
+  expect(requests.map((item) => item.method)).toEqual(['PATCH', 'DELETE']);
+});

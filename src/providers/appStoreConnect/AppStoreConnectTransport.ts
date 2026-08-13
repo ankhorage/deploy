@@ -1,5 +1,5 @@
 export interface AppStoreConnectRequest {
-  readonly method: 'GET' | 'POST' | 'PATCH';
+  readonly method: 'DELETE' | 'GET' | 'POST' | 'PATCH';
   readonly url: string;
   readonly token: string;
   readonly body?: string;
