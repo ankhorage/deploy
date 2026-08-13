@@ -40,7 +40,7 @@ test('rejects screenshot assets for a locale without authored listing metadata',
       path.join(root, 'deploy/assets/ios/screenshots/fr-FR/APP_IPHONE_67/01.png'),
       'png',
     );
-    await expect(readProjectStoreListing({ projectRoot: root })).rejects.toThrow(
+    expect(readProjectStoreListing({ projectRoot: root })).rejects.toThrow(
       'STORE_LISTING_ASSET_LOCALE_UNKNOWN',
     );
   } finally {

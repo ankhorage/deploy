@@ -48,7 +48,9 @@ test('store listing plan is no-change for matching managed state', () => {
 });
 
 test('empty authored asset set plans deletion of a remote set', () => {
-  const emptyDesired = { ...desired, assetSets: [{ ...desired.assetSets[0]!, assets: [] }] };
+  const [assetSet] = desired.assetSets;
+  if (!assetSet) throw new Error('Expected store listing asset set fixture.');
+  const emptyDesired = { ...desired, assetSets: [{ ...assetSet, assets: [] }] };
   const plan = createStoreListingPlan({
     desired: emptyDesired,
     currentRevision: 'current',
