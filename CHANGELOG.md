@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.7.0
+
+### Minor Changes
+
+- 3f1e427: Add deterministic store listing, localization, and asset synchronization for Google Play and App Store Connect.
+
 ## 0.6.0
 
 ### Minor Changes
