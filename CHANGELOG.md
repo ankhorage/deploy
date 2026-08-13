@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.6.0
+
+### Minor Changes
+
+- f3e7b1e: Add iOS deployment planning, EAS build/signing support, and App Store Connect build delivery with verified version attachment.
+
 ## 0.5.0
 
 ### Minor Changes
