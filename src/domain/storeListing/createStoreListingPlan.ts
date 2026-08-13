@@ -99,7 +99,7 @@ function fieldEqual(
 }
 
 function arraysEqual(a: readonly string[], b: readonly string[]): boolean {
-  return a.length === b.length && a.every((value, index) => value === b[index]);
+  return a.length === b.length && JSON.stringify(a) === JSON.stringify(b);
 }
 
 function compareSteps(a: StoreListingPlanStep, b: StoreListingPlanStep): number {
