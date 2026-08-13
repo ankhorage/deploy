@@ -1,5 +1,5 @@
 export interface GooglePlayRequest {
-  readonly method: 'GET' | 'POST' | 'PUT';
+  readonly method: 'DELETE' | 'GET' | 'PATCH' | 'POST' | 'PUT';
   readonly url: string;
   readonly token: string;
   readonly contentType?: string;
