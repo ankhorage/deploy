@@ -31,5 +31,7 @@ function toCanonicalAsset(asset: ProjectStoreListingAsset): StoreListingAsset {
 }
 
 function compareSets(a: ProjectStoreListingAssetSet, b: ProjectStoreListingAssetSet): number {
-  return `${a.target}:${a.locale}:${a.variant}`.localeCompare(`${b.target}:${b.locale}:${b.variant}`);
+  return `${a.target}:${a.locale}:${a.variant}`.localeCompare(
+    `${b.target}:${b.locale}:${b.variant}`,
+  );
 }

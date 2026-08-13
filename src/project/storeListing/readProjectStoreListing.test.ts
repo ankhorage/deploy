@@ -1,7 +1,8 @@
-import { expect, test } from 'bun:test';
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
+
+import { expect, test } from 'bun:test';
 
 import { readProjectStoreListing } from './readProjectStoreListing';
 
@@ -9,8 +10,13 @@ test('reads locales, projects shared Android assets, and preserves empty screens
   const root = await fs.mkdtemp(path.join(tmpdir(), 'ankh-listing-'));
   try {
     await fs.mkdir(path.join(root, 'deploy/listing'), { recursive: true });
-    await fs.mkdir(path.join(root, 'deploy/assets/android/screenshots/de-CH/phone'), { recursive: true });
-    await fs.writeFile(path.join(root, 'deploy/listing/de-ch.json'), JSON.stringify({ name: 'Ankh' }));
+    await fs.mkdir(path.join(root, 'deploy/assets/android/screenshots/de-CH/phone'), {
+      recursive: true,
+    });
+    await fs.writeFile(
+      path.join(root, 'deploy/listing/de-ch.json'),
+      JSON.stringify({ name: 'Ankh' }),
+    );
     await fs.writeFile(path.join(root, 'deploy/assets/android/icon.png'), 'icon');
     const listing = await readProjectStoreListing({ projectRoot: root });
     expect(listing.locales[0]?.locale).toBe('de-CH');

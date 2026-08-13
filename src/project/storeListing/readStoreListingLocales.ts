@@ -1,11 +1,13 @@
-import { promises as fs, type Dirent } from 'node:fs';
+import { type Dirent, promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import type { StoreListingLocale } from '../../domain/storeListing/StoreListingLocale';
 import { isMissingPathError } from '../io/isMissingPathError';
 import { parseStoreListingLocale } from './parseStoreListingLocale';
 
-export async function readStoreListingLocales(root: string): Promise<readonly StoreListingLocale[]> {
+export async function readStoreListingLocales(
+  root: string,
+): Promise<readonly StoreListingLocale[]> {
   const entries = await readEntries(root);
   const files = entries.filter((entry) => entry.isFile() && entry.name.endsWith('.json'));
   const locales = await Promise.all(files.map((entry) => readLocale(root, entry.name)));

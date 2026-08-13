@@ -16,9 +16,10 @@ interface DeployTargets {
 export function resolveProjectStoreListingTargets(
   targets: DeployTargets,
 ): ProjectStoreListingTargetIdentity | null {
-  const android = targets.android;
-  const ios = targets.ios;
-  if (android?.enabled === true && !supported(android.providers?.publish, 'google-play')) return null;
+  const { android } = targets;
+  const { ios } = targets;
+  if (android?.enabled === true && !supported(android.providers?.publish, 'google-play'))
+    return null;
   if (ios?.enabled === true && !supported(ios.providers?.publish, 'app-store-connect')) return null;
   return {
     ...(android?.enabled === true ? { androidPackageName: android.package } : {}),

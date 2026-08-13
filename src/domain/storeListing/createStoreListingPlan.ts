@@ -3,11 +3,11 @@ import type { StoreListingAssetSet } from './StoreListingAssetSet';
 import type { StoreListingDesiredState } from './StoreListingDesiredState';
 import type { StoreListingField } from './StoreListingField';
 import type { StoreListingLocale } from './StoreListingLocale';
+import { storeListingLocaleFieldValue } from './storeListingLocaleFieldValue';
 import type { StoreListingPlan } from './StoreListingPlan';
 import type { StoreListingPlanStep } from './StoreListingPlanStep';
 import type { StoreListingRemoteAssetSet } from './StoreListingRemoteAssetSet';
 import type { StoreListingTargetState } from './StoreListingTargetState';
-import { storeListingLocaleFieldValue } from './storeListingLocaleFieldValue';
 
 export function createStoreListingPlan(options: {
   readonly desired: StoreListingDesiredState;
@@ -45,15 +45,18 @@ function metadataStep(
   const current = state.locales.find((locale) => locale.locale === desired.locale);
   const managed = state.supportedFields.filter((field) => isManaged(desired, field));
   if (managed.length === 0) return [];
-  const changed = current === undefined || managed.some((field) => !fieldEqual(desired, current, field));
+  const changed =
+    current === undefined || managed.some((field) => !fieldEqual(desired, current, field));
   if (!changed) return [];
   const operation = current === undefined ? 'create-locale' : 'update-locale';
-  return [{
-    id: `${state.target}:${desired.locale}:metadata`,
-    target: state.target,
-    operation,
-    locale: desired.locale,
-  }];
+  return [
+    {
+      id: `${state.target}:${desired.locale}:metadata`,
+      target: state.target,
+      operation,
+      locale: desired.locale,
+    },
+  ];
 }
 
 function assetStep(
@@ -64,13 +67,15 @@ function assetStep(
   const checksum = current?.checksum ?? (state.target === 'ios' ? 'md5' : 'sha256');
   const hashes = desired.assets.map((asset) => assetHash(asset, checksum));
   if (current !== undefined && arraysEqual(hashes, current.hashes)) return [];
-  return [{
-    id: `${state.target}:${desired.locale}:assets:${desired.variant}`,
-    target: state.target,
-    operation: 'replace-assets',
-    locale: desired.locale,
-    variant: desired.variant,
-  }];
+  return [
+    {
+      id: `${state.target}:${desired.locale}:assets:${desired.variant}`,
+      target: state.target,
+      operation: 'replace-assets',
+      locale: desired.locale,
+      variant: desired.variant,
+    },
+  ];
 }
 
 function findAssetSet(
@@ -94,8 +99,10 @@ function fieldEqual(
   current: StoreListingLocale,
   field: StoreListingField,
 ): boolean {
-  return JSON.stringify(storeListingLocaleFieldValue(desired, field)) ===
-    JSON.stringify(storeListingLocaleFieldValue(current, field));
+  return (
+    JSON.stringify(storeListingLocaleFieldValue(desired, field)) ===
+    JSON.stringify(storeListingLocaleFieldValue(current, field))
+  );
 }
 
 function arraysEqual(a: readonly string[], b: readonly string[]): boolean {

@@ -31,7 +31,8 @@ function localeDiagnostics(
 ): StoreListingDiagnostic[] {
   const supported = new Set<StoreListingField>(GOOGLE_PLAY_STORE_LISTING_FIELDS);
   return ALL_FIELDS.flatMap((field) => {
-    if (supported.has(field) || storeListingLocaleFieldValue(locale, field) === undefined) return [];
+    if (supported.has(field) || storeListingLocaleFieldValue(locale, field) === undefined)
+      return [];
     return [
       {
         severity: 'warning',

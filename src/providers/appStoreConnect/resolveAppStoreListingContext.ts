@@ -1,6 +1,6 @@
 import type { StoreListingDesiredState } from '../../domain/storeListing/StoreListingDesiredState';
-import { appStoreConnectAppsUrl } from './appStoreConnectUrls';
 import type { AppStoreConnectTransport } from './AppStoreConnectTransport';
+import { appStoreConnectAppsUrl } from './appStoreConnectUrls';
 import type { AppStoreListingContextResult } from './AppStoreListingContextResult';
 import {
   appInfoLocalizationsUrl,

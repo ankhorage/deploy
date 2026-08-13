@@ -1,14 +1,25 @@
-import type { StoreListingLocale } from '../../domain/storeListing/StoreListingLocale';
 import { normalizeStoreListingLocale } from '../../domain/storeListing/normalizeStoreListingLocale';
+import type { StoreListingLocale } from '../../domain/storeListing/StoreListingLocale';
 import { hasOnlyKeys } from '../io/hasOnlyKeys';
 import { isRecord } from '../io/isRecord';
 
 const KEYS = new Set([
-  'locale', 'name', 'summary', 'description', 'keywords', 'promotionalText',
-  'supportUrl', 'marketingUrl', 'privacyPolicyUrl', 'promoVideoUrl',
+  'locale',
+  'name',
+  'summary',
+  'description',
+  'keywords',
+  'promotionalText',
+  'supportUrl',
+  'marketingUrl',
+  'privacyPolicyUrl',
+  'promoVideoUrl',
 ]);
 
-export function parseStoreListingLocale(value: unknown, filenameLocale: string): StoreListingLocale {
+export function parseStoreListingLocale(
+  value: unknown,
+  filenameLocale: string,
+): StoreListingLocale {
   if (!isRecord(value) || !hasOnlyKeys(value, KEYS)) throw invalid();
   const locale = normalizeStoreListingLocale(filenameLocale);
   if (value.locale !== undefined && normalizeLocale(value.locale) !== locale) throw invalid();

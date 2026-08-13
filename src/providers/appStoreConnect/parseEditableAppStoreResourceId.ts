@@ -11,8 +11,8 @@ export function parseEditableAppStoreResourceId(
     if (!isRecord(item.attributes)) return undefined;
     const state =
       type === 'appInfos'
-        ? item.attributes.state ?? item.attributes.appStoreState
-        : item.attributes.appVersionState ?? item.attributes.appStoreState;
+        ? (item.attributes.state ?? item.attributes.appStoreState)
+        : (item.attributes.appVersionState ?? item.attributes.appStoreState);
     if (!isEditableAppStoreListingState(state)) continue;
     if (match !== null) return undefined;
     match = item.id;

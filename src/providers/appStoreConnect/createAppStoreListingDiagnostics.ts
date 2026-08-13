@@ -7,17 +7,21 @@ import { isAppStoreScreenshotVariant } from './isAppStoreScreenshotVariant';
 import { mapAppStoreLocale } from './mapAppStoreLocale';
 
 const ALL_FIELDS: readonly StoreListingField[] = [
-  'name', 'summary', 'description', 'keywords', 'promotionalText',
-  'supportUrl', 'marketingUrl', 'privacyPolicyUrl', 'promoVideoUrl',
+  'name',
+  'summary',
+  'description',
+  'keywords',
+  'promotionalText',
+  'supportUrl',
+  'marketingUrl',
+  'privacyPolicyUrl',
+  'promoVideoUrl',
 ];
 
 export function createAppStoreListingDiagnostics(
   desired: StoreListingDesiredState,
 ): readonly StoreListingDiagnostic[] {
-  return [
-    ...localeDiagnostics(desired),
-    ...desired.assetSets.flatMap(assetSetDiagnostics),
-  ];
+  return [...localeDiagnostics(desired), ...desired.assetSets.flatMap(assetSetDiagnostics)];
 }
 
 function localeDiagnostics(desired: StoreListingDesiredState): StoreListingDiagnostic[] {
@@ -39,28 +43,40 @@ function fieldAndLocaleDiagnostics(
   locale: StoreListingDesiredState['locales'][number],
 ): StoreListingDiagnostic[] {
   if (mapAppStoreLocale(locale.locale) === null) {
-    return [{
-      severity: 'error', code: 'APP_STORE_LOCALE_UNSUPPORTED',
-      message: `App Store Connect does not support locale ${locale.locale}.`,
-      target: 'ios', locale: locale.locale,
-    }];
+    return [
+      {
+        severity: 'error',
+        code: 'APP_STORE_LOCALE_UNSUPPORTED',
+        message: `App Store Connect does not support locale ${locale.locale}.`,
+        target: 'ios',
+        locale: locale.locale,
+      },
+    ];
   }
   const supported = new Set<StoreListingField>(APP_STORE_LISTING_FIELDS);
   return ALL_FIELDS.flatMap((field) => {
-    if (supported.has(field) || storeListingLocaleFieldValue(locale, field) === undefined) return [];
-    return [{
-      severity: 'warning', code: 'APP_STORE_LISTING_FIELD_UNSUPPORTED',
-      message: `App Store Connect does not synchronize ${field}.`,
-      target: 'ios', locale: locale.locale, field,
-    }];
+    if (supported.has(field) || storeListingLocaleFieldValue(locale, field) === undefined)
+      return [];
+    return [
+      {
+        severity: 'warning',
+        code: 'APP_STORE_LISTING_FIELD_UNSUPPORTED',
+        message: `App Store Connect does not synchronize ${field}.`,
+        target: 'ios',
+        locale: locale.locale,
+        field,
+      },
+    ];
   });
 }
 
 function duplicateLocaleDiagnostic(locale: string, mapped: string): StoreListingDiagnostic {
   return {
-    severity: 'error', code: 'APP_STORE_LOCALE_COLLISION',
+    severity: 'error',
+    code: 'APP_STORE_LOCALE_COLLISION',
     message: `Locale ${locale} maps to duplicate App Store locale ${mapped}.`,
-    target: 'ios', locale,
+    target: 'ios',
+    locale,
   };
 }
 
@@ -68,9 +84,14 @@ function assetSetDiagnostics(
   set: StoreListingDesiredState['assetSets'][number],
 ): StoreListingDiagnostic[] {
   if (set.target !== 'ios' || isAppStoreScreenshotVariant(set.variant)) return [];
-  return [{
-    severity: 'error', code: 'APP_STORE_SCREENSHOT_VARIANT_UNSUPPORTED',
-    message: `App Store screenshot variant ${set.variant} is unsupported.`,
-    target: 'ios', locale: set.locale, variant: set.variant,
-  }];
+  return [
+    {
+      severity: 'error',
+      code: 'APP_STORE_SCREENSHOT_VARIANT_UNSUPPORTED',
+      message: `App Store screenshot variant ${set.variant} is unsupported.`,
+      target: 'ios',
+      locale: set.locale,
+      variant: set.variant,
+    },
+  ];
 }

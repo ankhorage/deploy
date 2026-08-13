@@ -7,9 +7,7 @@ export interface GooglePlayRequestTracker {
   readonly blockingStatus: () => GooglePlayBlockingStatus;
 }
 
-export function trackGooglePlayRequests(
-  transport: GooglePlayTransport,
-): GooglePlayRequestTracker {
+export function trackGooglePlayRequests(transport: GooglePlayTransport): GooglePlayRequestTracker {
   let blockingStatus: GooglePlayBlockingStatus = null;
   return {
     request: async (request: GooglePlayRequest) => {

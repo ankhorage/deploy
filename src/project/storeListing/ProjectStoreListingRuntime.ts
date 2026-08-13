@@ -1,14 +1,14 @@
 import {
-  createAppStoreConnectToken,
   type AppStoreConnectTokenFactory,
+  createAppStoreConnectToken,
 } from '../../providers/appStoreConnect/AppStoreConnectTokenFactory';
 import {
-  fetchAppStoreConnect,
   type AppStoreConnectTransport,
+  fetchAppStoreConnect,
 } from '../../providers/appStoreConnect/AppStoreConnectTransport';
 import {
-  fetchAppStoreUpload,
   type AppStoreUploadTransport,
+  fetchAppStoreUpload,
 } from '../../providers/appStoreConnect/AppStoreUploadTransport';
 import {
   createGooglePlayAccessToken,

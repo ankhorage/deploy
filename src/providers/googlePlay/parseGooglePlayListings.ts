@@ -1,5 +1,5 @@
-import type { StoreListingLocale } from '../../domain/storeListing/StoreListingLocale';
 import { normalizeStoreListingLocale } from '../../domain/storeListing/normalizeStoreListingLocale';
+import type { StoreListingLocale } from '../../domain/storeListing/StoreListingLocale';
 
 export function parseGooglePlayListings(
   value: unknown,

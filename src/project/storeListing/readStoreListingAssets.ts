@@ -1,10 +1,10 @@
 import { createHash } from 'node:crypto';
-import { promises as fs, type Dirent } from 'node:fs';
+import { type Dirent, promises as fs } from 'node:fs';
 import path from 'node:path';
 
+import { normalizeStoreListingLocale } from '../../domain/storeListing/normalizeStoreListingLocale';
 import type { StoreListingAssetMediaType } from '../../domain/storeListing/StoreListingAsset';
 import type { StoreListingTarget } from '../../domain/storeListing/StoreListingTarget';
-import { normalizeStoreListingLocale } from '../../domain/storeListing/normalizeStoreListingLocale';
 import { isMissingPathError } from '../io/isMissingPathError';
 import type { ProjectStoreListingAsset } from './ProjectStoreListingAsset';
 import type { ProjectStoreListingAssetSet } from './ProjectStoreListingAssetSet';
@@ -41,7 +41,11 @@ async function readAndroidSharedSets(
   ] as const;
   const result: ProjectStoreListingAssetSet[] = [];
   for (const definition of definitions) {
-    const asset = await readOptionalAsset(options.projectRoot, options.androidRoot, definition.filename);
+    const asset = await readOptionalAsset(
+      options.projectRoot,
+      options.androidRoot,
+      definition.filename,
+    );
     if (asset === null) continue;
     for (const locale of options.locales) {
       result.push({ target: 'android', locale, variant: definition.variant, assets: [asset] });
@@ -107,7 +111,10 @@ async function createAsset(
 
 async function readDirectories(root: string): Promise<string[]> {
   const entries = await readEntries(root);
-  return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
 }
 
 async function readImageFiles(root: string): Promise<string[]> {
@@ -115,7 +122,10 @@ async function readImageFiles(root: string): Promise<string[]> {
   if (entries.some((entry) => entry.isFile() && !isImage(entry.name))) {
     throw new Error('STORE_LISTING_ASSET_TYPE_UNSUPPORTED');
   }
-  return entries.filter(isImageFile).map((entry) => entry.name).sort();
+  return entries
+    .filter(isImageFile)
+    .map((entry) => entry.name)
+    .sort();
 }
 
 async function readEntries(root: string): Promise<Dirent[]> {
@@ -140,5 +150,7 @@ function mediaType(filename: string): StoreListingAssetMediaType {
 }
 
 function compareSets(a: ProjectStoreListingAssetSet, b: ProjectStoreListingAssetSet): number {
-  return `${a.target}:${a.locale}:${a.variant}`.localeCompare(`${b.target}:${b.locale}:${b.variant}`);
+  return `${a.target}:${a.locale}:${a.variant}`.localeCompare(
+    `${b.target}:${b.locale}:${b.variant}`,
+  );
 }

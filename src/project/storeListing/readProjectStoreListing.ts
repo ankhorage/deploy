@@ -1,6 +1,6 @@
 import { resolveProjectDeploymentPaths } from '../resolveProjectDeploymentPaths';
-import type { ProjectStoreListing } from './ProjectStoreListing';
 import { createProjectStoreListingRevision } from './createProjectStoreListingRevision';
+import type { ProjectStoreListing } from './ProjectStoreListing';
 import { readStoreListingAssetSets } from './readStoreListingAssets';
 import { readStoreListingLocales } from './readStoreListingLocales';
 
@@ -15,7 +15,10 @@ export async function readProjectStoreListing(options: {
     iosRoot: paths.iosScreenshotsRoot,
     locales: locales.map((item) => item.locale),
   });
-  assertAssetLocales(locales.map((item) => item.locale), assetSets.map((item) => item.locale));
+  assertAssetLocales(
+    locales.map((item) => item.locale),
+    assetSets.map((item) => item.locale),
+  );
   return { locales, assetSets, revision: createProjectStoreListingRevision(locales, assetSets) };
 }
 

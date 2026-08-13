@@ -2,8 +2,9 @@ import type { DeploymentCredentialReference } from '../../domain/DeploymentCrede
 import type { DeploymentSecretResolver } from '../../domain/DeploymentSecretResolver';
 import type { StoreListingDesiredState } from '../../domain/storeListing/StoreListingDesiredState';
 import { createGooglePlayListingDiagnostics } from './createGooglePlayListingDiagnostics';
-import { GOOGLE_PLAY_STORE_LISTING_FIELDS } from './googlePlayStoreListingFields';
 import { googlePlayListingsUrl } from './googlePlayListingUrls';
+import { trackGooglePlayRequests } from './GooglePlayRequestTracker';
+import { GOOGLE_PLAY_STORE_LISTING_FIELDS } from './googlePlayStoreListingFields';
 import type { GooglePlayStoreListingInspectionResult } from './GooglePlayStoreListingResult';
 import type { GooglePlayTokenFactory } from './GooglePlayTokenFactory';
 import type { GooglePlayTransport } from './GooglePlayTransport';
@@ -11,7 +12,6 @@ import { insertGooglePlayEdit } from './insertGooglePlayEdit';
 import { parseGooglePlayListings } from './parseGooglePlayListings';
 import { readGooglePlayAssetSets } from './readGooglePlayAssetSets';
 import { resolveGooglePlayAccessToken } from './resolveGooglePlayAccessToken';
-import { trackGooglePlayRequests } from './GooglePlayRequestTracker';
 
 export async function inspectGooglePlayStoreListing(options: {
   readonly packageName: string;

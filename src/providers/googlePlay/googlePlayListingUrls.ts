@@ -5,11 +5,7 @@ export function googlePlayListingsUrl(packageName: string, editId: string): stri
   return `${base(API, packageName, editId)}/listings`;
 }
 
-export function googlePlayListingUrl(
-  packageName: string,
-  editId: string,
-  locale: string,
-): string {
+export function googlePlayListingUrl(packageName: string, editId: string, locale: string): string {
   return `${googlePlayListingsUrl(packageName, editId)}/${segment(locale)}`;
 }
 
