@@ -1,15 +1,6 @@
-import type { ReleaseNote } from './ReleaseNote';
-import type { ReleaseTarget } from './ReleaseTarget';
+import type { ReleaseObservedAndroidState } from './ReleaseObservedAndroidState';
+import type { ReleaseObservedIosState } from './ReleaseObservedIosState';
+import type { ReleaseObservedWebState } from './ReleaseObservedWebState';
 
-export interface ReleaseObservedTargetState {
-  readonly target: ReleaseTarget;
-  readonly version: string;
-  readonly versionExists: boolean;
-  readonly releaseNotes: readonly ReleaseNote[];
-  readonly androidRolloutStatus?: 'draft' | 'inProgress' | 'halted' | 'completed';
-  readonly androidUserFraction?: string;
-  readonly iosAppVersionState?: string;
-  readonly iosReleaseType?: string;
-  readonly iosReviewState?: string;
-  readonly iosPhasedReleaseState?: 'INACTIVE' | 'ACTIVE' | 'PAUSED' | 'COMPLETE' | null;
-}
+export type ReleaseObservedTargetState =
+  ReleaseObservedWebState | ReleaseObservedAndroidState | ReleaseObservedIosState;
