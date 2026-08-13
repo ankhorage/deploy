@@ -26,6 +26,8 @@ export * from './domain/DeploymentStepOutcome';
 export * from './domain/DeploymentTargetChange';
 export * from './domain/DeploymentTargetPlanContributor';
 export * from './domain/DeploymentVerificationResult';
+export type { IosDeploymentIntent } from './domain/IosDeploymentIntent';
+export type { IosDeploymentPublication } from './domain/IosDeploymentPublication';
 export * from './domain/WebDeploymentPublication';
 export * from './domain/WebDeploymentPublishIntent';
 export * from './engine/createDeploymentChanges';
