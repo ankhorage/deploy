@@ -1,3 +1,4 @@
+export type { MonetizationDesiredState } from '../domain/monetization/MonetizationDesiredState';
 export { createProjectAndroidDeploymentPlan } from './android/createProjectAndroidDeploymentPlan';
 export {
   executeProjectAndroidDeployment,
@@ -33,6 +34,7 @@ export type {
   ProjectIosDeploymentInspection,
   ProjectIosDeploymentInspectionResult,
 } from './ios/ProjectIosDeploymentInspection';
+export { readProjectMonetization } from './monetization/readProjectMonetization';
 export type { ProjectDeploymentPaths } from './ProjectDeploymentPaths';
 export { readProjectDeploymentConfig } from './readProjectDeploymentConfig';
 export type { ResolvedDeployProject } from './ResolvedDeployProject';
