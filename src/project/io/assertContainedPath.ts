@@ -5,15 +5,16 @@ export async function assertContainedWritePath(
   projectRoot: string,
   targetPath: string,
 ): Promise<void> {
-  const root = await fs.realpath(projectRoot);
+  const resolvedRoot = path.resolve(projectRoot);
   const resolvedTarget = path.resolve(targetPath);
-  if (!isContained(root, resolvedTarget)) {
+  if (!isContained(resolvedRoot, resolvedTarget)) {
     throw new Error(`Deploy project path escapes project root: ${targetPath}`);
   }
 
+  const realRoot = await fs.realpath(resolvedRoot);
   const existingParent = await findExistingParent(path.dirname(resolvedTarget));
   const realParent = await fs.realpath(existingParent);
-  if (!isContained(root, realParent)) {
+  if (!isContained(realRoot, realParent)) {
     throw new Error(`Deploy project path resolves outside project root: ${targetPath}`);
   }
 }

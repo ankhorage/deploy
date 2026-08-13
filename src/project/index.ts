@@ -1,3 +1,4 @@
+export type { MonetizationDesiredState } from '../domain/monetization/MonetizationDesiredState';
 export { createProjectAndroidDeploymentPlan } from './android/createProjectAndroidDeploymentPlan';
 export {
   executeProjectAndroidDeployment,
@@ -33,6 +34,18 @@ export type {
   ProjectIosDeploymentInspection,
   ProjectIosDeploymentInspectionResult,
 } from './ios/ProjectIosDeploymentInspection';
+export { createProjectMonetizationPlan } from './monetization/createProjectMonetizationPlan';
+export { executeProjectMonetizationSync } from './monetization/executeProjectMonetizationSync';
+export type { ExecuteProjectMonetizationSyncOptions } from './monetization/ExecuteProjectMonetizationSyncOptions';
+export { inspectProjectMonetization } from './monetization/inspectProjectMonetization';
+export type { InspectProjectMonetizationOptions } from './monetization/InspectProjectMonetizationOptions';
+export type { ProjectMonetizationAccess } from './monetization/ProjectMonetizationAccess';
+export type { ProjectMonetizationExecutionResult } from './monetization/ProjectMonetizationExecutionResult';
+export type { ProjectMonetizationInspection } from './monetization/ProjectMonetizationInspection';
+export type { ProjectMonetizationInspectionResult } from './monetization/ProjectMonetizationInspectionResult';
+export type { ProjectMonetizationPlan } from './monetization/ProjectMonetizationPlan';
+export type { ProjectMonetizationTargets } from './monetization/ProjectMonetizationTargets';
+export { readProjectMonetization } from './monetization/readProjectMonetization';
 export type { ProjectDeploymentPaths } from './ProjectDeploymentPaths';
 export { readProjectDeploymentConfig } from './readProjectDeploymentConfig';
 export type { ResolvedDeployProject } from './ResolvedDeployProject';
