@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.8.0
+
+### Minor Changes
+
+- 32571a1: Add canonical monetization desired state, Google Play and App Store Connect product synchronization, and the project-level inspect/plan/execute monetization lifecycle.
+
 ## 0.7.0
 
 ### Minor Changes
