@@ -1,4 +1,4 @@
-import { areReleaseNotesEqual } from './areReleaseNotesEqual';
+import { areReleaseNotesSatisfied } from './areReleaseNotesSatisfied';
 import { normalizeReleaseFraction } from './normalizeReleaseFraction';
 import type { ReleaseDesiredState } from './ReleaseDesiredState';
 import type { ReleaseObservedAndroidState } from './ReleaseObservedAndroidState';
@@ -13,7 +13,7 @@ export function createAndroidReleaseSteps(
   if (current.rolloutStatus === 'halted') return haltedContribution();
   const rollout = desired.rollout.android ?? { mode: 'immediate' };
   const artifactReady = isArtifactReady(desired, current);
-  const notesMatch = areReleaseNotesEqual(desired.notes, current.releaseNotes);
+  const notesMatch = areReleaseNotesSatisfied(desired.notes, current.releaseNotes);
   if (artifactReady && notesMatch && rolloutSatisfied(rollout, current)) {
     return { steps: [], diagnostics: [], waiting: false, complete: true };
   }

@@ -1,4 +1,4 @@
-import { areReleaseNotesEqual } from './areReleaseNotesEqual';
+import { areReleaseNotesSatisfied } from './areReleaseNotesSatisfied';
 import type { ReleaseDesiredState } from './ReleaseDesiredState';
 import type { ReleaseDiagnostic } from './ReleaseDiagnostic';
 import type { ReleaseObservedIosState } from './ReleaseObservedIosState';
@@ -42,7 +42,7 @@ function createMutableMetadataSteps(
   if (!isArtifactReady(desired, current)) {
     steps.push(step('ios:publish', 'publish', [], 'reinspect', false));
   }
-  if (!areReleaseNotesEqual(desired.notes, current.releaseNotes)) {
+  if (!areReleaseNotesSatisfied(desired.notes, current.releaseNotes)) {
     steps.push(step('ios:sync-notes', 'sync-notes', lastDependency(steps), 'reinspect', false));
   }
   return steps;
@@ -108,7 +108,7 @@ function lockedStateConflict(
       'The iOS review/release lifecycle is locked to a different artifact.',
     );
   }
-  if (!areReleaseNotesEqual(desired.notes, current.releaseNotes)) {
+  if (!areReleaseNotesSatisfied(desired.notes, current.releaseNotes)) {
     return diagnostic(
       'IOS_RELEASE_NOTES_DRIFT_LOCKED',
       'The iOS review/release lifecycle is locked with different release notes.',

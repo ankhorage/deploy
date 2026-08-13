@@ -35,3 +35,31 @@ export function appStorePhasedReleaseUrl(versionId: string): string {
   });
   return `${BASE}/appStoreVersions/${encodeURIComponent(versionId)}/appStoreVersionPhasedRelease?${query.toString()}`;
 }
+
+export function appStoreVersionLocalizationsUrl(): string {
+  return `${BASE}/appStoreVersionLocalizations`;
+}
+
+export function appStoreVersionLocalizationUrl(localizationId: string): string {
+  return `${BASE}/appStoreVersionLocalizations/${encodeURIComponent(localizationId)}`;
+}
+
+export function appStoreReviewSubmissionsCollectionUrl(): string {
+  return `${BASE}/reviewSubmissions`;
+}
+
+export function appStoreReviewSubmissionUrl(reviewSubmissionId: string): string {
+  return `${BASE}/reviewSubmissions/${encodeURIComponent(reviewSubmissionId)}`;
+}
+
+export function appStoreReviewSubmissionItemsUrl(): string {
+  return `${BASE}/reviewSubmissionItems`;
+}
+
+export function appStorePhasedReleasesUrl(): string {
+  return `${BASE}/appStoreVersionPhasedReleases`;
+}
+
+export function appStoreVersionReleaseRequestsUrl(): string {
+  return `${BASE}/appStoreVersionReleaseRequests`;
+}
