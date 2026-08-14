@@ -11,7 +11,16 @@ test('package entrypoint exposes the canonical deployment domain', () => {
     'DEPLOYMENT_STEP_OPERATIONS',
     'createDeploymentChanges',
     'createDeploymentPlan',
+    'createReleaseCurrentRevision',
+    'createReleaseExecutionState',
+    'createReleasePlan',
+    'createReleaseRevision',
     'executeDeploymentPlan',
+    'executeReleaseLifecycleControl',
+    'executeReleasePlan',
     'inspectDeploymentProviderSetup',
+    'isReleaseStepResumable',
+    'listReleaseLifecycleControls',
+    'resumeReleaseExecution',
   ]);
 });

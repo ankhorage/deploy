@@ -48,6 +48,12 @@ export type { ProjectMonetizationTargets } from './monetization/ProjectMonetizat
 export { readProjectMonetization } from './monetization/readProjectMonetization';
 export type { ProjectDeploymentPaths } from './ProjectDeploymentPaths';
 export { readProjectDeploymentConfig } from './readProjectDeploymentConfig';
+export { readProjectRelease } from './release/readProjectRelease';
+export { createProjectReleaseHistoryRecord } from './releaseHistory/createProjectReleaseHistoryRecord';
+export { listProjectReleaseHistory } from './releaseHistory/listProjectReleaseHistory';
+export type { ProjectReleaseHistoryRecord } from './releaseHistory/ProjectReleaseHistoryRecord';
+export { readProjectReleaseHistory } from './releaseHistory/readProjectReleaseHistory';
+export { recordProjectReleaseHistory } from './releaseHistory/recordProjectReleaseHistory';
 export type { ResolvedDeployProject } from './ResolvedDeployProject';
 export { resolveDeployProject } from './resolveDeployProject';
 export { resolveProjectDeploymentPaths } from './resolveProjectDeploymentPaths';
