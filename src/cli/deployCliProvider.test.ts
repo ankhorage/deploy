@@ -8,6 +8,7 @@ import type {
   ProjectReleaseInspection,
 } from '../project/index.js';
 import { createDeployCliProvider } from './createDeployCliProvider.js';
+import { DEPLOY_CLI_EXIT_CODES } from './DeployCliExitCodes.js';
 import type { DeployCliRuntime } from './DeployCliRuntime.js';
 import { handleDeployCliCommand } from './handleDeployCliCommand.js';
 
@@ -81,7 +82,7 @@ test('non-interactive mutation fails without explicit approval', async () => {
 
   const result = await handleDeployCliCommand({ argv: [], context: memory.context }, runtime);
 
-  expect(result).toEqual({ exitCode: 1 });
+  expect(result).toEqual({ exitCode: DEPLOY_CLI_EXIT_CODES.confirmationRequired });
   expect(executions).toBe(0);
   expect(memory.stderr.value).toContain('Use --yes');
 });
@@ -124,7 +125,7 @@ test('--yes cannot bypass a blocked owner plan', async () => {
     runtime,
   );
 
-  expect(result).toEqual({ exitCode: 1 });
+  expect(result).toEqual({ exitCode: DEPLOY_CLI_EXIT_CODES.blocked });
   expect(executions).toBe(0);
 });
 
