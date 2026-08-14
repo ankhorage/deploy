@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.10.0
+
+### Minor Changes
+
+- b10e259: Add the first-class `@ankhorage/deploy/cli` provider for category-root `ankh deploy` and `ankh plan deploy`, with dry-run planning, explicit runtime release context, host-owned confirmation, transient ENV credential mapping and offline safety coverage.
+
 ## 0.9.0
 
 ### Minor Changes
