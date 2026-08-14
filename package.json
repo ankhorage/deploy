@@ -1,6 +1,6 @@
 {
   "name": "@ankhorage/deploy",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Declarative deployment engine for Expo apps across web, iOS, and Android — build, provision, publish, and manage releases from one configuration.",
   "license": "MIT",
   "publishConfig": {
