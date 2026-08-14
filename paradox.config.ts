@@ -8,7 +8,7 @@ export default defineParadoxConfig({
   },
   package: {
     root: '.',
-    entrypoints: ['src/index.ts', 'src/project/index.ts'],
+    entrypoints: ['src/index.ts', 'src/project/index.ts', 'src/cli/index.ts'],
   },
   output: {
     dir: './paradox',

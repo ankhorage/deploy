@@ -4,20 +4,7 @@ import type { ProjectReleaseInspection } from '../project/index.js';
 export function renderDeployCliPlan(
   inspection: ProjectReleaseInspection,
   plan: ReleasePlan,
-  format: 'human' | 'json',
 ): string {
-  if (format === 'json') {
-    return `${JSON.stringify({
-      kind: 'deploy-release-plan',
-      desired: inspection.desired,
-      plan,
-      actions: inspection.actions,
-    })}\n`;
-  }
-  return renderHuman(inspection, plan);
-}
-
-function renderHuman(inspection: ProjectReleaseInspection, plan: ReleasePlan): string {
   const lines = [
     `Release: ${inspection.desired.version}`,
     `Targets: ${inspection.desired.targets.join(', ')}`,

@@ -3,11 +3,7 @@ import type { ProjectReleaseExecution } from '../project/index.js';
 export function renderDeployCliExecution(
   execution: ProjectReleaseExecution,
   executionId: string,
-  format: 'human' | 'json',
 ): string {
-  if (format === 'json') {
-    return `${JSON.stringify({ kind: 'deploy-release-execution', executionId, execution })}\n`;
-  }
   const lines = [
     `Execution: ${executionId}`,
     `Result: ${execution.result.status}`,
