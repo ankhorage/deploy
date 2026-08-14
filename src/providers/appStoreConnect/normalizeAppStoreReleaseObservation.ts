@@ -2,8 +2,11 @@ import type { IosDeploymentPublication } from '../../domain/IosDeploymentPublica
 import type { ReleaseObservedIosState } from '../../domain/release/ReleaseObservedIosState';
 import type { AppStoreReleaseSnapshot } from './AppStoreReleaseSnapshot';
 
+type IosReleasePublication =
+  IosDeploymentPublication | Pick<IosDeploymentPublication, 'revision' | 'version' | 'buildNumber'>;
+
 export function normalizeAppStoreReleaseObservation(options: {
-  readonly publication: IosDeploymentPublication | null;
+  readonly publication: IosReleasePublication | null;
   readonly publicationVerified: boolean;
   readonly snapshot: AppStoreReleaseSnapshot;
 }): ReleaseObservedIosState {
@@ -29,7 +32,7 @@ export function normalizeAppStoreReleaseObservation(options: {
 
 function matchingPublication(
   options: Parameters<typeof normalizeAppStoreReleaseObservation>[0],
-): IosDeploymentPublication | null {
+): IosReleasePublication | null {
   if (!options.publicationVerified || options.publication === null) return null;
   if (options.snapshot.versionId === null) return null;
   return options.publication.version === options.snapshot.version ? options.publication : null;

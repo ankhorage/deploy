@@ -2,9 +2,13 @@ import type { AndroidDeploymentPublication } from '../../domain/AndroidDeploymen
 import type { ReleaseObservedAndroidState } from '../../domain/release/ReleaseObservedAndroidState';
 import type { GooglePlayReleaseSnapshot } from './GooglePlayReleaseSnapshot';
 
+type AndroidReleasePublication =
+  | AndroidDeploymentPublication
+  | Pick<AndroidDeploymentPublication, 'revision' | 'versionCode' | 'track'>;
+
 export function normalizeGooglePlayReleaseObservation(options: {
   readonly desiredVersion: string;
-  readonly publication: AndroidDeploymentPublication | null;
+  readonly publication: AndroidReleasePublication | null;
   readonly snapshot: GooglePlayReleaseSnapshot;
 }): ReleaseObservedAndroidState {
   const { publication } = options;
