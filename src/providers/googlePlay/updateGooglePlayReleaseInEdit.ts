@@ -11,8 +11,8 @@ export async function updateGooglePlayReleaseInEdit(options: {
   readonly editId: string;
   readonly track: AndroidDeploymentTrack;
   readonly targetVersionCode: string;
-  readonly releaseNotes: readonly ReleaseNote[];
-  readonly rollout: ReleaseTargetRollout;
+  readonly releaseNotes?: readonly ReleaseNote[];
+  readonly rollout?: ReleaseTargetRollout;
   readonly token: string;
   readonly request: GooglePlayTransport;
 }): Promise<boolean> {
@@ -22,8 +22,8 @@ export async function updateGooglePlayReleaseInEdit(options: {
   const body = createGooglePlayTrackUpdateBody({
     current,
     targetVersionCode: options.targetVersionCode,
-    releaseNotes: options.releaseNotes,
-    rollout: options.rollout,
+    ...(options.releaseNotes === undefined ? {} : { releaseNotes: options.releaseNotes }),
+    ...(options.rollout === undefined ? {} : { rollout: options.rollout }),
   });
   if (body === null) return false;
   const response = await options.request({

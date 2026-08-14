@@ -7,8 +7,8 @@ import { mergeGooglePlayReleaseNotes } from './mergeGooglePlayReleaseNotes';
 export function createGooglePlayTrackUpdateBody(options: {
   readonly current: GooglePlayEditableTrack;
   readonly targetVersionCode: string;
-  readonly releaseNotes: readonly ReleaseNote[];
-  readonly rollout: ReleaseTargetRollout;
+  readonly releaseNotes?: readonly ReleaseNote[];
+  readonly rollout?: ReleaseTargetRollout;
 }): Readonly<Record<string, unknown>> | null {
   const matches = options.current.releases.filter((release) =>
     release.versionCodes.includes(options.targetVersionCode),
@@ -36,11 +36,41 @@ function createTargetRelease(
   const base = {
     ...preserved,
     versionCodes: current.versionCodes,
-    releaseNotes: mergeGooglePlayReleaseNotes(options.releaseNotes, current.releaseNotes),
-    status: options.rollout.mode === 'staged' ? 'inProgress' : 'completed',
+    releaseNotes: desiredNotes(current, options.releaseNotes),
+    status: desiredStatus(current, options.rollout),
   };
-  if (options.rollout.mode !== 'staged') return base;
-  const userFraction = toProviderFraction(options.rollout.initialFraction);
+  return withFraction(base, current, options.rollout);
+}
+
+function desiredNotes(
+  current: GooglePlayEditableRelease,
+  releaseNotes: readonly ReleaseNote[] | undefined,
+): unknown {
+  return releaseNotes === undefined
+    ? current.raw.releaseNotes
+    : mergeGooglePlayReleaseNotes(releaseNotes, current.releaseNotes);
+}
+
+function desiredStatus(
+  current: GooglePlayEditableRelease,
+  rollout: ReleaseTargetRollout | undefined,
+): GooglePlayEditableRelease['status'] {
+  if (rollout === undefined) return current.status;
+  return rollout.mode === 'staged' ? 'inProgress' : 'completed';
+}
+
+function withFraction(
+  base: Readonly<Record<string, unknown>>,
+  current: GooglePlayEditableRelease,
+  rollout: ReleaseTargetRollout | undefined,
+): Readonly<Record<string, unknown>> {
+  if (rollout === undefined) {
+    return current.userFraction === undefined
+      ? base
+      : { ...base, userFraction: Number(current.userFraction) };
+  }
+  if (rollout.mode !== 'staged') return base;
+  const userFraction = toProviderFraction(rollout.initialFraction);
   return userFraction === null ? base : { ...base, userFraction };
 }
 

@@ -63,3 +63,7 @@ export function appStorePhasedReleasesUrl(): string {
 export function appStoreVersionReleaseRequestsUrl(): string {
   return `${BASE}/appStoreVersionReleaseRequests`;
 }
+
+export function appStorePhasedReleaseMutationUrl(phasedReleaseId: string): string {
+  return `${BASE}/appStoreVersionPhasedReleases/${encodeURIComponent(phasedReleaseId)}`;
+}
