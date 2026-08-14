@@ -40,6 +40,25 @@ test('project release owner inspects no-change web release and records execution
   }
 });
 
+test('project release owner does not treat a Web preview as a production release', async () => {
+  const projectRoot = await createWebProject();
+  try {
+    await writeRelease(projectRoot, ['web']);
+    await recordWebDeployment(projectRoot, false);
+    const inspected = await inspectProjectReleaseWithRuntime(
+      { projectRoot },
+      defaultProjectReleaseRuntime,
+    );
+    expect(inspected.ok).toBe(true);
+    if (!inspected.ok) return;
+    const plan = createProjectReleasePlan(inspected.inspection);
+    expect(plan.status).toBe('changes');
+    expect(plan.steps.some((step) => step.id === 'web:publish')).toBe(true);
+  } finally {
+    await fs.rm(projectRoot, { recursive: true, force: true });
+  }
+});
+
 test('project release owner requires explicit Android track context', async () => {
   const projectRoot = await createAndroidProject();
   try {
@@ -87,7 +106,7 @@ async function writeRelease(
   );
 }
 
-async function recordWebDeployment(projectRoot: string): Promise<void> {
+async function recordWebDeployment(projectRoot: string, production = true): Promise<void> {
   const inspection: ProjectWebDeploymentInspection = {
     projectRoot,
     desired: { targets: { web: { enabled: true } } },
@@ -101,6 +120,14 @@ async function recordWebDeployment(projectRoot: string): Promise<void> {
     plan,
     execution: { status: 'completed', records: [] },
     verification: { ok: true },
+    publication: {
+      target: 'web',
+      revision: 'a'.repeat(64),
+      provider: 'eas',
+      deploymentId: 'web-test',
+      url: 'https://example.test',
+      production,
+    },
     recordedAt: '2026-08-14T03:30:00.000Z',
   });
   expect(result.recorded).toBe(true);

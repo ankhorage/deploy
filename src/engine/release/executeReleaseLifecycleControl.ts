@@ -23,7 +23,7 @@ export async function executeReleaseLifecycleControl(options: {
   if (before === null) return failed(false, 'RELEASE_CONTROL_INSPECTION_FAILED');
   if (before.target !== options.control.target) return blocked('RELEASE_CONTROL_TARGET_MISMATCH');
   if (isReleaseLifecycleControlSatisfied(options.control, before)) {
-    return { status: 'completed', writePerformed: false };
+    return { status: 'completed', mutationAttempted: false };
   }
   if (!isAvailable(options.control, before)) return blocked('RELEASE_CONTROL_UNAVAILABLE');
   const mutation = await options.mutate(options.control, before);
@@ -39,7 +39,7 @@ async function verifyReadback(
   if (!isReleaseLifecycleControlReadbackSatisfied(options.control, after)) {
     return failed(true, 'RELEASE_CONTROL_READBACK_VERIFICATION_FAILED');
   }
-  return { status: 'completed', writePerformed: true };
+  return { status: 'completed', mutationAttempted: true };
 }
 
 function isAvailable(
@@ -57,9 +57,9 @@ function mutationFailure(mutation: FailedReleaseMutation): ReleaseControlExecuti
 }
 
 function blocked(code: string): ReleaseControlExecutionResult {
-  return { status: 'blocked', writePerformed: false, code };
+  return { status: 'blocked', mutationAttempted: false, code };
 }
 
-function failed(writePerformed: boolean, code: string): ReleaseControlExecutionResult {
-  return { status: 'failed', writePerformed, code };
+function failed(mutationAttempted: boolean, code: string): ReleaseControlExecutionResult {
+  return { status: 'failed', mutationAttempted, code };
 }

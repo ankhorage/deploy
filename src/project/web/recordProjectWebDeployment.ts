@@ -2,6 +2,7 @@ import type { DeploymentExecutionResult } from '../../domain/DeploymentExecution
 import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 import type { DeploymentPlan } from '../../domain/DeploymentPlan';
 import type { DeploymentVerificationResult } from '../../domain/DeploymentVerificationResult';
+import type { WebDeploymentPublication } from '../../domain/WebDeploymentPublication';
 import { PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION } from '../history/historySchemaVersion';
 import { recordProjectDeploymentHistory } from '../history/recordProjectDeploymentHistory';
 import type { ProjectWebDeploymentInspection } from './ProjectWebDeploymentInspection';
@@ -14,6 +15,7 @@ export async function recordProjectWebDeployment(options: {
   readonly plan: DeploymentPlan;
   readonly execution: DeploymentExecutionResult;
   readonly verification: DeploymentVerificationResult;
+  readonly publication: WebDeploymentPublication;
   readonly recordedAt: string;
 }): Promise<RecordProjectWebHistoryResult> {
   const revision = options.inspection.desiredRevision;
@@ -23,7 +25,7 @@ export async function recordProjectWebDeployment(options: {
       projectRoot: options.inspection.projectRoot,
       record: {
         schemaVersion: PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION,
-        deploymentId: `web-${revision}`,
+        deploymentId: webDeploymentId(options.publication, revision),
         recordedAt: options.recordedAt,
         desired: options.inspection.desired,
         plan: options.plan,
@@ -46,4 +48,9 @@ function historyFailure(code: string): RecordProjectWebHistoryResult {
       target: 'web',
     },
   };
+}
+
+function webDeploymentId(publication: WebDeploymentPublication, revision: string): string {
+  const scope = publication.production ? 'production' : 'preview';
+  return `web-${scope}-${revision}`;
 }

@@ -96,6 +96,7 @@ async function finalizeExecution(
     plan: options.plan,
     execution,
     verification: state.verification,
+    publication: state.publication,
     recordedAt: runtime.now().toISOString(),
   });
   return history.recorded

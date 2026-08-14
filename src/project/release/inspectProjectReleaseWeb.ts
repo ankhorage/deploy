@@ -1,13 +1,13 @@
 import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredState';
 import { createWebReleaseObservation } from '../../providers/release/createWebReleaseObservation';
-import { readCurrentProjectWebDeployment } from '../web/readCurrentProjectWebDeployment';
+import { readCurrentProjectWebProductionDeployment } from '../web/readCurrentProjectWebProductionDeployment';
 import type { ProjectReleaseTargetInspection } from './ProjectReleaseTargetInspection';
 
 export async function inspectProjectReleaseWeb(options: {
   readonly projectRoot: string;
   readonly desired: ReleaseDesiredState;
 }): Promise<ProjectReleaseTargetInspection> {
-  const current = await readCurrentProjectWebDeployment(options.projectRoot);
+  const current = await readCurrentProjectWebProductionDeployment(options.projectRoot);
   const revision = current.targets.web?.revision;
   return {
     ok: true,

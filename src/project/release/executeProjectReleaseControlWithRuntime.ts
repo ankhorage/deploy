@@ -43,9 +43,9 @@ async function inspectTarget(
 }
 
 function blocked(code: string): ReleaseControlExecutionResult {
-  return { status: 'blocked', writePerformed: false, code };
+  return { status: 'blocked', mutationAttempted: false, code };
 }
 
 function failed(code: string): ReleaseControlExecutionResult {
-  return { status: 'failed', writePerformed: false, code };
+  return { status: 'failed', mutationAttempted: false, code };
 }

@@ -15,7 +15,7 @@ test('release control performs one write and verifies fresh read-back', async ()
       return Promise.resolve({ status: 'completed' });
     },
   });
-  expect(result).toEqual({ status: 'completed', writePerformed: true });
+  expect(result).toEqual({ status: 'completed', mutationAttempted: true });
   expect(mutations).toBe(1);
 });
 
@@ -29,7 +29,7 @@ test('release control makes no write when fresh state already satisfies the requ
       return Promise.resolve({ status: 'completed' });
     },
   });
-  expect(result).toEqual({ status: 'completed', writePerformed: false });
+  expect(result).toEqual({ status: 'completed', mutationAttempted: false });
   expect(mutations).toBe(0);
 });
 
@@ -41,7 +41,7 @@ test('release control fails when mutation is not visible on read-back', async ()
   });
   expect(result).toEqual({
     status: 'failed',
-    writePerformed: true,
+    mutationAttempted: true,
     code: 'RELEASE_CONTROL_READBACK_VERIFICATION_FAILED',
   });
 });
