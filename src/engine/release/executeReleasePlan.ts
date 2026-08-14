@@ -4,8 +4,8 @@ import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredSta
 import type { ReleaseObservedState } from '../../domain/release/ReleaseObservedState';
 import type { ReleasePlan } from '../../domain/release/ReleasePlan';
 import type { ReleasePlanStep } from '../../domain/release/ReleasePlanStep';
+import type { ReleaseReconcileResult } from '../../domain/release/ReleaseReconcileResult';
 import type { ReleaseMutationResult } from './ReleaseMutationResult';
-import type { ReleaseReconcileResult } from './ReleaseReconcileResult';
 
 const MAX_MUTATIONS = 32;
 
@@ -36,7 +36,7 @@ export async function executeReleasePlan(options: {
     const step = firstMutationStep(plan.steps);
     if (step === null) return failed(plan, revision, executed, 'RELEASE_EXECUTABLE_STEP_REQUIRED');
     const mutation = await options.mutate(step, current);
-    const mutationFailure = mutationResult(plan, revision, executed, mutation);
+    const mutationFailure = mutationResult(plan, revision, executed, step, mutation);
     if (mutationFailure !== null) return mutationFailure;
     const readback = await verifyReadback(options, step, revision, executed);
     if (readback.result !== null) return readback.result;
@@ -67,6 +67,7 @@ function mutationResult(
   plan: ReleasePlan,
   revision: string,
   executed: readonly string[],
+  step: ReleasePlanStep,
   mutation: ReleaseMutationResult,
 ): ReleaseReconcileResult | null {
   if (mutation.status === 'completed') return null;
@@ -75,6 +76,7 @@ function mutationResult(
     plan,
     currentRevision: revision,
     executedStepIds: executed,
+    ...(mutation.status === 'failed' ? { attemptedStepId: step.id } : {}),
     code: mutation.code,
   };
 }
@@ -97,7 +99,7 @@ async function verifyReadback(
   if (containsMutationStep(plan, step.id)) {
     return {
       revision,
-      result: failed(plan, revision, executed, 'RELEASE_READBACK_VERIFICATION_FAILED'),
+      result: failed(plan, revision, executed, 'RELEASE_READBACK_VERIFICATION_FAILED', step.id),
     };
   }
   return { revision, result: null };
@@ -129,8 +131,16 @@ function failed(
   revision: string,
   executed: readonly string[],
   code: string,
+  attemptedStepId?: string,
 ): ReleaseReconcileResult {
-  return { status: 'failed', plan, currentRevision: revision, executedStepIds: executed, code };
+  return {
+    status: 'failed',
+    plan,
+    currentRevision: revision,
+    executedStepIds: executed,
+    ...(attemptedStepId === undefined ? {} : { attemptedStepId }),
+    code,
+  };
 }
 
 function result(
