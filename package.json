@@ -1,7 +1,7 @@
 {
   "name": "@ankhorage/deploy",
   "version": "0.9.0",
-  "description": "Declarative deployment engine for Expo apps across web, iOS, and Android — build, provision, publish, and manage releases from one configuration.",
+  "description": "Declarative deployment engine for Expo apps across web, iOS, and Android \u2014 build, provision, publish, and manage releases from one configuration.",
   "license": "MIT",
   "publishConfig": {
     "access": "public"
@@ -42,7 +42,12 @@
       "import": "./dist/project/index.js",
       "default": "./dist/project/index.js"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./cli": {
+      "types": "./dist/cli/index.d.ts",
+      "import": "./dist/cli/index.js",
+      "default": "./dist/cli/index.js"
+    }
   },
   "files": [
     "dist",
@@ -52,8 +57,12 @@
   ],
   "ankh": {
     "category": "deploy",
-    "provider": null,
-    "capabilities": []
+    "provider": "./dist/cli/index.js",
+    "capabilities": [
+      "deploy.inspect",
+      "deploy.plan",
+      "deploy.execute"
+    ]
   },
   "scripts": {
     "build": "rm -rf dist tsconfig.tsbuildinfo tsconfig.build.tsbuildinfo && bun x tsc -p tsconfig.build.json",
@@ -71,10 +80,11 @@
     "prepack": "bun run build"
   },
   "dependencies": {
-    "@ankhorage/contracts": "^7.5.0",
+    "@ankhorage/contracts": "^7.9.0",
     "google-auth-library": "^10.9.1"
   },
   "devDependencies": {
+    "@ankhorage/ankh": "^0.8.0",
     "@ankhorage/devtools": "^1.4.1",
     "@ankhorage/paradox": "^0.1.21",
     "@changesets/cli": "^2.31.0",

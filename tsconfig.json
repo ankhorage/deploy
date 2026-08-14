@@ -12,7 +12,8 @@
     "skipLibCheck": true,
     "noEmit": true,
     "verbatimModuleSyntax": true,
-    "types": ["bun", "node"]
+    "types": ["bun", "node"],
+    "resolveJsonModule": true
   },
   "include": ["src/**/*.ts"]
 }
