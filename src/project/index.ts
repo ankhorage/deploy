@@ -1,4 +1,6 @@
 export type { MonetizationDesiredState } from '../domain/monetization/MonetizationDesiredState';
+export type { StoreListingLocale } from '../domain/storeListing/StoreListingLocale';
+export type { StoreListingTarget } from '../domain/storeListing/StoreListingTarget';
 export { createProjectAndroidDeploymentPlan } from './android/createProjectAndroidDeploymentPlan';
 export {
   executeProjectAndroidDeployment,
@@ -46,6 +48,7 @@ export type { ProjectMonetizationInspectionResult } from './monetization/Project
 export type { ProjectMonetizationPlan } from './monetization/ProjectMonetizationPlan';
 export type { ProjectMonetizationTargets } from './monetization/ProjectMonetizationTargets';
 export { readProjectMonetization } from './monetization/readProjectMonetization';
+export { writeProjectMonetization } from './monetization/writeProjectMonetization';
 export type { ProjectDeploymentPaths } from './ProjectDeploymentPaths';
 export { readProjectDeploymentConfig } from './readProjectDeploymentConfig';
 export { createProjectReleasePlan } from './release/createProjectReleasePlan';
@@ -59,6 +62,7 @@ export type { ProjectReleaseAccess } from './release/ProjectReleaseAccess';
 export type { ProjectReleaseAndroidContext } from './release/ProjectReleaseAndroidContext';
 export type { ProjectReleaseExecution } from './release/ProjectReleaseExecution';
 export type { ProjectReleaseExecutionResult } from './release/ProjectReleaseExecutionResult';
+export type { ProjectReleaseInput } from './release/ProjectReleaseInput';
 export type { ProjectReleaseInspection } from './release/ProjectReleaseInspection';
 export type { ProjectReleaseInspectionResult } from './release/ProjectReleaseInspectionResult';
 export type { ProjectReleaseIosContext } from './release/ProjectReleaseIosContext';
@@ -66,6 +70,7 @@ export type { ProjectReleaseWebContext } from './release/ProjectReleaseWebContex
 export { readProjectRelease } from './release/readProjectRelease';
 export { resumeProjectRelease } from './release/resumeProjectRelease';
 export type { ResumeProjectReleaseOptions } from './release/ResumeProjectReleaseOptions';
+export { writeProjectRelease } from './release/writeProjectRelease';
 export { createProjectReleaseHistoryRecord } from './releaseHistory/createProjectReleaseHistoryRecord';
 export { listProjectReleaseHistory } from './releaseHistory/listProjectReleaseHistory';
 export type { ProjectReleaseHistoryRecord } from './releaseHistory/ProjectReleaseHistoryRecord';
@@ -74,6 +79,15 @@ export { recordProjectReleaseHistory } from './releaseHistory/recordProjectRelea
 export type { ResolvedDeployProject } from './ResolvedDeployProject';
 export { resolveDeployProject } from './resolveDeployProject';
 export { resolveProjectDeploymentPaths } from './resolveProjectDeploymentPaths';
+export type { ProjectStoreListing } from './storeListing/ProjectStoreListing';
+export type { ProjectStoreListingAsset } from './storeListing/ProjectStoreListingAsset';
+export type { ProjectStoreListingAssetLocation } from './storeListing/ProjectStoreListingAssetLocation';
+export type { ProjectStoreListingAssetSet } from './storeListing/ProjectStoreListingAssetSet';
+export { readProjectStoreListing } from './storeListing/readProjectStoreListing';
+export { removeProjectStoreListingAsset } from './storeListing/removeProjectStoreListingAsset';
+export { removeProjectStoreListingLocale } from './storeListing/removeProjectStoreListingLocale';
+export { writeProjectStoreListingAsset } from './storeListing/writeProjectStoreListingAsset';
+export { writeProjectStoreListingLocale } from './storeListing/writeProjectStoreListingLocale';
 export {
   type ProjectDeploymentConfigUpdater,
   updateProjectDeploymentConfig,
