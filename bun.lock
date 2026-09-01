@@ -11,7 +11,7 @@
       "devDependencies": {
         "@ankhorage/ankh": "^0.8.5",
         "@ankhorage/devtools": "^1.9.2",
-        "@ankhorage/paradox": "^0.1.21",
+        "@ankhorage/paradox": "^0.1.24",
         "@types/bun": "^1.4.0",
         "@types/node": "^25.6.0",
         "typescript": "^5.9.3",
@@ -29,7 +29,7 @@
 
     "@ankhorage/doctor": ["@ankhorage/doctor@0.10.4", "", { "dependencies": { "@ankhorage/contracts": "^8.0.0", "@ankhorage/supabase-auth": "^1.2.6" }, "bin": { "ankhorage-doctor": "dist/cli/standalone.js" } }, "sha512-k3KLgAXwGLgvTgxUqLbNajexwdNPm/0uw0EEMTA/MJyv1iBi1LwKH69UDEPOrbiI055NrZmBwLNaHqRZ1sK/rg=="],
 
-    "@ankhorage/paradox": ["@ankhorage/paradox@0.1.21", "", { "dependencies": { "ts-morph": "^24.0.0" }, "bin": { "paradox": "dist/cli/standalone.js" } }, "sha512-0M77MTVwAvJrpwcGoeRY+Ab8MhovZG5NGwSNFqYARkp8Qb1y35arrQ67AiwEoxN60cSYpskTrHV9D2x+0Q+JGA=="],
+    "@ankhorage/paradox": ["@ankhorage/paradox@0.1.24", "", { "dependencies": { "ts-morph": "^28.0.0" }, "bin": { "paradox": "dist/cli/standalone.js" } }, "sha512-4fZOo8QFZuzQEVH+f2ekb8vEWUuiWxs45lwMBgR3yNgJ2lZdyr98sdN60Rn7bsKE9LUhr56gqaO2p1xtrI6Kyg=="],
 
     "@ankhorage/supabase-auth": ["@ankhorage/supabase-auth@1.2.6", "", { "dependencies": { "@ankhorage/contracts": "^7.8.0", "@noble/hashes": "2.3.0" } }, "sha512-EJhgnJkX3RgSB/2WRsUSEUJQZLh8D847KwGw0LCr4gXwqun672/87lAv5fMCMGODNDg6MgSccustb8FihR7h0A=="],
 
@@ -239,7 +239,7 @@
 
     "@rtsao/scc": ["@rtsao/scc@1.1.0", "", {}, "sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g=="],
 
-    "@ts-morph/common": ["@ts-morph/common@0.25.0", "", { "dependencies": { "minimatch": "^9.0.4", "path-browserify": "^1.0.1", "tinyglobby": "^0.2.9" } }, "sha512-kMnZz+vGGHi4GoHnLmMhGNjm44kGtKUXGnOvrKmMwAuvNjM/PgKVGfUnL7IDvK7Jb2QQ82jq3Zmp04Gy+r3Dkg=="],
+    "@ts-morph/common": ["@ts-morph/common@0.29.0", "", { "dependencies": { "minimatch": "^10.0.1", "path-browserify": "^1.0.1", "tinyglobby": "^0.2.14" } }, "sha512-35oUmphHbJvQ/+UTwFNme/t2p3FoKiGJ5auTjjpNTop2dyREspirjMy82PLSC1pnDJ8ah1GU98hwpVt64YXQsg=="],
 
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.3", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-F3fo1MYrRJYL3zER0OUOmkutjr1Vp23m7OsSgp7nq4SP6OqX6C/56XFIPAl5bt3zaBRjmW7SGz3u/6LwFpYcOg=="],
 
@@ -763,7 +763,7 @@
 
     "ts-api-utils": ["ts-api-utils@2.5.0", "", { "peerDependencies": { "typescript": ">=4.8.4" } }, "sha512-OJ/ibxhPlqrMM0UiNHJ/0CKQkoKF243/AEmplt3qpRgkW8VG7IfOS41h7V8TjITqdByHzrjcS/2si+y4lIh8NA=="],
 
-    "ts-morph": ["ts-morph@24.0.0", "", { "dependencies": { "@ts-morph/common": "~0.25.0", "code-block-writer": "^13.0.3" } }, "sha512-2OAOg/Ob5yx9Et7ZX4CvTCc0UFoZHwLEJ+dpDPSUi5TgwwlTlX47w+iFRrEwzUZwYACjq83cgjS/Da50Ga37uw=="],
+    "ts-morph": ["ts-morph@28.0.0", "", { "dependencies": { "@ts-morph/common": "~0.29.0", "code-block-writer": "^13.0.3" } }, "sha512-Wp3tnZ2bzwxyTZMtgWVzXDfm7lB1Drz+y9DmmYH/L702PQhPyVrp3pkou3yIz4qjS14GY9kcpmLiOOMvl8oG1g=="],
 
     "tsconfig-paths": ["tsconfig-paths@3.15.0", "", { "dependencies": { "@types/json5": "^0.0.29", "json5": "^1.0.2", "minimist": "^1.2.6", "strip-bom": "^3.0.0" } }, "sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg=="],
 
@@ -831,8 +831,6 @@
 
     "@eslint-community/eslint-utils/eslint-visitor-keys": ["eslint-visitor-keys@3.4.3", "", {}, "sha512-wpc+LXeiyiisxPlEkUzU6svyS1frIO3Mgxj1fdy7Pm8Ygzguax2N3Fa/D/ag1WqbOprdI+uY6wMUl8/a2G+iag=="],
 
-    "@ts-morph/common/minimatch": ["minimatch@9.0.9", "", { "dependencies": { "brace-expansion": "^2.0.2" } }, "sha512-OBwBN9AL4dqmETlpS2zasx+vTeWclWzkblfZk7KTA5j3jeOONz/tRCnZomUyvNg83wL5Zv9Ss6HMJXAgL8R2Yg=="],
-
     "@typescript-eslint/eslint-plugin/ignore": ["ignore@7.0.6", "", {}, "sha512-BAg6QkE8W+TuQLrrw0Ugr7HegXduRuuj8/ti2kSOc+jz1dmx8/WNcjr6XGnq5YpDWxFwwaavqD0+jIUOKelTsw=="],
 
     "eslint-import-resolver-node/debug": ["debug@3.2.7", "", { "dependencies": { "ms": "^2.1.1" } }, "sha512-CFjzYYAi4ThfiQvizrFQevTTXHtnCqWfe7x1AhgEscTz6ZbLbfoLRLPugTQyBth6f8ZERVUSyWHFD/7Wu4t1XQ=="],
@@ -853,13 +851,9 @@
 
     "tinyglobby/picomatch": ["picomatch@4.0.5", "", {}, "sha512-RvwwcruNjI1ncT5xRakeyS9Lf8lcItv34KD+aif+VH9kduAyfYBipGh12274xtenIPZ119/R9BdTBa8gAwSh0A=="],
 
-    "@ts-morph/common/minimatch/brace-expansion": ["brace-expansion@2.1.4", "", { "dependencies": { "balanced-match": "^1.0.0" } }, "sha512-hGfVzPxthbf3+2yjg/RBs60cB0FhqBS/zvdV/4wn4/BmN0bNMMHPc4V/BbFieqf1TKAGGAHnY4eSjajCl0f2Xg=="],
-
     "eslint-plugin-import/minimatch/brace-expansion": ["brace-expansion@1.1.18", "", { "dependencies": { "balanced-match": "^1.0.0", "concat-map": "0.0.1" } }, "sha512-Edep/X9fGqVNmzKBVsDYIOtD+z1tuezV70LBjdCst9Tqu76lsnvRiZ6oTic1n+/BIwX6QDGAO94PN4N2SADvtw=="],
 
     "eslint-plugin-react/minimatch/brace-expansion": ["brace-expansion@1.1.18", "", { "dependencies": { "balanced-match": "^1.0.0", "concat-map": "0.0.1" } }, "sha512-Edep/X9fGqVNmzKBVsDYIOtD+z1tuezV70LBjdCst9Tqu76lsnvRiZ6oTic1n+/BIwX6QDGAO94PN4N2SADvtw=="],
-
-    "@ts-morph/common/minimatch/brace-expansion/balanced-match": ["balanced-match@1.0.2", "", {}, "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="],
 
     "eslint-plugin-import/minimatch/brace-expansion/balanced-match": ["balanced-match@1.0.2", "", {}, "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="],
 
