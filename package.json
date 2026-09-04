@@ -80,7 +80,7 @@
     "knip:check": "ankhorage-knip"
   },
   "dependencies": {
-    "@ankhorage/contracts": "^8.0.2",
+    "@ankhorage/contracts": "^10.1.0",
     "google-auth-library": "^10.9.1"
   },
   "devDependencies": {
