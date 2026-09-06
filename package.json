@@ -1,6 +1,6 @@
 {
   "name": "@ankhorage/deploy",
-  "version": "0.12.2",
+  "version": "0.12.4",
   "description": "Declarative deployment engine for Expo apps across web, iOS, and Android — build, provision, publish, and manage releases from one configuration.",
   "license": "MIT",
   "publishConfig": {
@@ -80,7 +80,7 @@
     "knip:check": "ankhorage-knip"
   },
   "dependencies": {
-    "@ankhorage/contracts": "^8.0.2",
+    "@ankhorage/contracts": "^11.0.0",
     "google-auth-library": "^10.9.1"
   },
   "devDependencies": {
