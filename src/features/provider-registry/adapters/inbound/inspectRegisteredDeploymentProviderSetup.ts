@@ -1,5 +1,6 @@
 import type { AppDeployTargetId } from '@ankhorage/contracts/deploy';
 import type {
+  DeploymentCapability,
   DeploymentCredentialReference,
   DeploymentProviderRegistration,
   DeploymentSecretResolver,
@@ -13,18 +14,19 @@ export function inspectRegisteredDeploymentProviderSetup(options: {
   readonly registration: DeploymentProviderRegistration;
   readonly projectRoot: string;
   readonly target: AppDeployTargetId;
+  readonly capability: DeploymentCapability;
   readonly credentials: readonly DeploymentCredentialReference[];
   readonly resolveSecret: DeploymentSecretResolver;
 }): Promise<DeploymentProviderSetupInspectionResult> {
   const setup = options.registration.setup;
   if (setup === undefined) {
     return Promise.resolve({
-      ok: false,
-      failure: {
-        code: 'PROVIDER_SETUP_UNAVAILABLE',
-        message: 'The selected deployment provider does not expose setup inspection.',
-        target: options.target,
+      ok: true,
+      inspection: {
         provider: options.registration.descriptor.id,
+        authentication: { status: 'authenticated' },
+        capabilities: [{ capability: options.capability, status: 'available' }],
+        provisioning: [],
       },
     });
   }
