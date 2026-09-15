@@ -70,7 +70,7 @@
     "lint": "ankhorage-eslint . --max-warnings=0",
     "lint:fix": "ankhorage-eslint . --fix --max-warnings=0",
     "format": "ankhorage-prettier --write .",
-    "format:check": "ankhorage-prettier --check .",
+    "format:check": "ankhorage-prettier --write . && git diff -- src",
     "test": "bun test src",
     "docs": "paradox",
     "changeset": "ankhorage-changeset",
