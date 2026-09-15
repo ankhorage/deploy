@@ -16,6 +16,7 @@ test('rejects invalid credential references before invoking the adapter', async 
   const result = await inspectDeploymentProviderSetup({
     adapter,
     context: {
+      projectRoot: '/tmp/deploy-provider-fixture',
       credentials: [{ ...FIXTURE_CREDENTIAL, id: '   ' }],
       resolveSecret: () => Promise.resolve('secret'),
     },
@@ -36,6 +37,7 @@ test('rejects credential references owned by another provider', async () => {
   const result = await inspectDeploymentProviderSetup({
     adapter,
     context: {
+      projectRoot: '/tmp/deploy-provider-fixture',
       credentials: [{ ...FIXTURE_CREDENTIAL, provider: 'other-provider' }],
       resolveSecret: () => Promise.resolve(null),
     },
