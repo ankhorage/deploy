@@ -32,7 +32,12 @@ export function resolveAndroidProviderPorts(
   if (build === undefined || publish === undefined) {
     return failure('ANDROID_PROVIDER_SELECTION_MISSING', 'Android provider selection is missing.');
   }
-  const buildRegistration = findDeploymentProvider(runtime.providers, build, 'android-build', 'android');
+  const buildRegistration = findDeploymentProvider(
+    runtime.providers,
+    build,
+    'android-build',
+    'android',
+  );
   if (buildRegistration?.androidBuilder === undefined) {
     return failure(
       'ANDROID_BUILD_PROVIDER_UNAVAILABLE',

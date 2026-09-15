@@ -42,7 +42,8 @@ function createBuildProvider(state: AndroidTestState): DeploymentProviderRegistr
       capabilities: [{ id: 'android-build', targets: ['android'] }],
     },
     androidBuilder: {
-      inspectAsync: () => Promise.resolve({ status: 'completed', value: { fingerprint: state.fingerprint } }),
+      inspectAsync: () =>
+        Promise.resolve({ status: 'completed', value: { fingerprint: state.fingerprint } }),
       buildAsync: (request) => {
         state.buildCalls += 1;
         return Promise.resolve({
@@ -70,13 +71,14 @@ function createPublishProvider(state: AndroidTestState): DeploymentProviderRegis
       capabilities: [{ id: 'android-publish', targets: ['android'] }],
     },
     androidPublisher: {
-      inspectAsync: (request) => Promise.resolve({
-        status: 'completed',
-        value: {
-          track: request.track,
-          activeVersionCodes: state.deployed ? [42] : [],
-        },
-      }),
+      inspectAsync: (request) =>
+        Promise.resolve({
+          status: 'completed',
+          value: {
+            track: request.track,
+            activeVersionCodes: state.deployed ? [42] : [],
+          },
+        }),
       publishAsync: (request) => {
         state.publishCalls += 1;
         state.deployed = true;
@@ -94,13 +96,14 @@ function createPublishProvider(state: AndroidTestState): DeploymentProviderRegis
           },
         });
       },
-      verifyAsync: (request) => Promise.resolve({
-        status: 'completed',
-        value: {
-          track: request.track,
-          activeVersionCodes: state.deployed ? [request.artifact.versionCode] : [],
-        },
-      }),
+      verifyAsync: (request) =>
+        Promise.resolve({
+          status: 'completed',
+          value: {
+            track: request.track,
+            activeVersionCodes: state.deployed ? [request.artifact.versionCode] : [],
+          },
+        }),
     },
   };
 }

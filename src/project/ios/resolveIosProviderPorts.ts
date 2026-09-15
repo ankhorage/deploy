@@ -40,7 +40,12 @@ export function resolveIosProviderPorts(
       build,
     );
   }
-  const publishRegistration = findDeploymentProvider(runtime.providers, publish, 'ios-publish', 'ios');
+  const publishRegistration = findDeploymentProvider(
+    runtime.providers,
+    publish,
+    'ios-publish',
+    'ios',
+  );
   if (publishRegistration?.iosPublisher === undefined) {
     return failure(
       'IOS_PUBLISH_PROVIDER_UNAVAILABLE',

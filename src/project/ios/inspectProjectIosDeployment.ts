@@ -118,7 +118,10 @@ async function inspectEnabledProject(
     build.fingerprint === undefined
       ? undefined
       : createIosDeploymentRevision(build.fingerprint, options.intent);
-  return success(projectRoot, desired, current, options.intent, revision, [build.setup, publish.setup]);
+  return success(projectRoot, desired, current, options.intent, revision, [
+    build.setup,
+    publish.setup,
+  ]);
 }
 
 async function inspectIosBuild(options: {

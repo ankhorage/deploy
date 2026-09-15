@@ -44,8 +44,17 @@ export async function inspectProjectAndroidDeploymentWithRuntime(
     const normalized = normalizeProjectAndroidDesired(project.deploy);
     if (!normalized.ok) return normalized;
     if (!normalized.enabled || normalized.packageName === undefined) {
-      const current = await readCurrentProjectAndroidDeployment({ projectRoot: project.projectRoot });
-      return success(project.projectRoot, normalized.desired, current, options.intent, undefined, []);
+      const current = await readCurrentProjectAndroidDeployment({
+        projectRoot: project.projectRoot,
+      });
+      return success(
+        project.projectRoot,
+        normalized.desired,
+        current,
+        options.intent,
+        undefined,
+        [],
+      );
     }
     return inspectEnabledProject(
       project.projectRoot,
@@ -114,7 +123,10 @@ async function inspectEnabledProject(
     build.fingerprint === undefined
       ? undefined
       : createAndroidDeploymentRevision(build.fingerprint, options.intent);
-  return success(projectRoot, desired, current, options.intent, revision, [build.setup, publish.setup]);
+  return success(projectRoot, desired, current, options.intent, revision, [
+    build.setup,
+    publish.setup,
+  ]);
 }
 
 async function inspectAndroidBuild(options: {

@@ -50,7 +50,10 @@ async function prepareStep(
     return { status: 'action-required', action: inspected.action };
   }
   if (inspected.status === 'failed') return { status: 'failed', error: inspected.failure };
-  const revision = createIosDeploymentRevision(inspected.value.fingerprint, options.inspection.intent);
+  const revision = createIosDeploymentRevision(
+    inspected.value.fingerprint,
+    options.inspection.intent,
+  );
   if (revision !== expected) {
     return failed(
       'IOS_SOURCE_CHANGED_AFTER_PLAN',
@@ -113,7 +116,11 @@ async function verifyStep(
   options: Parameters<typeof executeProjectIosStep>[0],
 ): Promise<DeploymentStepOutcome> {
   const revision = options.inspection.desiredRevision;
-  if (options.state.publication === null || options.state.build === null || revision === undefined) {
+  if (
+    options.state.publication === null ||
+    options.state.build === null ||
+    revision === undefined
+  ) {
     return failed('IOS_PUBLICATION_MISSING', 'iOS publication result is missing.');
   }
   const resolved = resolveIosProviderPorts(options.inspection.desired, options.runtime);

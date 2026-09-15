@@ -38,7 +38,8 @@ function createBuildProvider(state: IosTestState): DeploymentProviderRegistratio
       capabilities: [{ id: 'ios-build', targets: ['ios'] }],
     },
     iosBuilder: {
-      inspectAsync: () => Promise.resolve({ status: 'completed', value: { fingerprint: state.fingerprint } }),
+      inspectAsync: () =>
+        Promise.resolve({ status: 'completed', value: { fingerprint: state.fingerprint } }),
       buildAsync: (request) => {
         state.buildCalls += 1;
         return Promise.resolve({
@@ -67,14 +68,15 @@ function createPublishProvider(state: IosTestState): DeploymentProviderRegistrat
       capabilities: [{ id: 'ios-publish', targets: ['ios'] }],
     },
     iosPublisher: {
-      inspectAsync: (request) => Promise.resolve({
-        status: 'completed',
-        value: {
-          bundleIdentifier: request.bundleIdentifier,
-          version: state.deployed ? request.version : null,
-          buildNumber: state.deployed ? '42' : null,
-        },
-      }),
+      inspectAsync: (request) =>
+        Promise.resolve({
+          status: 'completed',
+          value: {
+            bundleIdentifier: request.bundleIdentifier,
+            version: state.deployed ? request.version : null,
+            buildNumber: state.deployed ? '42' : null,
+          },
+        }),
       publishAsync: (request) => {
         state.publishCalls += 1;
         state.deployed = true;
@@ -91,14 +93,15 @@ function createPublishProvider(state: IosTestState): DeploymentProviderRegistrat
           },
         });
       },
-      verifyAsync: (request) => Promise.resolve({
-        status: 'completed',
-        value: {
-          bundleIdentifier: request.bundleIdentifier,
-          version: request.version,
-          buildNumber: state.deployed ? request.artifact.buildNumber : null,
-        },
-      }),
+      verifyAsync: (request) =>
+        Promise.resolve({
+          status: 'completed',
+          value: {
+            bundleIdentifier: request.bundleIdentifier,
+            version: request.version,
+            buildNumber: state.deployed ? request.artifact.buildNumber : null,
+          },
+        }),
     },
   };
 }
