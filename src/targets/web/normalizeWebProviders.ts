@@ -4,7 +4,7 @@ import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 
 interface NormalizedWebProviders {
   readonly build: 'expo';
-  readonly publish: 'eas';
+  readonly publish: string;
 }
 
 type NormalizeWebProvidersResult =
@@ -15,16 +15,21 @@ export function normalizeWebProviders(
   providers: AppDeployProviderSelection | undefined,
 ): NormalizeWebProvidersResult {
   const build = providers?.build ?? 'expo';
-  const publish = providers?.publish ?? 'eas';
-  if (build === 'expo' && publish === 'eas') {
-    return { ok: true, providers: { build, publish } };
+  if (build !== 'expo') {
+    return {
+      ok: false,
+      failure: {
+        code: 'UNSUPPORTED_WEB_BUILD_PROVIDER',
+        message: 'The configured Web build provider is not supported.',
+        target: 'web',
+      },
+    };
   }
   return {
-    ok: false,
-    failure: {
-      code: 'UNSUPPORTED_WEB_PROVIDER',
-      message: 'The configured Web deployment provider is not supported.',
-      target: 'web',
+    ok: true,
+    providers: {
+      build,
+      publish: providers?.publish ?? 'eas',
     },
   };
 }
