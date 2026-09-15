@@ -106,7 +106,12 @@ function resolveAdapter(
   providerId: string,
   target: 'android' | 'ios',
 ): DeploymentMonetizationAdapter | undefined {
-  const registration = findDeploymentProvider(runtime.providers, providerId, 'monetization', target);
+  const registration = findDeploymentProvider(
+    runtime.providers,
+    providerId,
+    'monetization',
+    target,
+  );
   const adapter = registration?.monetization;
   return adapter?.target === target ? adapter : undefined;
 }

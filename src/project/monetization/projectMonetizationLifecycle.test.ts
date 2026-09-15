@@ -1,7 +1,6 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
-import { expect, test } from 'bun:test';
 import {
   createAppStoreConnectDeploymentProvider,
   type AppStoreConnectDeploymentProviderOptions,
@@ -10,6 +9,7 @@ import {
   createGooglePlayDeploymentProvider,
   type GooglePlayDeploymentProviderOptions,
 } from '@ankhorage/deploy-provider-google-play';
+import { expect, test } from 'bun:test';
 
 import { createTempProject, createTestManifest } from '../manifestTestSupport.test';
 import { createProjectMonetizationPlan } from './createProjectMonetizationPlan';

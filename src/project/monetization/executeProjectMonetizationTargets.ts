@@ -2,11 +2,11 @@ import type { DeploymentMonetizationAdapter } from '@ankhorage/contracts/deploy-
 
 import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 import type { DeploymentRequiredAction } from '../../domain/DeploymentRequiredAction';
+import { findDeploymentProvider } from '../../features/provider-registry/utils/findDeploymentProvider.js';
 import type { ProjectMonetizationInspection } from './ProjectMonetizationInspection';
 import type { ProjectMonetizationPlan } from './ProjectMonetizationPlan';
 import type { ProjectMonetizationRuntime } from './ProjectMonetizationRuntime';
 import type { ResolvedProjectMonetizationAccess } from './ResolvedProjectMonetizationAccess';
-import { findDeploymentProvider } from '../../features/provider-registry/utils/findDeploymentProvider.js';
 
 type ProjectMonetizationTargetExecution =
   | { readonly status: 'completed' }
@@ -73,7 +73,12 @@ function resolveAdapter(
   providerId: string,
   target: 'android' | 'ios',
 ): DeploymentMonetizationAdapter | undefined {
-  const registration = findDeploymentProvider(runtime.providers, providerId, 'monetization', target);
+  const registration = findDeploymentProvider(
+    runtime.providers,
+    providerId,
+    'monetization',
+    target,
+  );
   const adapter = registration?.monetization;
   return adapter?.target === target ? adapter : undefined;
 }
