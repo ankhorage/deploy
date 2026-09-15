@@ -1,4 +1,5 @@
-import type { AndroidDeploymentPublication } from '../../domain/AndroidDeploymentPublication';
+import type { AndroidDeploymentPublication } from '@ankhorage/contracts/deploy-provider';
+
 import type { DeploymentExecutionResult } from '../../domain/DeploymentExecutionResult';
 import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 import type { DeploymentPlan } from '../../domain/DeploymentPlan';
