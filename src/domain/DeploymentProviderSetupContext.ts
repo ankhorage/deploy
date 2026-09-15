@@ -4,6 +4,7 @@ import type { DeploymentCredentialReference } from './DeploymentCredentialRefere
 import type { DeploymentSecretResolver } from './DeploymentSecretResolver';
 
 export interface DeploymentProviderSetupContext {
+  readonly projectRoot: string;
   readonly target?: AppDeployTargetId;
   readonly credentials: readonly DeploymentCredentialReference[];
   readonly resolveSecret: DeploymentSecretResolver;
