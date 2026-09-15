@@ -1,12 +1,6 @@
-import type { AppStoreConnectTokenFactory } from '../../providers/appStoreConnect/AppStoreConnectTokenFactory';
-import type { AppStoreConnectTransport } from '../../providers/appStoreConnect/AppStoreConnectTransport';
-import type { GooglePlayTokenFactory } from '../../providers/googlePlay/GooglePlayTokenFactory';
-import type { GooglePlayTransport } from '../../providers/googlePlay/GooglePlayTransport';
+import type { DeploymentProviderRegistry } from '../../types/deploymentProviderRegistry.js';
 
 export interface ProjectMonetizationRuntime {
-  readonly createGooglePlayToken: GooglePlayTokenFactory;
-  readonly requestGooglePlay: GooglePlayTransport;
-  readonly createAppStoreConnectToken: AppStoreConnectTokenFactory;
-  readonly requestAppStoreConnect: AppStoreConnectTransport;
+  readonly providers: DeploymentProviderRegistry;
   readonly now: () => Date;
 }

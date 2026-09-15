@@ -1,16 +1,19 @@
+import type { AppDeployManifest } from '@ankhorage/contracts/deploy';
+
 import type { DeploymentPlanStep } from '../../domain/DeploymentPlanStep';
 import type { DeploymentStepOutcome } from '../../domain/DeploymentStepOutcome';
 import type { WebDeploymentPublishIntent } from '../../domain/WebDeploymentPublishIntent';
-import { publishWebToEas } from '../../providers/eas/publishWebToEas';
 import { cleanupWebArtifact, prepareWebArtifact } from '../../targets/web/prepareWebArtifact';
 import { verifyWebPublication } from '../../targets/web/verifyWebPublication';
 import type { ProjectWebDeploymentRuntime } from './ProjectWebDeploymentRuntime';
 import type { ProjectWebExecutionState } from './ProjectWebExecutionState';
 import type { ResolvedProjectWebDeploymentAccess } from './resolveProjectWebDeploymentAccess';
+import { resolveWebProviderPort } from './resolveWebProviderPort.js';
 
 export async function executeProjectWebStep(options: {
   readonly step: DeploymentPlanStep;
   readonly projectRoot: string;
+  readonly desired: AppDeployManifest;
   readonly expectedRevision?: string;
   readonly intent: WebDeploymentPublishIntent;
   readonly access: ResolvedProjectWebDeploymentAccess;
@@ -59,19 +62,20 @@ async function publishStep(
   if (options.state.artifact === null || options.expectedRevision === undefined) {
     return failed('WEB_ARTIFACT_MISSING', 'Prepared Web artifact is missing.');
   }
-  const result = await publishWebToEas({
+  const resolved = resolveWebProviderPort(options.desired, options.runtime);
+  if (!resolved.ok) return { status: 'failed', error: resolved.failure };
+  const result = await resolved.value.publisher.publishAsync({
     projectRoot: options.projectRoot,
     exportDirectory: options.state.artifact.directory,
     revision: options.expectedRevision,
     intent: options.intent,
     ...options.access,
-    runProcess: options.runtime.runProcess,
   });
   if (result.status === 'failed') return { status: 'failed', error: result.failure };
   if (result.status === 'action-required') {
     return { status: 'action-required', action: result.action };
   }
-  options.state.publication = result.publication;
+  options.state.publication = result.value;
   return { status: 'completed' };
 }
 
@@ -97,9 +101,8 @@ function removeStep(): DeploymentStepOutcome {
     action: {
       type: 'manual-action',
       target: 'web',
-      provider: 'eas',
       code: 'WEB_REMOVAL_REQUIRES_MANUAL_ACTION',
-      message: 'Review EAS Hosting aliases and domains before removing the Web deployment.',
+      message: 'Review the configured Web publication before removing the deployment target.',
     },
   };
 }

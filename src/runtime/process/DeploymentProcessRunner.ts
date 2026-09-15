@@ -1,4 +1,4 @@
-export interface DeploymentProcessRequest {
+interface DeploymentProcessRequest {
   readonly command: string;
   readonly args: readonly string[];
   readonly cwd: string;

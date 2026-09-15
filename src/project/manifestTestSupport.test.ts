@@ -16,7 +16,17 @@ export function createTestManifest(deploy?: AppDeployManifest): AppManifest {
     },
     themes: [],
     activeThemeId: 'default',
-    infra: { modules: [] },
+    infra: {
+      environments: {
+        local: {
+          deployment: {
+            compute: { provider: 'local' },
+            runtime: { provider: 'minikube' },
+          },
+        },
+      },
+      modules: [],
+    },
     navigator: {
       type: 'stack',
       routes: [{ name: 'index', screenId: 'index' }],

@@ -67,10 +67,10 @@
   "scripts": {
     "build": "rm -rf dist tsconfig.tsbuildinfo tsconfig.build.tsbuildinfo && bun x tsc -p tsconfig.build.json",
     "typecheck": "bun x tsc --noEmit -p tsconfig.json",
-    "lint": "ankhorage-eslint . --max-warnings=0",
+    "lint": "ankhorage-eslint . --fix --max-warnings=0 && git diff -- src",
     "lint:fix": "ankhorage-eslint . --fix --max-warnings=0",
     "format": "ankhorage-prettier --write .",
-    "format:check": "ankhorage-prettier --check .",
+    "format:check": "ankhorage-prettier --write . && git diff -- src",
     "test": "bun test src",
     "docs": "paradox",
     "changeset": "ankhorage-changeset",
@@ -80,8 +80,10 @@
     "knip:check": "ankhorage-knip"
   },
   "dependencies": {
-    "@ankhorage/contracts": "^12.0.1",
-    "google-auth-library": "^10.9.1"
+    "@ankhorage/contracts": "^19.2.2",
+    "@ankhorage/deploy-provider-app-store-connect": "^0.0.0",
+    "@ankhorage/deploy-provider-eas": "^0.0.0",
+    "@ankhorage/deploy-provider-google-play": "^0.0.0"
   },
   "devDependencies": {
     "@ankhorage/ankh": "^0.8.11",

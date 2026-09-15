@@ -1,8 +1,8 @@
+import type { DeploymentMonetizationAdapter } from '@ankhorage/contracts/deploy-provider';
+
 import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 import type { DeploymentRequiredAction } from '../../domain/DeploymentRequiredAction';
-import { createMonetizationCurrentRevision } from '../../domain/monetization/createMonetizationCurrentRevision';
-import { executeAppStoreMonetizationPlan } from '../../providers/appStoreConnect/executeAppStoreMonetizationPlan';
-import { executeGooglePlayMonetizationPlan } from '../../providers/googlePlay/executeGooglePlayMonetizationPlan';
+import { findDeploymentProvider } from '../../features/provider-registry/utils/findDeploymentProvider.js';
 import type { ProjectMonetizationInspection } from './ProjectMonetizationInspection';
 import type { ProjectMonetizationPlan } from './ProjectMonetizationPlan';
 import type { ProjectMonetizationRuntime } from './ProjectMonetizationRuntime';
@@ -27,20 +27,21 @@ export async function executeProjectMonetizationTargets(options: {
 async function executeAndroid(
   options: Parameters<typeof executeProjectMonetizationTargets>[0],
 ): Promise<ProjectMonetizationTargetExecution> {
-  const packageName = options.inspection.targets.androidPackage;
-  if (packageName === undefined || !hasTargetSteps(options.plan, 'android')) {
+  const { androidPackage, androidProvider } = options.inspection.targets;
+  if (
+    androidPackage === undefined ||
+    androidProvider === undefined ||
+    !hasTargetSteps(options.plan, 'android')
+  ) {
     return { status: 'completed' };
   }
-  const state = options.inspection.states.find((item) => item.target === 'android');
-  if (state === undefined) return failed('PROJECT_MONETIZATION_ANDROID_STATE_MISSING');
-  const result = await executeGooglePlayMonetizationPlan({
-    packageName,
+  const adapter = resolveAdapter(options.runtime, androidProvider, 'android');
+  if (adapter === undefined) return providerFailed('android', androidProvider);
+  const result = await adapter.syncAsync({
+    identity: { target: 'android', packageName: androidPackage },
     desired: options.inspection.desired,
     plan: options.plan,
-    expectedRevision: createMonetizationCurrentRevision([state]),
     ...options.access,
-    createToken: options.runtime.createGooglePlayToken,
-    request: options.runtime.requestGooglePlay,
   });
   return normalize(result);
 }
@@ -48,23 +49,38 @@ async function executeAndroid(
 async function executeIos(
   options: Parameters<typeof executeProjectMonetizationTargets>[0],
 ): Promise<ProjectMonetizationTargetExecution> {
-  const bundleIdentifier = options.inspection.targets.iosBundleIdentifier;
-  if (bundleIdentifier === undefined || !hasTargetSteps(options.plan, 'ios')) {
+  const { iosBundleIdentifier, iosProvider } = options.inspection.targets;
+  if (
+    iosBundleIdentifier === undefined ||
+    iosProvider === undefined ||
+    !hasTargetSteps(options.plan, 'ios')
+  ) {
     return { status: 'completed' };
   }
-  const state = options.inspection.states.find((item) => item.target === 'ios');
-  if (state === undefined) return failed('PROJECT_MONETIZATION_IOS_STATE_MISSING');
-  const result = await executeAppStoreMonetizationPlan({
-    bundleIdentifier,
+  const adapter = resolveAdapter(options.runtime, iosProvider, 'ios');
+  if (adapter === undefined) return providerFailed('ios', iosProvider);
+  const result = await adapter.syncAsync({
+    identity: { target: 'ios', bundleIdentifier: iosBundleIdentifier },
     desired: options.inspection.desired,
     plan: options.plan,
-    expectedRevision: createMonetizationCurrentRevision([state]),
     ...options.access,
-    createToken: options.runtime.createAppStoreConnectToken,
-    request: options.runtime.requestAppStoreConnect,
-    now: options.runtime.now(),
   });
   return normalize(result);
+}
+
+function resolveAdapter(
+  runtime: ProjectMonetizationRuntime,
+  providerId: string,
+  target: 'android' | 'ios',
+): DeploymentMonetizationAdapter | undefined {
+  const registration = findDeploymentProvider(
+    runtime.providers,
+    providerId,
+    'monetization',
+    target,
+  );
+  const adapter = registration?.monetization;
+  return adapter?.target === target ? adapter : undefined;
 }
 
 function hasTargetSteps(plan: ProjectMonetizationPlan, target: 'android' | 'ios'): boolean {
@@ -72,9 +88,7 @@ function hasTargetSteps(plan: ProjectMonetizationPlan, target: 'android' | 'ios'
 }
 
 function normalize(
-  result:
-    | Awaited<ReturnType<typeof executeGooglePlayMonetizationPlan>>
-    | Awaited<ReturnType<typeof executeAppStoreMonetizationPlan>>,
+  result: Awaited<ReturnType<DeploymentMonetizationAdapter['syncAsync']>>,
 ): ProjectMonetizationTargetExecution {
   if (result.status === 'completed') return { status: 'completed' };
   if (result.status === 'action-required') {
@@ -83,9 +97,17 @@ function normalize(
   return { status: 'failed', failure: result.failure };
 }
 
-function failed(code: string): ProjectMonetizationTargetExecution {
+function providerFailed(
+  target: 'android' | 'ios',
+  provider: string,
+): ProjectMonetizationTargetExecution {
   return {
     status: 'failed',
-    failure: { code, message: 'Project monetization target state is missing.' },
+    failure: {
+      code: 'PROJECT_MONETIZATION_PROVIDER_UNAVAILABLE',
+      message: 'Monetization provider is unavailable.',
+      target,
+      provider,
+    },
   };
 }

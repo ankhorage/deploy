@@ -1,5 +1,6 @@
+import type { ReleaseObservedIosState } from '@ankhorage/contracts/deploy-provider';
+
 import type { IosDeploymentPublication } from '../../domain/IosDeploymentPublication';
-import type { AppStoreConnectIosState } from '../../providers/appStoreConnect/AppStoreConnectIosState';
 import { listProjectDeploymentHistory } from '../history/listProjectDeploymentHistory';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
 import type { ProjectReleaseTargets } from './ProjectReleaseTargets';
@@ -17,17 +18,16 @@ export async function readProjectReleaseIosArtifact(options: {
   readonly projectRoot: string;
   readonly version: string;
   readonly target: NonNullable<ProjectReleaseTargets['ios']>;
-  readonly appStoreState: AppStoreConnectIosState;
+  readonly observed: ReleaseObservedIosState;
 }): Promise<IosArtifact | null> {
-  const build = options.appStoreState.version?.build;
-  if (build === null || build === undefined) return null;
-  if (build.processingState !== undefined && build.processingState !== 'VALID') return null;
+  const { buildNumber } = options.observed;
+  if (buildNumber === null) return null;
   const history = await listProjectDeploymentHistory({ projectRoot: options.projectRoot });
   const [evidence] = history
     .map(parseEvidence)
     .filter((item): item is IosEvidence => item !== null)
     .filter((item) => item.bundleIdentifier === options.target.bundleIdentifier)
-    .filter((item) => item.buildNumber === build.buildNumber)
+    .filter((item) => item.buildNumber === buildNumber)
     .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt));
   return evidence === undefined
     ? null

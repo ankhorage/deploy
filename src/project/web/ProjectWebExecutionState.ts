@@ -1,5 +1,6 @@
+import type { WebDeploymentPublication } from '@ankhorage/contracts/deploy-provider';
+
 import type { DeploymentVerificationResult } from '../../domain/DeploymentVerificationResult';
-import type { WebDeploymentPublication } from '../../domain/WebDeploymentPublication';
 import type { PreparedWebArtifact } from '../../targets/web/PreparedWebArtifact';
 
 export interface ProjectWebExecutionState {

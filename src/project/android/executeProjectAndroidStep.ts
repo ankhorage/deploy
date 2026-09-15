@@ -1,14 +1,10 @@
 import type { DeploymentPlanStep } from '../../domain/DeploymentPlanStep';
 import type { DeploymentStepOutcome } from '../../domain/DeploymentStepOutcome';
-import { buildAndroidWithEas } from '../../providers/eas/android/buildAndroidWithEas';
-import { generateLocalAndroidFingerprint } from '../../providers/eas/android/generateLocalAndroidFingerprint';
-import { inspectEasAndroidConfig } from '../../providers/eas/android/inspectEasAndroidConfig';
-import { publishAndroidToGooglePlay } from '../../providers/googlePlay/publishAndroidToGooglePlay';
-import { verifyGooglePlayPublication } from '../../providers/googlePlay/verifyGooglePlayPublication';
 import { createAndroidDeploymentRevision } from '../../targets/android/createAndroidDeploymentRevision';
 import type { ProjectAndroidDeploymentInspection } from './ProjectAndroidDeploymentInspection';
 import type { ProjectAndroidDeploymentRuntime } from './ProjectAndroidDeploymentRuntime';
 import type { ProjectAndroidExecutionState } from './ProjectAndroidExecutionState';
+import { resolveAndroidProviderPorts } from './resolveAndroidProviderPorts.js';
 import type { ResolvedProjectAndroidDeploymentAccess } from './resolveProjectAndroidDeploymentAccess';
 
 export async function executeProjectAndroidStep(options: {
@@ -39,26 +35,23 @@ async function prepareStep(
   options: Parameters<typeof executeProjectAndroidStep>[0],
 ): Promise<DeploymentStepOutcome> {
   const expected = options.inspection.desiredRevision;
-  if (expected === undefined)
+  if (expected === undefined) {
     return failed('ANDROID_REVISION_MISSING', 'Planned Android revision is missing.');
-  const config = await inspectEasAndroidConfig({
+  }
+  const resolved = resolveAndroidProviderPorts(options.inspection.desired, options.runtime);
+  if (!resolved.ok) return { status: 'failed', error: resolved.failure };
+  const inspected = await resolved.value.builder.inspectAsync({
     projectRoot: options.inspection.projectRoot,
     packageName: options.packageName,
     buildProfile: options.inspection.intent.buildProfile,
     ...options.access,
-    runProcess: options.runtime.runProcess,
   });
-  if (config.status === 'action-required')
-    return { status: 'action-required', action: config.action };
-  if (config.status === 'failed') return { status: 'failed', error: config.failure };
-  const fingerprint = await generateLocalAndroidFingerprint({
-    projectRoot: options.inspection.projectRoot,
-    profileEnvironment: config.config.profileEnvironment,
-    runProcess: options.runtime.runProcess,
-  });
-  if (fingerprint.status === 'failed') return { status: 'failed', error: fingerprint.failure };
+  if (inspected.status === 'action-required') {
+    return { status: 'action-required', action: inspected.action };
+  }
+  if (inspected.status === 'failed') return { status: 'failed', error: inspected.failure };
   const revision = createAndroidDeploymentRevision(
-    fingerprint.fingerprint,
+    inspected.value.fingerprint,
     options.inspection.intent,
   );
   if (revision !== expected) {
@@ -67,26 +60,30 @@ async function prepareStep(
       'Android source changed after the deployment plan was created.',
     );
   }
-  options.state.fingerprint = fingerprint.fingerprint;
+  options.state.fingerprint = inspected.value.fingerprint;
   return { status: 'completed' };
 }
 
 async function buildStep(
   options: Parameters<typeof executeProjectAndroidStep>[0],
 ): Promise<DeploymentStepOutcome> {
-  if (options.state.fingerprint === null)
+  if (options.state.fingerprint === null) {
     return failed('ANDROID_FINGERPRINT_MISSING', 'Prepared Android fingerprint is missing.');
-  const result = await buildAndroidWithEas({
+  }
+  const resolved = resolveAndroidProviderPorts(options.inspection.desired, options.runtime);
+  if (!resolved.ok) return { status: 'failed', error: resolved.failure };
+  const result = await resolved.value.builder.buildAsync({
     projectRoot: options.inspection.projectRoot,
+    packageName: options.packageName,
     buildProfile: options.inspection.intent.buildProfile,
     expectedFingerprint: options.state.fingerprint,
     ...options.access,
-    runProcess: options.runtime.runProcess,
   });
-  if (result.status === 'action-required')
+  if (result.status === 'action-required') {
     return { status: 'action-required', action: result.action };
+  }
   if (result.status === 'failed') return { status: 'failed', error: result.failure };
-  options.state.build = result.artifact;
+  options.state.build = result.value;
   return { status: 'completed' };
 }
 
@@ -97,40 +94,64 @@ async function publishStep(
   if (options.state.build === null || revision === undefined) {
     return failed('ANDROID_BUILD_MISSING', 'Completed Android build is missing.');
   }
-  const result = await publishAndroidToGooglePlay({
+  const resolved = resolveAndroidProviderPorts(options.inspection.desired, options.runtime);
+  if (!resolved.ok) return { status: 'failed', error: resolved.failure };
+  const result = await resolved.value.publisher.publishAsync({
     packageName: options.packageName,
+    track: options.inspection.intent.track,
+    releaseStatus: options.inspection.intent.releaseStatus,
     revision,
-    intent: options.inspection.intent,
-    build: options.state.build,
+    artifact: options.state.build,
     ...options.access,
-    createToken: options.runtime.createGooglePlayToken,
-    request: options.runtime.requestGooglePlay,
-    downloadArchive: options.runtime.downloadArchive,
   });
-  if (result.status === 'action-required')
+  if (result.status === 'action-required') {
     return { status: 'action-required', action: result.action };
+  }
   if (result.status === 'failed') return { status: 'failed', error: result.failure };
-  options.state.publication = result.publication;
+  options.state.publication = result.value;
   return { status: 'completed' };
 }
 
 async function verifyStep(
   options: Parameters<typeof executeProjectAndroidStep>[0],
 ): Promise<DeploymentStepOutcome> {
-  if (options.state.publication === null) {
+  const revision = options.inspection.desiredRevision;
+  if (
+    options.state.publication === null ||
+    options.state.build === null ||
+    revision === undefined
+  ) {
     return failed('ANDROID_PUBLICATION_MISSING', 'Android publication result is missing.');
   }
-  const result = await verifyGooglePlayPublication({
+  const resolved = resolveAndroidProviderPorts(options.inspection.desired, options.runtime);
+  if (!resolved.ok) return { status: 'failed', error: resolved.failure };
+  const result = await resolved.value.publisher.verifyAsync({
     packageName: options.packageName,
-    publication: options.state.publication,
+    track: options.inspection.intent.track,
+    releaseStatus: options.inspection.intent.releaseStatus,
+    revision,
+    artifact: options.state.build,
     ...options.access,
-    createToken: options.runtime.createGooglePlayToken,
-    request: options.runtime.requestGooglePlay,
   });
-  if (result.status === 'action-required')
+  if (result.status === 'action-required') {
     return { status: 'action-required', action: result.action };
-  options.state.verification = result.verification;
-  return result.verification.ok
+  }
+  if (result.status === 'failed') return { status: 'failed', error: result.failure };
+  const ok = result.value.activeVersionCodes.includes(options.state.build.versionCode);
+  options.state.verification = ok
+    ? { ok: true }
+    : {
+        ok: false,
+        issues: [
+          {
+            code: 'ANDROID_VERIFICATION_FAILED',
+            message: 'Published Android deployment verification failed.',
+            target: 'android',
+            provider: resolved.value.publishRegistration.descriptor.id,
+          },
+        ],
+      };
+  return ok
     ? { status: 'completed' }
     : failed('ANDROID_VERIFICATION_FAILED', 'Published Android deployment verification failed.');
 }
@@ -141,9 +162,8 @@ function removeStep(): DeploymentStepOutcome {
     action: {
       type: 'manual-action',
       target: 'android',
-      provider: 'google-play',
       code: 'ANDROID_REMOVAL_REQUIRES_MANUAL_ACTION',
-      message: 'Review Google Play release state before removing the Android deployment target.',
+      message: 'Review the configured Android store release before removing the deployment target.',
     },
   };
 }

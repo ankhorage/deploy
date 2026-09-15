@@ -25,9 +25,13 @@ export function prepareProviderSetupInspection(
   context: DeploymentProviderSetupContext,
 ): PreparedProviderSetupInspection {
   const { provider } = adapter;
-  const { target } = context;
-  if (!isNonEmptyString(provider) || (target !== undefined && !isAppDeployTargetId(target))) {
-    return invalidInput();
+  const { projectRoot, target } = context;
+  if (
+    !isNonEmptyString(provider) ||
+    !isNonEmptyString(projectRoot) ||
+    (target !== undefined && !isAppDeployTargetId(target))
+  ) {
+    return invalidInput(provider, target);
   }
   const credentials = normalizeCredentialReferences(context.credentials, provider);
   if (credentials === null || typeof context.resolveSecret !== 'function') {
@@ -38,7 +42,7 @@ export function prepareProviderSetupInspection(
     ok: true,
     provider,
     target,
-    context: createProviderSetupContext(credentials, tracked.resolve, target),
+    context: createProviderSetupContext(projectRoot, credentials, tracked.resolve, target),
     secrets: tracked.secrets,
   };
 }

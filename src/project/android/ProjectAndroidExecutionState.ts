@@ -1,10 +1,13 @@
-import type { AndroidDeploymentPublication } from '../../domain/AndroidDeploymentPublication';
+import type {
+  AndroidBuildArtifact,
+  AndroidDeploymentPublication,
+} from '@ankhorage/contracts/deploy-provider';
+
 import type { DeploymentVerificationResult } from '../../domain/DeploymentVerificationResult';
-import type { EasAndroidBuildArtifact } from '../../providers/eas/android/EasAndroidBuildArtifact';
 
 export interface ProjectAndroidExecutionState {
   fingerprint: string | null;
-  build: EasAndroidBuildArtifact | null;
+  build: AndroidBuildArtifact | null;
   publication: AndroidDeploymentPublication | null;
   verification: DeploymentVerificationResult | null;
 }

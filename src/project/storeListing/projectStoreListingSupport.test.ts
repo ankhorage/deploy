@@ -47,5 +47,9 @@ test('project store listing helpers normalize access, targets, assets, and runti
     size: 1,
     mediaType: 'image/png',
   });
-  expect(projectStoreListingRuntime.maxAppStoreProcessingAttempts).toBe(120);
+  expect(projectStoreListingRuntime.providers.map((provider) => provider.descriptor.id)).toEqual([
+    'eas',
+    'google-play',
+    'app-store-connect',
+  ]);
 });
