@@ -1,8 +1,10 @@
+import type { AppDeployProviderSelection } from '@ankhorage/contracts/deploy';
+import type { IosPublishInspection } from '@ankhorage/contracts/deploy-provider';
+
 import type {
   DeploymentCurrentState,
   DeploymentObservedIosTarget,
 } from '../../domain/DeploymentCurrentState';
-import type { AppStoreConnectIosState } from '../../providers/appStoreConnect/AppStoreConnectIosState';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
 import { listProjectDeploymentHistory } from '../history/listProjectDeploymentHistory';
 
@@ -16,16 +18,19 @@ interface IosHistoryEvidence {
 export async function readCurrentProjectIosDeployment(options: {
   readonly projectRoot: string;
   readonly bundleIdentifier?: string;
-  readonly appStoreState?: AppStoreConnectIosState | null;
+  readonly providers?: AppDeployProviderSelection;
+  readonly publishInspection?: IosPublishInspection | null;
 }): Promise<DeploymentCurrentState> {
   const history = await listProjectDeploymentHistory({ projectRoot: options.projectRoot });
   const evidence = history
     .map(parseEvidence)
     .filter((item): item is IosHistoryEvidence => item !== null)
     .filter((item) => matchesRequestedBundle(item, options.bundleIdentifier))
-    .filter((item) => matchesRemoteBuild(item, options.appStoreState))
+    .filter((item) => matchesRemoteBuild(item, options.publishInspection))
     .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt))[0];
-  return evidence === undefined ? { targets: {} } : { targets: { ios: observed(evidence) } };
+  return evidence === undefined
+    ? { targets: {} }
+    : { targets: { ios: observed(evidence, options.providers) } };
 }
 
 function parseEvidence(record: ProjectDeploymentHistoryRecord): IosHistoryEvidence | null {
@@ -51,19 +56,20 @@ function matchesRequestedBundle(item: IosHistoryEvidence, bundleIdentifier: stri
 
 function matchesRemoteBuild(
   item: IosHistoryEvidence,
-  state: AppStoreConnectIosState | null | undefined,
+  inspection: IosPublishInspection | null | undefined,
 ) {
-  if (state === undefined) return true;
-  if (state === null || state.bundleIdentifier !== item.bundleIdentifier) return false;
-  const build = state.version?.build;
-  if (build === null || build === undefined || build.buildNumber !== item.buildNumber) return false;
-  return build.processingState === undefined || build.processingState === 'VALID';
+  if (inspection === undefined) return true;
+  if (inspection === null || inspection.bundleIdentifier !== item.bundleIdentifier) return false;
+  return inspection.buildNumber === item.buildNumber;
 }
 
-function observed(item: IosHistoryEvidence): DeploymentObservedIosTarget {
+function observed(
+  item: IosHistoryEvidence,
+  providers: AppDeployProviderSelection | undefined,
+): DeploymentObservedIosTarget {
   return {
     bundleIdentifier: item.bundleIdentifier,
-    providers: { build: 'eas', publish: 'app-store-connect' },
+    ...(providers === undefined ? {} : { providers }),
     revision: item.revision,
   };
 }

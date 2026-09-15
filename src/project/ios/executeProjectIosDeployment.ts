@@ -2,12 +2,11 @@ import type { DeploymentExecutionResult } from '../../domain/DeploymentExecution
 import type { DeploymentPlan } from '../../domain/DeploymentPlan';
 import type { DeploymentStepOutcome } from '../../domain/DeploymentStepOutcome';
 import { executeDeploymentPlan } from '../../engine/executeDeploymentPlan';
+import { inspectRegisteredDeploymentProviderSetup } from '../../features/provider-registry/adapters/inbound/inspectRegisteredDeploymentProviderSetup.js';
 import { areDeploymentPlansEqual } from '../areDeploymentPlansEqual';
 import { projectSetupBlockingOutcome } from '../setupBlockingOutcome';
 import { createProjectIosDeploymentPlan } from './createProjectIosDeploymentPlan';
 import { executeProjectIosStep } from './executeProjectIosStep';
-import { inspectProjectIosAppStoreConnect } from './inspectProjectIosAppStoreConnect';
-import { inspectProjectIosEasSetup } from './inspectProjectIosEasSetup';
 import type { ProjectIosDeploymentAccess } from './ProjectIosDeploymentAccess';
 import type { ProjectIosDeploymentExecution } from './ProjectIosDeploymentExecution';
 import type { ProjectIosDeploymentInspection } from './ProjectIosDeploymentInspection';
@@ -15,6 +14,7 @@ import type { ProjectIosDeploymentRuntime } from './ProjectIosDeploymentRuntime'
 import { projectIosDeploymentRuntime } from './ProjectIosDeploymentRuntime';
 import type { ProjectIosExecutionState } from './ProjectIosExecutionState';
 import { recordProjectIosDeployment } from './recordProjectIosDeployment';
+import { resolveIosProviderPorts } from './resolveIosProviderPorts.js';
 import { resolveProjectIosDeploymentAccess } from './resolveProjectIosDeploymentAccess';
 
 export interface ExecuteProjectIosDeploymentOptions extends ProjectIosDeploymentAccess {
@@ -45,35 +45,38 @@ export async function executeProjectIosDeploymentWithRuntime(
     );
   }
   const access = resolveProjectIosDeploymentAccess(options);
-  const blocker = await inspectExecutionSetup(
-    options.inspection,
-    bundleIdentifier,
-    access,
-    runtime,
-  );
+  const blocker = await inspectExecutionSetup(options.inspection, access, runtime);
   if (blocker !== null) return fromPreflight(blocker);
   return executeMutablePlan(options, bundleIdentifier, access, runtime);
 }
 
 async function inspectExecutionSetup(
   inspection: ProjectIosDeploymentInspection,
-  bundleIdentifier: string,
   access: ReturnType<typeof resolveProjectIosDeploymentAccess>,
   runtime: ProjectIosDeploymentRuntime,
 ): Promise<DeploymentStepOutcome | null> {
-  const [eas, appStore] = await Promise.all([
-    inspectProjectIosEasSetup(inspection.projectRoot, access, runtime),
-    inspectProjectIosAppStoreConnect({
-      bundleIdentifier,
-      version: inspection.intent.version,
-      access,
-      runtime,
+  const resolved = resolveIosProviderPorts(inspection.desired, runtime);
+  if (!resolved.ok) return { status: 'failed', error: resolved.failure };
+  const [build, publish] = await Promise.all([
+    inspectRegisteredDeploymentProviderSetup({
+      registration: resolved.value.buildRegistration,
+      projectRoot: inspection.projectRoot,
+      target: 'ios',
+      capability: 'build',
+      ...access,
+    }),
+    inspectRegisteredDeploymentProviderSetup({
+      registration: resolved.value.publishRegistration,
+      projectRoot: inspection.projectRoot,
+      target: 'ios',
+      capability: 'publish',
+      ...access,
     }),
   ]);
-  return easBlocker(eas) ?? appStoreBlocker(appStore.setup);
+  return buildBlocker(build) ?? publishBlocker(publish);
 }
 
-function easBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
+function buildBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
   return projectSetupBlockingOutcome(result, {
     target: 'ios',
     capability: 'build',
@@ -84,7 +87,7 @@ function easBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
   });
 }
 
-function appStoreBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
+function publishBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
   return projectSetupBlockingOutcome(result, {
     target: 'ios',
     capability: 'publish',
@@ -176,7 +179,6 @@ function createExecutionState(): ProjectIosExecutionState {
   return {
     fingerprint: null,
     build: null,
-    appStorePublication: null,
     publication: null,
     verification: null,
   };
