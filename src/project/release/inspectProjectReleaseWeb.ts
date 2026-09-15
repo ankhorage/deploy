@@ -1,5 +1,5 @@
 import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredState';
-import { createWebReleaseObservation } from '../../providers/release/createWebReleaseObservation';
+import { createWebReleaseObservation } from '../../features/release-management/utils/createWebReleaseObservation.js';
 import { readCurrentProjectWebProductionDeployment } from '../web/readCurrentProjectWebProductionDeployment';
 import type { ProjectReleaseTargetInspection } from './ProjectReleaseTargetInspection';
 

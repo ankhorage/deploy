@@ -65,9 +65,17 @@ function resolveAndroidTarget(
   if (access.android === undefined) {
     return failure('PROJECT_RELEASE_ANDROID_TRACK_REQUIRED', 'Android release track is required.');
   }
+  const provider = android.desired.targets.android?.providers.publish;
+  if (provider === undefined) {
+    return failure(
+      'PROJECT_RELEASE_ANDROID_PROVIDER_REQUIRED',
+      'Android release provider is unavailable.',
+    );
+  }
   return success({
     android: {
       packageName: android.packageName,
+      provider,
       track: access.android.track,
       ...(access.android.buildProfile === undefined
         ? {}
@@ -85,9 +93,14 @@ function resolveIosTarget(
   if (!ios.ok || !ios.enabled || ios.bundleIdentifier === undefined) {
     return failure('PROJECT_RELEASE_IOS_TARGET_INVALID', 'iOS release target is unavailable.');
   }
+  const provider = ios.desired.targets.ios?.providers.publish;
+  if (provider === undefined) {
+    return failure('PROJECT_RELEASE_IOS_PROVIDER_REQUIRED', 'iOS release provider is unavailable.');
+  }
   return success({
     ios: {
       bundleIdentifier: ios.bundleIdentifier,
+      provider,
       ...(access.ios?.buildProfile === undefined ? {} : { buildProfile: access.ios.buildProfile }),
     },
   });

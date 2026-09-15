@@ -1,5 +1,6 @@
+import type { ReleaseObservedAndroidState } from '@ankhorage/contracts/deploy-provider';
+
 import type { AndroidDeploymentPublication } from '../../domain/AndroidDeploymentPublication';
-import type { GooglePlayReleaseSnapshot } from '../../providers/googlePlay/GooglePlayReleaseSnapshot';
 import { listProjectDeploymentHistory } from '../history/listProjectDeploymentHistory';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
 import type { ProjectReleaseTargets } from './ProjectReleaseTargets';
@@ -16,14 +17,14 @@ interface AndroidEvidence {
 export async function readProjectReleaseAndroidArtifact(options: {
   readonly projectRoot: string;
   readonly target: NonNullable<ProjectReleaseTargets['android']>;
-  readonly snapshot: GooglePlayReleaseSnapshot;
+  readonly observed: ReleaseObservedAndroidState;
 }): Promise<AndroidArtifact | null> {
   const history = await listProjectDeploymentHistory({ projectRoot: options.projectRoot });
   const [evidence] = history
     .map(parseEvidence)
     .filter((item): item is AndroidEvidence => item !== null)
     .filter((item) => item.packageName === options.target.packageName)
-    .filter((item) => appearsInSnapshot(item.versionCode, options.snapshot))
+    .filter((item) => options.observed.versionCodes.includes(String(item.versionCode)))
     .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt));
   return evidence === undefined
     ? null
@@ -49,9 +50,4 @@ function parseEvidence(record: ProjectDeploymentHistoryRecord): AndroidEvidence 
     packageName: desired.package,
     recordedAt: record.recordedAt,
   };
-}
-
-function appearsInSnapshot(versionCode: number, snapshot: GooglePlayReleaseSnapshot): boolean {
-  const expected = String(versionCode);
-  return snapshot.releases.some((release) => release.versionCodes.includes(expected));
 }

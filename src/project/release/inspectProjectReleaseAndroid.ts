@@ -1,6 +1,5 @@
 import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredState';
-import { inspectGooglePlayReleaseState } from '../../providers/googlePlay/inspectGooglePlayReleaseState';
-import { normalizeGooglePlayReleaseObservation } from '../../providers/googlePlay/normalizeGooglePlayReleaseObservation';
+import { resolveRegisteredReleaseAdapter } from '../../features/release-management/adapters/inbound/resolveRegisteredReleaseAdapter.js';
 import type { ProjectReleaseRuntime } from './ProjectReleaseRuntime';
 import type { ProjectReleaseTargetInspection } from './ProjectReleaseTargetInspection';
 import type { ProjectReleaseTargets } from './ProjectReleaseTargets';
@@ -14,31 +13,47 @@ export async function inspectProjectReleaseAndroid(options: {
   readonly access: ResolvedProjectReleaseAccess;
   readonly runtime: ProjectReleaseRuntime;
 }): Promise<ProjectReleaseTargetInspection> {
-  const inspected = await inspectGooglePlayReleaseState({
-    packageName: options.target.packageName,
-    track: options.target.track,
+  const adapter = resolveRegisteredReleaseAdapter({
+    providers: options.runtime.providers,
+    providerId: options.target.provider,
+    target: 'android',
+  });
+  if (adapter === undefined) return unavailable(options.target.provider);
+  const inspected = await adapter.inspectAsync({
+    identity: { target: 'android', packageName: options.target.packageName },
     credentials: options.access.credentials,
     resolveSecret: options.access.resolveSecret,
-    createToken: options.runtime.createGooglePlayToken,
-    request: options.runtime.requestGooglePlay,
+    version: options.desired.version,
   });
   if (inspected.status === 'failed') return { ok: false, failure: inspected.failure };
   if (inspected.status === 'action-required') {
     return { ok: true, state: missingState(), actions: [inspected.action] };
   }
+  if (inspected.value.target !== 'android') return unavailable(options.target.provider);
   const publication = await readProjectReleaseAndroidArtifact({
     projectRoot: options.projectRoot,
     target: options.target,
-    snapshot: inspected.state,
+    observed: inspected.value,
   });
   return {
     ok: true,
-    state: normalizeGooglePlayReleaseObservation({
-      desiredVersion: options.desired.version,
-      publication,
-      snapshot: inspected.state,
-    }),
+    state: {
+      ...inspected.value,
+      artifactRevision: publication?.revision ?? null,
+    },
     actions: [],
+  };
+}
+
+function unavailable(provider: string): ProjectReleaseTargetInspection {
+  return {
+    ok: false,
+    failure: {
+      code: 'PROJECT_RELEASE_ANDROID_PROVIDER_UNAVAILABLE',
+      message: 'Android release provider is unavailable.',
+      target: 'android',
+      provider,
+    },
   };
 }
 

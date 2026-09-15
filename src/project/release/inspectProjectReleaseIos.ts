@@ -1,8 +1,5 @@
 import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredState';
-import type { AppStoreReleaseSnapshot } from '../../providers/appStoreConnect/AppStoreReleaseSnapshot';
-import { inspectAppStoreConnectIos } from '../../providers/appStoreConnect/inspectAppStoreConnectIos';
-import { inspectAppStoreReleaseState } from '../../providers/appStoreConnect/inspectAppStoreReleaseState';
-import { normalizeAppStoreReleaseObservation } from '../../providers/appStoreConnect/normalizeAppStoreReleaseObservation';
+import { resolveRegisteredReleaseAdapter } from '../../features/release-management/adapters/inbound/resolveRegisteredReleaseAdapter.js';
 import type { ProjectReleaseRuntime } from './ProjectReleaseRuntime';
 import type { ProjectReleaseTargetInspection } from './ProjectReleaseTargetInspection';
 import type { ProjectReleaseTargets } from './ProjectReleaseTargets';
@@ -16,65 +13,48 @@ export async function inspectProjectReleaseIos(options: {
   readonly access: ResolvedProjectReleaseAccess;
   readonly runtime: ProjectReleaseRuntime;
 }): Promise<ProjectReleaseTargetInspection> {
-  const release = await inspectRelease(options);
-  if (release.status === 'failed') return { ok: false, failure: release.failure };
-  if (release.status === 'action-required') {
-    return { ok: true, state: missingState(), actions: [release.action] };
-  }
-  return inspectArtifact(options, release.state);
-}
-
-async function inspectArtifact(
-  options: Parameters<typeof inspectProjectReleaseIos>[0],
-  snapshot: AppStoreReleaseSnapshot,
-): Promise<ProjectReleaseTargetInspection> {
-  const appStore = await inspectAppStoreConnectIos({
-    bundleIdentifier: options.target.bundleIdentifier,
-    version: options.desired.version,
+  const adapter = resolveRegisteredReleaseAdapter({
+    providers: options.runtime.providers,
+    providerId: options.target.provider,
+    target: 'ios',
+  });
+  if (adapter === undefined) return unavailable(options.target.provider);
+  const inspected = await adapter.inspectAsync({
+    identity: { target: 'ios', bundleIdentifier: options.target.bundleIdentifier },
     credentials: options.access.credentials,
     resolveSecret: options.access.resolveSecret,
-    createToken: options.runtime.createAppStoreConnectToken,
-    request: options.runtime.requestAppStoreConnect,
-    now: options.runtime.now(),
+    version: options.desired.version,
   });
-  if (appStore.status === 'failed') return { ok: false, failure: appStore.failure };
-  if (appStore.status === 'action-required') {
-    return success(snapshot, null, [appStore.action]);
+  if (inspected.status === 'failed') return { ok: false, failure: inspected.failure };
+  if (inspected.status === 'action-required') {
+    return { ok: true, state: missingState(), actions: [inspected.action] };
   }
+  if (inspected.value.target !== 'ios') return unavailable(options.target.provider);
   const publication = await readProjectReleaseIosArtifact({
     projectRoot: options.projectRoot,
     version: options.desired.version,
     target: options.target,
-    appStoreState: appStore.state,
+    observed: inspected.value,
   });
-  return success(snapshot, publication, []);
-}
-
-function inspectRelease(options: Parameters<typeof inspectProjectReleaseIos>[0]) {
-  return inspectAppStoreReleaseState({
-    bundleIdentifier: options.target.bundleIdentifier,
-    version: options.desired.version,
-    credentials: options.access.credentials,
-    resolveSecret: options.access.resolveSecret,
-    createToken: options.runtime.createAppStoreConnectToken,
-    request: options.runtime.requestAppStoreConnect,
-    now: options.runtime.now(),
-  });
-}
-
-function success(
-  snapshot: AppStoreReleaseSnapshot,
-  publication: Parameters<typeof normalizeAppStoreReleaseObservation>[0]['publication'],
-  actions: Extract<ProjectReleaseTargetInspection, { readonly ok: true }>['actions'],
-): ProjectReleaseTargetInspection {
   return {
     ok: true,
-    state: normalizeAppStoreReleaseObservation({
-      publication,
-      publicationVerified: publication !== null,
-      snapshot,
-    }),
-    actions,
+    state: {
+      ...inspected.value,
+      artifactRevision: publication?.revision ?? null,
+    },
+    actions: [],
+  };
+}
+
+function unavailable(provider: string): ProjectReleaseTargetInspection {
+  return {
+    ok: false,
+    failure: {
+      code: 'PROJECT_RELEASE_IOS_PROVIDER_UNAVAILABLE',
+      message: 'iOS release provider is unavailable.',
+      target: 'ios',
+      provider,
+    },
   };
 }
 

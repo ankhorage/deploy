@@ -1,5 +1,6 @@
-import type { ReleaseObservedWebState } from '../../domain/release/ReleaseObservedWebState';
-import type { WebDeploymentPublication } from '../../domain/WebDeploymentPublication';
+import type { WebDeploymentPublication } from '@ankhorage/contracts/deploy-provider';
+
+import type { ReleaseObservedWebState } from '../../../domain/release/ReleaseObservedWebState';
 
 type WebReleasePublication = WebDeploymentPublication | Pick<WebDeploymentPublication, 'revision'>;
 
