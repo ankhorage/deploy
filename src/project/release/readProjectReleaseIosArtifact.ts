@@ -20,7 +20,7 @@ export async function readProjectReleaseIosArtifact(options: {
   readonly target: NonNullable<ProjectReleaseTargets['ios']>;
   readonly observed: ReleaseObservedIosState;
 }): Promise<IosArtifact | null> {
-  const buildNumber = options.observed.buildNumber;
+  const { buildNumber } = options.observed;
   if (buildNumber === null) return null;
   const history = await listProjectDeploymentHistory({ projectRoot: options.projectRoot });
   const [evidence] = history

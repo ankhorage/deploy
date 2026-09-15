@@ -18,7 +18,7 @@ export function inspectRegisteredDeploymentProviderSetup(options: {
   readonly credentials: readonly DeploymentCredentialReference[];
   readonly resolveSecret: DeploymentSecretResolver;
 }): Promise<DeploymentProviderSetupInspectionResult> {
-  const setup = options.registration.setup;
+  const { setup } = options.registration;
   if (setup === undefined) {
     return Promise.resolve({
       ok: true,

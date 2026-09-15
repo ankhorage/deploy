@@ -26,7 +26,9 @@ export async function executeProjectReleaseAndroidMutation(options: {
   });
   if (inspection.status === 'action-required') return blocked(inspection.action.code);
   if (inspection.status === 'failed') return failed(inspection.failure.code);
-  if (inspection.value.target !== 'android') return failed('PROJECT_RELEASE_ANDROID_PROVIDER_INVALID');
+  if (inspection.value.target !== 'android') {
+    return failed('PROJECT_RELEASE_ANDROID_PROVIDER_INVALID');
+  }
   const publication = await readProjectReleaseAndroidArtifact({
     projectRoot: options.context.projectRoot,
     target,

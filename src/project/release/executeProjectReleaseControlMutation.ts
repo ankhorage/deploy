@@ -44,7 +44,9 @@ async function executeAndroidControl(
   });
   if (inspected.status === 'action-required') return blocked(inspected.action.code);
   if (inspected.status === 'failed') return failed(inspected.failure.code);
-  if (inspected.value.target !== 'android') return failed('PROJECT_RELEASE_ANDROID_PROVIDER_INVALID');
+  if (inspected.value.target !== 'android') {
+    return failed('PROJECT_RELEASE_ANDROID_PROVIDER_INVALID');
+  }
   const publication = await readProjectReleaseAndroidArtifact({
     projectRoot: context.projectRoot,
     target,

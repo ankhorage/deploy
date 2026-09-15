@@ -1,7 +1,7 @@
 import type { DeploymentReleaseAdapter } from '@ankhorage/contracts/deploy-provider';
 
-import { findDeploymentProvider } from '../../../provider-registry/utils/findDeploymentProvider.js';
 import type { DeploymentProviderRegistry } from '../../../../types/deploymentProviderRegistry.js';
+import { findDeploymentProvider } from '../../../provider-registry/utils/findDeploymentProvider.js';
 
 export function resolveRegisteredReleaseAdapter(options: {
   readonly providers: DeploymentProviderRegistry;
