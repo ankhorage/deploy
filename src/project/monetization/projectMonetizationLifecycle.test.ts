@@ -2,12 +2,12 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import {
-  createAppStoreConnectDeploymentProvider,
   type AppStoreConnectDeploymentProviderOptions,
+  createAppStoreConnectDeploymentProvider,
 } from '@ankhorage/deploy-provider-app-store-connect';
 import {
-  createGooglePlayDeploymentProvider,
   type GooglePlayDeploymentProviderOptions,
+  createGooglePlayDeploymentProvider,
 } from '@ankhorage/deploy-provider-google-play';
 import { expect, test } from 'bun:test';
 
