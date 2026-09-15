@@ -8,7 +8,7 @@ import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 import { findDeploymentProvider } from '../../features/provider-registry/utils/findDeploymentProvider.js';
 import type { ProjectWebDeploymentRuntime } from './ProjectWebDeploymentRuntime';
 
-export interface WebProviderPort {
+interface WebProviderPort {
   readonly providers: Required<Pick<AppDeployProviderSelection, 'publish'>>;
   readonly registration: DeploymentProviderRegistration;
   readonly publisher: WebDeploymentPublisher;

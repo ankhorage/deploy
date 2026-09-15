@@ -6,8 +6,8 @@ import {
   createAppStoreConnectDeploymentProvider,
 } from '@ankhorage/deploy-provider-app-store-connect';
 import {
-  type GooglePlayDeploymentProviderOptions,
   createGooglePlayDeploymentProvider,
+  type GooglePlayDeploymentProviderOptions,
 } from '@ankhorage/deploy-provider-google-play';
 import { expect, test } from 'bun:test';
 
