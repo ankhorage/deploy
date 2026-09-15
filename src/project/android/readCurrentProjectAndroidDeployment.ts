@@ -1,8 +1,10 @@
+import type { AppDeployProviderSelection } from '@ankhorage/contracts/deploy';
+import type { AndroidPublishInspection } from '@ankhorage/contracts/deploy-provider';
+
 import type {
   DeploymentCurrentState,
   DeploymentObservedAndroidTarget,
 } from '../../domain/DeploymentCurrentState';
-import type { GooglePlayTrackState } from '../../providers/googlePlay/GooglePlayTrackState';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
 import { listProjectDeploymentHistory } from '../history/listProjectDeploymentHistory';
 
@@ -16,16 +18,19 @@ interface AndroidHistoryEvidence {
 export async function readCurrentProjectAndroidDeployment(options: {
   readonly projectRoot: string;
   readonly packageName?: string;
-  readonly trackState?: GooglePlayTrackState | null;
+  readonly providers?: AppDeployProviderSelection;
+  readonly publishInspection?: AndroidPublishInspection | null;
 }): Promise<DeploymentCurrentState> {
   const history = await listProjectDeploymentHistory({ projectRoot: options.projectRoot });
   const evidence = history
     .map(parseEvidence)
     .filter((item): item is AndroidHistoryEvidence => item !== null)
     .filter((item) => matchesRequestedPackage(item, options.packageName))
-    .filter((item) => matchesRemoteTrack(item, options.trackState))
+    .filter((item) => matchesRemotePublication(item, options.publishInspection))
     .sort((left, right) => right.recordedAt.localeCompare(left.recordedAt))[0];
-  return evidence === undefined ? { targets: {} } : { targets: { android: observed(evidence) } };
+  return evidence === undefined
+    ? { targets: {} }
+    : { targets: { android: observed(evidence, options.providers) } };
 }
 
 function parseEvidence(record: ProjectDeploymentHistoryRecord): AndroidHistoryEvidence | null {
@@ -44,19 +49,22 @@ function matchesRequestedPackage(item: AndroidHistoryEvidence, packageName: stri
   return packageName === undefined || item.packageName === packageName;
 }
 
-function matchesRemoteTrack(
+function matchesRemotePublication(
   item: AndroidHistoryEvidence,
-  trackState: GooglePlayTrackState | null | undefined,
+  inspection: AndroidPublishInspection | null | undefined,
 ) {
-  if (trackState === undefined) return true;
-  if (trackState === null) return false;
-  return trackState.releases.some((release) => release.versionCodes.includes(item.versionCode));
+  if (inspection === undefined) return true;
+  if (inspection === null) return false;
+  return inspection.activeVersionCodes.includes(item.versionCode);
 }
 
-function observed(item: AndroidHistoryEvidence): DeploymentObservedAndroidTarget {
+function observed(
+  item: AndroidHistoryEvidence,
+  providers: AppDeployProviderSelection | undefined,
+): DeploymentObservedAndroidTarget {
   return {
     package: item.packageName,
-    providers: { build: 'eas', publish: 'google-play' },
+    ...(providers === undefined ? {} : { providers }),
     revision: item.revision,
   };
 }
