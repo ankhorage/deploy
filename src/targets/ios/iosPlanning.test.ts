@@ -32,13 +32,19 @@ test('iOS revision is deterministic and intent-bound', () => {
   ).not.toBe(revision);
 });
 
-test('iOS providers normalize to EAS and App Store Connect', () => {
+test('iOS providers default to EAS and App Store Connect while preserving authored ids', () => {
   expect(normalizeIosProviders(undefined)).toEqual({
     ok: true,
     providers: { build: 'eas', publish: 'app-store-connect' },
   });
-  expect(normalizeIosProviders({ build: 'other' }).ok).toBe(false);
-  expect(normalizeIosProviders({ publish: 'other' }).ok).toBe(false);
+  expect(normalizeIosProviders({ build: 'custom-build' })).toEqual({
+    ok: true,
+    providers: { build: 'custom-build', publish: 'app-store-connect' },
+  });
+  expect(normalizeIosProviders({ publish: 'custom-publish' })).toEqual({
+    ok: true,
+    providers: { build: 'eas', publish: 'custom-publish' },
+  });
 });
 
 test('iOS create plan uses prepare build publish verify order', () => {

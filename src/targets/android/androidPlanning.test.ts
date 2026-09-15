@@ -42,13 +42,19 @@ test('Android revision is deterministic and intent-bound', () => {
   ).not.toBe(revision);
 });
 
-test('Android providers normalize to EAS and Google Play', () => {
+test('Android providers default to EAS and Google Play while preserving authored ids', () => {
   expect(normalizeAndroidProviders(undefined)).toEqual({
     ok: true,
     providers: { build: 'eas', publish: 'google-play' },
   });
-  expect(normalizeAndroidProviders({ build: 'other' }).ok).toBe(false);
-  expect(normalizeAndroidProviders({ publish: 'other' }).ok).toBe(false);
+  expect(normalizeAndroidProviders({ build: 'custom-build' })).toEqual({
+    ok: true,
+    providers: { build: 'custom-build', publish: 'google-play' },
+  });
+  expect(normalizeAndroidProviders({ publish: 'custom-publish' })).toEqual({
+    ok: true,
+    providers: { build: 'eas', publish: 'custom-publish' },
+  });
 });
 
 test('Android create plan uses prepare build publish verify order', () => {

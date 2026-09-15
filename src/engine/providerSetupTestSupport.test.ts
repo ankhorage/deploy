@@ -14,6 +14,7 @@ export const FIXTURE_CREDENTIAL: DeploymentCredentialReference = {
 
 export function createSetupContext(secret = FIXTURE_SECRET): DeploymentProviderSetupContext {
   return {
+    projectRoot: '/tmp/deploy-provider-fixture',
     credentials: [FIXTURE_CREDENTIAL],
     resolveSecret: () => Promise.resolve(secret),
   };
