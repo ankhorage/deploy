@@ -1,6 +1,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
+import type { DeploymentProviderRegistration } from '@ankhorage/contracts/deploy-provider';
 import { expect, test } from 'bun:test';
 
 import type { DeploymentProcessRunner } from '../../runtime/process/DeploymentProcessRunner';
@@ -20,22 +21,41 @@ function createRuntime(state: {
       if (output === undefined) return { exitCode: 1, stdout: '', stderr: '' };
       await fs.mkdir(output, { recursive: true });
       await fs.writeFile(path.join(output, 'index.html'), state.source);
-      return { exitCode: 0, stdout: '', stderr: '' };
-    }
-    if (request.args[0] === 'deploy') {
-      state.deployCalls += 1;
-      return {
-        exitCode: 0,
-        stdout: JSON.stringify({ identifier: 'web-deploy-1', url: 'https://web.expo.app' }),
-        stderr: '',
-      };
     }
     return { exitCode: 0, stdout: '', stderr: '' };
   };
   return {
+    providers: [createWebProvider(state)],
     runProcess,
     probeHttp: () => Promise.resolve({ status: 200 }),
     now: () => new Date('2026-08-12T14:00:00.000Z'),
+  };
+}
+
+function createWebProvider(state: { deployCalls: number }): DeploymentProviderRegistration {
+  return {
+    descriptor: {
+      id: 'eas',
+      packageName: '@ankhorage/deploy-provider-eas',
+      displayName: 'EAS',
+      capabilities: [{ id: 'web-publish', targets: ['web'] }],
+    },
+    webPublisher: {
+      publishAsync: (request) => {
+        state.deployCalls += 1;
+        return Promise.resolve({
+          status: 'completed',
+          value: {
+            target: 'web',
+            revision: request.revision,
+            provider: 'eas',
+            deploymentId: 'web-deploy-1',
+            url: 'https://web.expo.app',
+            production: request.intent.mode === 'production',
+          },
+        });
+      },
+    },
   };
 }
 
