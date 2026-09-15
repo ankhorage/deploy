@@ -2,12 +2,11 @@ import type { DeploymentExecutionResult } from '../../domain/DeploymentExecution
 import type { DeploymentPlan } from '../../domain/DeploymentPlan';
 import type { DeploymentStepOutcome } from '../../domain/DeploymentStepOutcome';
 import { executeDeploymentPlan } from '../../engine/executeDeploymentPlan';
+import { inspectRegisteredDeploymentProviderSetup } from '../../features/provider-registry/adapters/inbound/inspectRegisteredDeploymentProviderSetup.js';
 import { areDeploymentPlansEqual } from '../areDeploymentPlansEqual';
 import { projectSetupBlockingOutcome } from '../setupBlockingOutcome';
 import { createProjectAndroidDeploymentPlan } from './createProjectAndroidDeploymentPlan';
 import { executeProjectAndroidStep } from './executeProjectAndroidStep';
-import { inspectProjectAndroidEasSetup } from './inspectProjectAndroidEasSetup';
-import { inspectProjectAndroidGooglePlay } from './inspectProjectAndroidGooglePlay';
 import type { ProjectAndroidDeploymentAccess } from './ProjectAndroidDeploymentAccess';
 import type { ProjectAndroidDeploymentExecution } from './ProjectAndroidDeploymentExecution';
 import type { ProjectAndroidDeploymentInspection } from './ProjectAndroidDeploymentInspection';
@@ -15,6 +14,7 @@ import type { ProjectAndroidDeploymentRuntime } from './ProjectAndroidDeployment
 import { projectAndroidDeploymentRuntime } from './ProjectAndroidDeploymentRuntime';
 import type { ProjectAndroidExecutionState } from './ProjectAndroidExecutionState';
 import { recordProjectAndroidDeployment } from './recordProjectAndroidDeployment';
+import { resolveAndroidProviderPorts } from './resolveAndroidProviderPorts.js';
 import { resolveProjectAndroidDeploymentAccess } from './resolveProjectAndroidDeploymentAccess';
 
 export interface ExecuteProjectAndroidDeploymentOptions extends ProjectAndroidDeploymentAccess {
@@ -45,30 +45,38 @@ export async function executeProjectAndroidDeploymentWithRuntime(
     return fromPreflight(failedOutcome('ANDROID_PACKAGE_MISSING', 'Android package is missing.'));
   }
   const access = resolveProjectAndroidDeploymentAccess(options);
-  const blocker = await inspectExecutionSetup(options.inspection, packageName, access, runtime);
+  const blocker = await inspectExecutionSetup(options.inspection, access, runtime);
   if (blocker !== null) return fromPreflight(blocker);
   return executeMutablePlan(options, packageName, access, runtime);
 }
 
 async function inspectExecutionSetup(
   inspection: ProjectAndroidDeploymentInspection,
-  packageName: string,
   access: ReturnType<typeof resolveProjectAndroidDeploymentAccess>,
   runtime: ProjectAndroidDeploymentRuntime,
 ): Promise<DeploymentStepOutcome | null> {
-  const [eas, google] = await Promise.all([
-    inspectProjectAndroidEasSetup(inspection.projectRoot, access, runtime),
-    inspectProjectAndroidGooglePlay({
-      packageName,
-      track: inspection.intent.track,
-      access,
-      runtime,
+  const resolved = resolveAndroidProviderPorts(inspection.desired, runtime);
+  if (!resolved.ok) return { status: 'failed', error: resolved.failure };
+  const [build, publish] = await Promise.all([
+    inspectRegisteredDeploymentProviderSetup({
+      registration: resolved.value.buildRegistration,
+      projectRoot: inspection.projectRoot,
+      target: 'android',
+      capability: 'build',
+      ...access,
+    }),
+    inspectRegisteredDeploymentProviderSetup({
+      registration: resolved.value.publishRegistration,
+      projectRoot: inspection.projectRoot,
+      target: 'android',
+      capability: 'publish',
+      ...access,
     }),
   ]);
-  return easBlocker(eas) ?? googleBlocker(google.setup);
+  return buildBlocker(build) ?? publishBlocker(publish);
 }
 
-function easBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
+function buildBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
   return projectSetupBlockingOutcome(result, {
     target: 'android',
     capability: 'build',
@@ -79,7 +87,7 @@ function easBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
   });
 }
 
-function googleBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
+function publishBlocker(result: Parameters<typeof projectSetupBlockingOutcome>[0]) {
   return projectSetupBlockingOutcome(result, {
     target: 'android',
     capability: 'publish',
