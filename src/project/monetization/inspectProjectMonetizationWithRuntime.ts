@@ -1,8 +1,9 @@
+import type { DeploymentMonetizationAdapter } from '@ankhorage/contracts/deploy-provider';
+
 import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 import { createMonetizationCurrentRevision } from '../../domain/monetization/createMonetizationCurrentRevision';
 import type { MonetizationTargetState } from '../../domain/monetization/MonetizationTargetState';
-import { inspectAppStoreMonetization } from '../../providers/appStoreConnect/inspectAppStoreMonetization';
-import { inspectGooglePlayMonetization } from '../../providers/googlePlay/inspectGooglePlayMonetization';
+import { findDeploymentProvider } from '../../features/provider-registry/utils/findDeploymentProvider.js';
 import { resolveDeployProject } from '../resolveDeployProject';
 import type { InspectProjectMonetizationOptions } from './InspectProjectMonetizationOptions';
 import type { ProjectMonetizationInspection } from './ProjectMonetizationInspection';
@@ -43,9 +44,9 @@ async function inspectTargets(
 ): Promise<ProjectMonetizationInspectionResult> {
   const states: MonetizationTargetState[] = [];
   const actions: ProjectMonetizationInspection['actions'][number][] = [];
-  const androidFailure = await inspectAndroid(desired, targets, access, runtime, states, actions);
+  const androidFailure = await inspectAndroid(targets, access, runtime, states, actions);
   if (androidFailure !== null) return { ok: false, failure: androidFailure };
-  const iosFailure = await inspectIos(desired, targets, access, runtime, states, actions);
+  const iosFailure = await inspectIos(targets, access, runtime, states, actions);
   if (iosFailure !== null) return { ok: false, failure: iosFailure };
   return {
     ok: true,
@@ -61,46 +62,62 @@ async function inspectTargets(
 }
 
 async function inspectAndroid(
-  desired: ProjectMonetizationInspection['desired'],
   targets: ProjectMonetizationTargets,
   access: ReturnType<typeof resolveProjectMonetizationAccess>,
   runtime: ProjectMonetizationRuntime,
   states: MonetizationTargetState[],
   actions: ProjectMonetizationInspection['actions'][number][],
 ): Promise<DeploymentFailure | null> {
-  if (targets.androidPackage === undefined) return null;
-  const result = await inspectGooglePlayMonetization({
-    packageName: targets.androidPackage,
-    desired,
+  if (targets.androidPackage === undefined || targets.androidProvider === undefined) return null;
+  const adapter = resolveAdapter(runtime, targets.androidProvider, 'android');
+  if (adapter === undefined) {
+    return providerFailure('android', targets.androidProvider);
+  }
+  const result = await adapter.inspectAsync({
+    identity: { target: 'android', packageName: targets.androidPackage },
     ...access,
-    createToken: runtime.createGooglePlayToken,
-    request: runtime.requestGooglePlay,
   });
-  if (result.status === 'completed') states.push(result.state);
+  if (result.status === 'completed') states.push(result.value);
   if (result.status === 'action-required') actions.push(result.action);
   return result.status === 'failed' ? result.failure : null;
 }
 
 async function inspectIos(
-  desired: ProjectMonetizationInspection['desired'],
   targets: ProjectMonetizationTargets,
   access: ReturnType<typeof resolveProjectMonetizationAccess>,
   runtime: ProjectMonetizationRuntime,
   states: MonetizationTargetState[],
   actions: ProjectMonetizationInspection['actions'][number][],
 ): Promise<DeploymentFailure | null> {
-  if (targets.iosBundleIdentifier === undefined) return null;
-  const result = await inspectAppStoreMonetization({
-    bundleIdentifier: targets.iosBundleIdentifier,
-    desired,
+  if (targets.iosBundleIdentifier === undefined || targets.iosProvider === undefined) return null;
+  const adapter = resolveAdapter(runtime, targets.iosProvider, 'ios');
+  if (adapter === undefined) return providerFailure('ios', targets.iosProvider);
+  const result = await adapter.inspectAsync({
+    identity: { target: 'ios', bundleIdentifier: targets.iosBundleIdentifier },
     ...access,
-    createToken: runtime.createAppStoreConnectToken,
-    request: runtime.requestAppStoreConnect,
-    now: runtime.now(),
   });
-  if (result.status === 'completed') states.push(result.state);
+  if (result.status === 'completed') states.push(result.value);
   if (result.status === 'action-required') actions.push(result.action);
   return result.status === 'failed' ? result.failure : null;
+}
+
+function resolveAdapter(
+  runtime: ProjectMonetizationRuntime,
+  providerId: string,
+  target: 'android' | 'ios',
+): DeploymentMonetizationAdapter | undefined {
+  const registration = findDeploymentProvider(runtime.providers, providerId, 'monetization', target);
+  const adapter = registration?.monetization;
+  return adapter?.target === target ? adapter : undefined;
+}
+
+function providerFailure(target: 'android' | 'ios', provider: string): DeploymentFailure {
+  return {
+    code: 'PROJECT_MONETIZATION_PROVIDER_UNAVAILABLE',
+    message: 'Monetization provider is unavailable.',
+    target,
+    provider,
+  };
 }
 
 function failed(code: string, message: string): ProjectMonetizationInspectionResult {

@@ -22,11 +22,23 @@ export function resolveProjectMonetizationTargets(
   if (ios.enabled && ios.bundleIdentifier === undefined) {
     return failure('MONETIZATION_IOS_BUNDLE_REQUIRED', 'iOS bundle identifier is required.');
   }
+  const androidProvider = android.desired.targets.android?.providers?.publish;
+  if (android.enabled && androidProvider === undefined) {
+    return failure('MONETIZATION_ANDROID_PROVIDER_REQUIRED', 'Android provider is required.');
+  }
+  const iosProvider = ios.desired.targets.ios?.providers?.publish;
+  if (ios.enabled && iosProvider === undefined) {
+    return failure('MONETIZATION_IOS_PROVIDER_REQUIRED', 'iOS provider is required.');
+  }
   return {
     ok: true,
     targets: {
-      ...(android.enabled ? { androidPackage: android.packageName } : {}),
-      ...(ios.enabled ? { iosBundleIdentifier: ios.bundleIdentifier } : {}),
+      ...(android.enabled
+        ? { androidPackage: android.packageName, androidProvider }
+        : {}),
+      ...(ios.enabled
+        ? { iosBundleIdentifier: ios.bundleIdentifier, iosProvider }
+        : {}),
     },
   };
 }

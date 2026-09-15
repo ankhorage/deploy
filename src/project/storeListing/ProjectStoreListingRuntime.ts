@@ -1,46 +1,12 @@
-import {
-  type AppStoreConnectTokenFactory,
-  createAppStoreConnectToken,
-} from '../../providers/appStoreConnect/AppStoreConnectTokenFactory';
-import {
-  type AppStoreConnectTransport,
-  fetchAppStoreConnect,
-} from '../../providers/appStoreConnect/AppStoreConnectTransport';
-import {
-  type AppStoreUploadTransport,
-  fetchAppStoreUpload,
-} from '../../providers/appStoreConnect/AppStoreUploadTransport';
-import {
-  createGooglePlayAccessToken,
-  type GooglePlayTokenFactory,
-} from '../../providers/googlePlay/GooglePlayTokenFactory';
-import {
-  fetchGooglePlay,
-  type GooglePlayTransport,
-} from '../../providers/googlePlay/GooglePlayTransport';
+import { createDefaultDeploymentProviderRegistry } from '../../features/provider-registry/composition/createDefaultDeploymentProviderRegistry.js';
+import type { DeploymentProviderRegistry } from '../../types/deploymentProviderRegistry.js';
 
 export interface ProjectStoreListingRuntime {
-  readonly createGooglePlayToken: GooglePlayTokenFactory;
-  readonly requestGooglePlay: GooglePlayTransport;
-  readonly createAppStoreConnectToken: AppStoreConnectTokenFactory;
-  readonly requestAppStoreConnect: AppStoreConnectTransport;
-  readonly uploadAppStore: AppStoreUploadTransport;
-  readonly waitForAppStoreProcessing: () => Promise<void>;
-  readonly maxAppStoreProcessingAttempts: number;
+  readonly providers: DeploymentProviderRegistry;
   readonly now: () => Date;
 }
 
 export const projectStoreListingRuntime: ProjectStoreListingRuntime = {
-  createGooglePlayToken: createGooglePlayAccessToken,
-  requestGooglePlay: fetchGooglePlay,
-  createAppStoreConnectToken,
-  requestAppStoreConnect: fetchAppStoreConnect,
-  uploadAppStore: fetchAppStoreUpload,
-  waitForAppStoreProcessing: () => delay(5_000),
-  maxAppStoreProcessingAttempts: 120,
+  providers: createDefaultDeploymentProviderRegistry(),
   now: () => new Date(),
 };
-
-function delay(milliseconds: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
-}

@@ -2,9 +2,15 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import { expect, test } from 'bun:test';
+import {
+  createAppStoreConnectDeploymentProvider,
+  type AppStoreConnectDeploymentProviderOptions,
+} from '@ankhorage/deploy-provider-app-store-connect';
+import {
+  createGooglePlayDeploymentProvider,
+  type GooglePlayDeploymentProviderOptions,
+} from '@ankhorage/deploy-provider-google-play';
 
-import type { AppStoreConnectTransport } from '../../providers/appStoreConnect/AppStoreConnectTransport';
-import type { GooglePlayTransport } from '../../providers/googlePlay/GooglePlayTransport';
 import { createTempProject, createTestManifest } from '../manifestTestSupport.test';
 import { createProjectMonetizationPlan } from './createProjectMonetizationPlan';
 import { executeProjectMonetizationSyncWithRuntime } from './executeProjectMonetizationSyncWithRuntime';
@@ -121,13 +127,23 @@ test('project monetization execution rejects authored drift before store mutatio
 
 function createRuntime(state: { mutations: number }): ProjectMonetizationRuntime {
   return {
-    createGooglePlayToken: () => Promise.resolve('google-token'),
-    requestGooglePlay: googleTransport(state),
-    createAppStoreConnectToken: () => Promise.resolve('apple-token'),
-    requestAppStoreConnect: appStoreTransport(state),
+    providers: [
+      createGooglePlayDeploymentProvider({
+        createToken: () => Promise.resolve('google-token'),
+        request: googleTransport(state),
+      }),
+      createAppStoreConnectDeploymentProvider({
+        createToken: () => Promise.resolve('apple-token'),
+        request: appStoreTransport(state),
+        now: () => new Date('2026-08-13T12:00:00Z'),
+      }),
+    ],
     now: () => new Date('2026-08-13T12:00:00Z'),
   };
 }
+
+type GooglePlayTransport = NonNullable<GooglePlayDeploymentProviderOptions['request']>;
+type AppStoreConnectTransport = NonNullable<AppStoreConnectDeploymentProviderOptions['request']>;
 
 function googleTransport(state: { mutations: number }): GooglePlayTransport {
   return (request) => {
