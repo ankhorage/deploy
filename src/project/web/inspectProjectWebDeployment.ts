@@ -2,9 +2,9 @@ import type { AppDeployManifest } from '@ankhorage/contracts/deploy';
 
 import type { DeploymentCurrentState } from '../../domain/DeploymentCurrentState';
 import type { DeploymentProviderSetupInspectionResult } from '../../domain/DeploymentProviderSetupInspectionResult';
+import { inspectRegisteredDeploymentProviderSetup } from '../../features/provider-registry/adapters/inbound/inspectRegisteredDeploymentProviderSetup.js';
 import { cleanupWebArtifact, prepareWebArtifact } from '../../targets/web/prepareWebArtifact';
 import { resolveDeployProject } from '../resolveDeployProject';
-import { inspectProjectWebSetup } from './inspectProjectWebSetup';
 import { normalizeProjectWebDesired } from './normalizeProjectWebDesired';
 import type { ProjectWebDeploymentAccess } from './ProjectWebDeploymentAccess';
 import type { ProjectWebDeploymentInspectionResult } from './ProjectWebDeploymentInspection';
@@ -12,6 +12,7 @@ import type { ProjectWebDeploymentRuntime } from './ProjectWebDeploymentRuntime'
 import { projectWebDeploymentRuntime } from './ProjectWebDeploymentRuntime';
 import { readCurrentProjectWebDeployment } from './readCurrentProjectWebDeployment';
 import { resolveProjectWebDeploymentAccess } from './resolveProjectWebDeploymentAccess';
+import { resolveWebProviderPort } from './resolveWebProviderPort.js';
 
 export interface InspectProjectWebDeploymentOptions extends ProjectWebDeploymentAccess {
   readonly projectRoot: string;
@@ -35,6 +36,8 @@ export async function inspectProjectWebDeploymentWithRuntime(
     if (!normalized.enabled) {
       return success(project.projectRoot, normalized.desired, current, undefined, null);
     }
+    const resolved = resolveWebProviderPort(normalized.desired, runtime);
+    if (!resolved.ok) return resolved;
     const artifact = await prepareWebArtifact({
       projectRoot: project.projectRoot,
       runProcess: runtime.runProcess,
@@ -43,7 +46,13 @@ export async function inspectProjectWebDeploymentWithRuntime(
     const { directory, revision } = artifact.artifact;
     await cleanupWebArtifact(directory);
     const access = resolveProjectWebDeploymentAccess(options);
-    const setup = await inspectProjectWebSetup(project.projectRoot, access, runtime);
+    const setup = await inspectRegisteredDeploymentProviderSetup({
+      registration: resolved.value.registration,
+      projectRoot: project.projectRoot,
+      target: 'web',
+      capability: 'publish',
+      ...access,
+    });
     return success(project.projectRoot, normalized.desired, current, revision, setup);
   } catch {
     return {

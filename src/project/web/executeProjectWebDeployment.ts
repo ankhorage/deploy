@@ -3,11 +3,11 @@ import type { DeploymentPlan } from '../../domain/DeploymentPlan';
 import type { DeploymentStepOutcome } from '../../domain/DeploymentStepOutcome';
 import type { WebDeploymentPublishIntent } from '../../domain/WebDeploymentPublishIntent';
 import { executeDeploymentPlan } from '../../engine/executeDeploymentPlan';
+import { inspectRegisteredDeploymentProviderSetup } from '../../features/provider-registry/adapters/inbound/inspectRegisteredDeploymentProviderSetup.js';
 import { cleanupWebArtifact } from '../../targets/web/prepareWebArtifact';
 import { areDeploymentPlansEqual } from './areDeploymentPlansEqual';
 import { createProjectWebDeploymentPlan } from './createProjectWebDeploymentPlan';
 import { executeProjectWebStep } from './executeProjectWebStep';
-import { inspectProjectWebSetup } from './inspectProjectWebSetup';
 import type { ProjectWebDeploymentAccess } from './ProjectWebDeploymentAccess';
 import type { ProjectWebDeploymentExecution } from './ProjectWebDeploymentExecution';
 import type { ProjectWebDeploymentInspection } from './ProjectWebDeploymentInspection';
@@ -16,6 +16,7 @@ import { projectWebDeploymentRuntime } from './ProjectWebDeploymentRuntime';
 import type { ProjectWebExecutionState } from './ProjectWebExecutionState';
 import { recordProjectWebDeployment } from './recordProjectWebDeployment';
 import { resolveProjectWebDeploymentAccess } from './resolveProjectWebDeploymentAccess';
+import { resolveWebProviderPort } from './resolveWebProviderPort.js';
 import { setupBlockingOutcome } from './setupBlockingOutcome';
 
 export interface ExecuteProjectWebDeploymentOptions extends ProjectWebDeploymentAccess {
@@ -42,7 +43,15 @@ export async function executeProjectWebDeploymentWithRuntime(
   if (options.plan.steps[0]?.id === 'web:remove') return executeRemove(options, runtime);
 
   const access = resolveProjectWebDeploymentAccess(options);
-  const setup = await inspectProjectWebSetup(options.inspection.projectRoot, access, runtime);
+  const resolved = resolveWebProviderPort(options.inspection.desired, runtime);
+  if (!resolved.ok) return fromPreflight({ status: 'failed', error: resolved.failure });
+  const setup = await inspectRegisteredDeploymentProviderSetup({
+    registration: resolved.value.registration,
+    projectRoot: options.inspection.projectRoot,
+    target: 'web',
+    capability: 'publish',
+    ...access,
+  });
   const blocker = setupBlockingOutcome(setup);
   if (blocker !== null) return fromPreflight(blocker);
 
@@ -63,6 +72,7 @@ async function executeMutableWebPlan(
         executeProjectWebStep({
           step,
           projectRoot: options.inspection.projectRoot,
+          desired: options.inspection.desired,
           ...(options.inspection.desiredRevision === undefined
             ? {}
             : { expectedRevision: options.inspection.desiredRevision }),
@@ -124,6 +134,7 @@ async function executeRemove(
       executeProjectWebStep({
         step,
         projectRoot: options.inspection.projectRoot,
+        desired: options.inspection.desired,
         intent: options.intent ?? { mode: 'preview' },
         access,
         runtime,
