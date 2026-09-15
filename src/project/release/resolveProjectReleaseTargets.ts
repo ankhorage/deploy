@@ -65,7 +65,7 @@ function resolveAndroidTarget(
   if (access.android === undefined) {
     return failure('PROJECT_RELEASE_ANDROID_TRACK_REQUIRED', 'Android release track is required.');
   }
-  const provider = android.desired.targets.android?.providers.publish;
+  const provider = android.desired.targets.android?.providers?.publish;
   if (provider === undefined) {
     return failure(
       'PROJECT_RELEASE_ANDROID_PROVIDER_REQUIRED',
@@ -93,7 +93,7 @@ function resolveIosTarget(
   if (!ios.ok || !ios.enabled || ios.bundleIdentifier === undefined) {
     return failure('PROJECT_RELEASE_IOS_TARGET_INVALID', 'iOS release target is unavailable.');
   }
-  const provider = ios.desired.targets.ios?.providers.publish;
+  const provider = ios.desired.targets.ios?.providers?.publish;
   if (provider === undefined) {
     return failure('PROJECT_RELEASE_IOS_PROVIDER_REQUIRED', 'iOS release provider is unavailable.');
   }

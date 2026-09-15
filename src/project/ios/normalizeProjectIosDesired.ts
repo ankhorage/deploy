@@ -20,7 +20,6 @@ export function normalizeProjectIosDesired(
     return { ok: true, desired: { targets: {} }, enabled: false };
   }
   const normalized = normalizeIosProviders(ios.providers);
-  if (!normalized.ok) return normalized;
   return {
     ok: true,
     enabled: true,

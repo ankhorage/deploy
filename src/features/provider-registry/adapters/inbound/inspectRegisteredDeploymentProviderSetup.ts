@@ -6,8 +6,8 @@ import type {
   DeploymentSecretResolver,
 } from '@ankhorage/contracts/deploy-provider';
 
-import type { DeploymentProviderSetupInspectionResult } from '../../../domain/DeploymentProviderSetupInspectionResult.js';
-import { inspectDeploymentProviderSetup } from '../../../engine/inspectDeploymentProviderSetup.js';
+import type { DeploymentProviderSetupInspectionResult } from '../../../../domain/DeploymentProviderSetupInspectionResult.js';
+import { inspectDeploymentProviderSetup } from '../../../../engine/inspectDeploymentProviderSetup.js';
 
 /*** Inspect setup through one registered provider without owning provider implementation details. */
 export function inspectRegisteredDeploymentProviderSetup(options: {
