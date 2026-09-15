@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.12.7
+
+### Patch Changes
+
+- 2205009: Release trigger
+
 ## 0.12.6
 
 ### Patch Changes
