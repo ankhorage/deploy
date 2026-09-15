@@ -1,17 +1,11 @@
-import type { AppDeployManifest, AppDeployProviderSelection } from '@ankhorage/contracts/deploy';
-import type {
-  AndroidDeploymentBuilder,
-  AndroidDeploymentPublisher,
-  AndroidPublishInspection,
-  DeploymentProviderRegistration,
-} from '@ankhorage/contracts/deploy-provider';
+import type { AppDeployManifest } from '@ankhorage/contracts/deploy';
+import type { AndroidPublishInspection } from '@ankhorage/contracts/deploy-provider';
 
 import type { AndroidDeploymentIntent } from '../../domain/AndroidDeploymentIntent';
 import type { DeploymentCurrentState } from '../../domain/DeploymentCurrentState';
 import type { DeploymentFailure } from '../../domain/DeploymentFailure';
 import type { DeploymentProviderSetupInspectionResult } from '../../domain/DeploymentProviderSetupInspectionResult';
 import { inspectRegisteredDeploymentProviderSetup } from '../../features/provider-registry/adapters/inbound/inspectRegisteredDeploymentProviderSetup.js';
-import { findDeploymentProvider } from '../../features/provider-registry/utils/findDeploymentProvider.js';
 import {
   isProviderSetupReady,
   providerActionSetup,
@@ -25,24 +19,14 @@ import type { ProjectAndroidDeploymentInspectionResult } from './ProjectAndroidD
 import type { ProjectAndroidDeploymentRuntime } from './ProjectAndroidDeploymentRuntime';
 import { projectAndroidDeploymentRuntime } from './ProjectAndroidDeploymentRuntime';
 import { readCurrentProjectAndroidDeployment } from './readCurrentProjectAndroidDeployment';
+import { resolveAndroidProviderPorts } from './resolveAndroidProviderPorts.js';
+import type { AndroidProviderPorts } from './resolveAndroidProviderPorts.js';
 import { resolveProjectAndroidDeploymentAccess } from './resolveProjectAndroidDeploymentAccess';
 
 export interface InspectProjectAndroidDeploymentOptions extends ProjectAndroidDeploymentAccess {
   readonly projectRoot: string;
   readonly intent: AndroidDeploymentIntent;
 }
-
-interface AndroidProviderPorts {
-  readonly providers: Required<Pick<AppDeployProviderSelection, 'build' | 'publish'>>;
-  readonly buildRegistration: DeploymentProviderRegistration;
-  readonly builder: AndroidDeploymentBuilder;
-  readonly publishRegistration: DeploymentProviderRegistration;
-  readonly publisher: AndroidDeploymentPublisher;
-}
-
-type AndroidProviderPortsResult =
-  | { readonly ok: true; readonly value: AndroidProviderPorts }
-  | { readonly ok: false; readonly failure: DeploymentFailure };
 
 export function inspectProjectAndroidDeployment(
   options: InspectProjectAndroidDeploymentOptions,
@@ -201,49 +185,6 @@ async function inspectAndroidPublish(options: {
   };
 }
 
-function resolveAndroidProviderPorts(
-  desired: AppDeployManifest,
-  runtime: ProjectAndroidDeploymentRuntime,
-): AndroidProviderPortsResult {
-  const providers = desired.targets.android?.providers;
-  const build = providers?.build;
-  const publish = providers?.publish;
-  if (build === undefined || publish === undefined) {
-    return providerFailure('ANDROID_PROVIDER_SELECTION_MISSING', 'Android provider selection is missing.');
-  }
-  const buildRegistration = findDeploymentProvider(runtime.providers, build, 'android-build', 'android');
-  if (buildRegistration?.androidBuilder === undefined) {
-    return providerFailure(
-      'ANDROID_BUILD_PROVIDER_UNAVAILABLE',
-      'The configured Android build provider is not available.',
-      build,
-    );
-  }
-  const publishRegistration = findDeploymentProvider(
-    runtime.providers,
-    publish,
-    'android-publish',
-    'android',
-  );
-  if (publishRegistration?.androidPublisher === undefined) {
-    return providerFailure(
-      'ANDROID_PUBLISH_PROVIDER_UNAVAILABLE',
-      'The configured Android publish provider is not available.',
-      publish,
-    );
-  }
-  return {
-    ok: true,
-    value: {
-      providers: { build, publish },
-      buildRegistration,
-      builder: buildRegistration.androidBuilder,
-      publishRegistration,
-      publisher: publishRegistration.androidPublisher,
-    },
-  };
-}
-
 function success(
   projectRoot: string,
   desired: AppDeployManifest,
@@ -267,22 +208,6 @@ function success(
 
 function invalidIntent(): ProjectAndroidDeploymentInspectionResult {
   return failure('INVALID_ANDROID_DEPLOYMENT_INTENT', 'Android deployment intent is invalid.');
-}
-
-function providerFailure(
-  code: string,
-  message: string,
-  provider?: string,
-): AndroidProviderPortsResult {
-  return {
-    ok: false,
-    failure: {
-      code,
-      message,
-      target: 'android',
-      ...(provider === undefined ? {} : { provider }),
-    },
-  };
 }
 
 function failure(code: string, message: string): ProjectAndroidDeploymentInspectionResult {
