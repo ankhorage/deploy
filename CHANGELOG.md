@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.12.8
+
+### Patch Changes
+
+- 5071f92: Restore canonical non-mutating lint and format check scripts after the provider extraction release.
+
 ## 0.12.7
 
 ### Patch Changes
