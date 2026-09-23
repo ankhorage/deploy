@@ -80,7 +80,7 @@
     "knip:check": "ankhorage-knip"
   },
   "dependencies": {
-    "@ankhorage/contracts": "^19.5.0",
+    "@ankhorage/contracts": "^22.8.1",
     "@ankhorage/deploy-provider-app-store-connect": "^0.0.0",
     "@ankhorage/deploy-provider-eas": "^0.0.0",
     "@ankhorage/deploy-provider-google-play": "^0.0.0"
