@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.12.10
+
+### Patch Changes
+
+- fc93dc5: Update Ankhorage dependencies: `@ankhorage/contracts`.
+
 ## 0.12.9
 
 ### Patch Changes
