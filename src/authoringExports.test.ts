@@ -2,6 +2,10 @@ import { promises as fs } from 'node:fs';
 
 import { expect, test } from 'bun:test';
 
+import type {
+  DeployMonetizationAuthoringValue,
+  DeployReleaseAuthoringValue,
+} from './authoring';
 import {
   DEPLOY_AUTHORING_STRUCTURE,
   fromDeployMonetizationAuthoringValue,
@@ -16,6 +20,17 @@ test('authoring facade exposes the owner descriptor and canonical projections', 
   expect(typeof fromDeployReleaseAuthoringValue).toBe('function');
   expect(typeof toDeployMonetizationAuthoringValue).toBe('function');
   expect(typeof toDeployReleaseAuthoringValue).toBe('function');
+
+  const monetization: DeployMonetizationAuthoringValue =
+    toDeployMonetizationAuthoringValue([]);
+  const release: DeployReleaseAuthoringValue = toDeployReleaseAuthoringValue({
+    version: '1.0.0',
+    targets: ['web'],
+    notes: [],
+    rollout: { web: { mode: 'immediate' } },
+  });
+  expect(monetization.products).toEqual({});
+  expect(release.targets).toEqual({ web: true });
 });
 
 test('package publishes the explicit authoring subpath', async () => {
