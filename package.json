@@ -37,6 +37,11 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./authoring": {
+      "types": "./dist/authoring.d.ts",
+      "import": "./dist/authoring.js",
+      "default": "./dist/authoring.js"
+    },
     "./project": {
       "types": "./dist/project/index.d.ts",
       "import": "./dist/project/index.js",
