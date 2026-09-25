@@ -13,7 +13,7 @@
       "devDependencies": {
         "@ankhorage/ankh": "^0.8.11",
         "@ankhorage/devtools": "^1.14.0",
-        "@ankhorage/paradox": "^0.2.2",
+        "@ankhorage/paradox": "^0.2.3",
         "@types/bun": "^1.4.1",
         "@types/node": "^25.6.0",
         "typescript": "^5.9.3",
@@ -37,9 +37,9 @@
 
     "@ankhorage/doctor": ["@ankhorage/doctor@0.10.7", "", { "dependencies": { "@ankhorage/contracts": "^8.1.0", "@ankhorage/supabase-auth": "^1.2.8" }, "bin": { "ankhorage-doctor": "dist/cli/standalone.js" } }, "sha512-LvYgROYJddjJ92YXYrkfg7MCrA32nIGWwiupcZnhiiEy6Z7xKXSk2bZidT6dPk8WxxM7WBYOj8MPARddvvCFhw=="],
 
-    "@ankhorage/paradox": ["@ankhorage/paradox@0.2.2", "", { "dependencies": { "@ankhorage/policy": "^0.2.0", "@ankhorage/utility": "^1.8.0", "ts-morph": "^28.0.0" }, "bin": { "paradox": "dist/cli/standalone.js" } }, "sha512-4WpFHyVXNcGP98vQ8RSN2gCaVxAxA2i8ea52OfMr11oarwZt1NFc+tfO24mD2a4Zvukr27z2FoAPOZUe9cxh5w=="],
+    "@ankhorage/paradox": ["@ankhorage/paradox@0.2.3", "", { "dependencies": { "@ankhorage/policy": "^0.3.1", "@ankhorage/utility": "^1.8.0", "ts-morph": "^28.0.0" }, "bin": { "paradox": "dist/cli/standalone.js" } }, "sha512-x2pfpTp2LgzbTtCJoRrao0Daj2ItcOcKsVLubgAXjtC9oNi0/etVcwZdOzN/EI7p9mRAwcXsnQKDy9uFcVm7RA=="],
 
-    "@ankhorage/policy": ["@ankhorage/policy@0.2.1", "", {}, "sha512-aldRoWZEacD+NjiKhYeFCbDbd3XKe95Ajd06eQbDG+zdPLbajyN3yPn6CVF/gAFziXyA93XLAy4KLAGxLp0sPQ=="],
+    "@ankhorage/policy": ["@ankhorage/policy@0.3.1", "", {}, "sha512-BnwZxAeNExaZ1T3pN3iWJFznxo1nHGcPN1piiYFt38BwesHZTs5KyRsEBHgE9WCaIZ9OAc/wkV4U15y/1iBk5A=="],
 
     "@ankhorage/supabase-auth": ["@ankhorage/supabase-auth@1.2.11", "", { "dependencies": { "@ankhorage/contracts": "^11.0.0", "@noble/hashes": "2.3.0" } }, "sha512-M22zu9ZW7HgBDvBZWZc2P/zgTxyUCRubDS5oajCSgV8FSk5YaKjpJSruSWRcO3sRPhvUlBSsbCSg6bXUmBboXg=="],
 
