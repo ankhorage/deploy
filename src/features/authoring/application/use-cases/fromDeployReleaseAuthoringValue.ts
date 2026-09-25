@@ -1,5 +1,5 @@
-import type { ProjectReleaseInput } from '../../../../project/release/ProjectReleaseInput';
 import { parseProjectRelease } from '../../../../project/release/parseProjectRelease';
+import type { ProjectReleaseInput } from '../../../../project/release/ProjectReleaseInput';
 import type { DeployReleaseAuthoringValue } from '../../../../types/deployAuthoring';
 import { readDeployAuthoringRegistryValues } from '../../utils/readDeployAuthoringRegistryValues';
 
@@ -7,10 +7,7 @@ import { readDeployAuthoringRegistryValues } from '../../utils/readDeployAuthori
 export function fromDeployReleaseAuthoringValue(
   value: DeployReleaseAuthoringValue,
 ): ProjectReleaseInput {
-  const targets = Object.entries(value.targets).map(([target, member]) => {
-    if (member !== true) throw new Error('DEPLOY_AUTHORING_VALUE_INVALID');
-    return target;
-  });
+  const targets = Object.keys(value.targets);
   const notes = readDeployAuthoringRegistryValues(value.notes, (note) => note.locale);
   return parseProjectRelease({
     version: value.version,
