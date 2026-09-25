@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.13.0
+
+### Minor Changes
+
+- 1146a74: Publish owner-owned Deploy authoring structure and canonical registry/set projections for store listing, monetization, and prepared releases.
+
 ## 0.12.10
 
 ### Patch Changes
