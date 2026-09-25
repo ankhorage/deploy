@@ -14,7 +14,14 @@ export function createTestManifest(deploy?: AppDeployManifest): AppManifest {
       category: 'developer_tools',
       themeId: 'default',
     },
-    themes: [],
+    themes: {
+      default: {
+        id: 'default',
+        name: 'Default',
+        light: { primaryColor: '#2563eb', harmony: 'analogous' },
+        dark: { primaryColor: '#2563eb', harmony: 'analogous' },
+      },
+    },
     activeThemeId: 'default',
     infra: {
       environments: {
@@ -25,7 +32,7 @@ export function createTestManifest(deploy?: AppDeployManifest): AppManifest {
           },
         },
       },
-      modules: [],
+      modules: {},
     },
     navigator: {
       type: 'stack',
