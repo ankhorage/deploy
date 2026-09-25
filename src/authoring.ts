@@ -5,7 +5,5 @@ export { toDeployReleaseAuthoringValue } from './features/authoring/application/
 export { DEPLOY_AUTHORING_STRUCTURE } from './features/authoring/domain/deployAuthoringStructure';
 export type {
   DeployMonetizationAuthoringValue,
-  DeployMonetizationProductAuthoringValue,
-  DeployReleaseAuthoringRollout,
   DeployReleaseAuthoringValue,
 } from './types/deployAuthoring';
