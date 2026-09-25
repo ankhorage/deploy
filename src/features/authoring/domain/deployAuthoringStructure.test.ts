@@ -57,8 +57,7 @@ test('publishes release set/registry semantics and real discriminated rollout va
 
 test('publishes direct locale authoring and a discriminated semantic asset location', () => {
   const locale = DEPLOY_AUTHORING_STRUCTURE.descriptors.StoreListingLocale.descriptor;
-  const asset =
-    DEPLOY_AUTHORING_STRUCTURE.descriptors.ProjectStoreListingAssetLocation.descriptor;
+  const asset = DEPLOY_AUTHORING_STRUCTURE.descriptors.ProjectStoreListingAssetLocation.descriptor;
 
   expect(locale.fields.keywords).toEqual({
     value: { kind: 'ordered-list', item: { kind: 'scalar', type: 'string' } },
