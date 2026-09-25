@@ -1,4 +1,7 @@
-import type { StructureDescriptorDocument } from '@ankhorage/contracts/structure';
+import type {
+  StructureDescriptorDocument,
+  StructureObjectDescriptor,
+} from '@ankhorage/contracts/structure';
 
 import packageJson from '../../../../package.json';
 
@@ -215,7 +218,10 @@ export const DEPLOY_AUTHORING_STRUCTURE = {
 } as const satisfies StructureDescriptorDocument;
 
 /*** Build one product union variant while retaining stable product and localization identity semantics. */
-function productVariant(kind: 'consumable' | 'non-consumable' | 'subscription', subscription = false) {
+function productVariant(
+  kind: 'consumable' | 'non-consumable' | 'subscription',
+  subscription = false,
+): StructureObjectDescriptor {
   return {
     kind: 'object' as const,
     fields: {
