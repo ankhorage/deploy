@@ -91,9 +91,11 @@ test('rejects release-note registry keys that disagree with locale identity', ()
     notes: [{ locale: 'en-US', text: 'Release' }],
     rollout: { web: { mode: 'immediate' } },
   });
+  const note = Object.values(authored.notes).at(0);
+  if (note === undefined) throw new Error('Expected one authored release note.');
   const value = {
     ...authored,
-    notes: { wrong: authored.notes['en-US']! },
+    notes: { wrong: note },
   };
 
   expect(() => fromDeployReleaseAuthoringValue(value)).toThrow('DEPLOY_AUTHORING_VALUE_INVALID');
