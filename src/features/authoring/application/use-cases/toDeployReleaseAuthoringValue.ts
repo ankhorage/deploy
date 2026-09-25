@@ -1,6 +1,6 @@
 import type { ReleaseRollout } from '../../../../domain/release/ReleaseRollout';
-import type { ProjectReleaseInput } from '../../../../project/release/ProjectReleaseInput';
 import { parseProjectRelease } from '../../../../project/release/parseProjectRelease';
+import type { ProjectReleaseInput } from '../../../../project/release/ProjectReleaseInput';
 import type {
   DeployReleaseAuthoringRollout,
   DeployReleaseAuthoringValue,
@@ -24,7 +24,7 @@ export function toDeployReleaseAuthoringValue(
 
 /*** Project parser-validated per-target rollout constraints into the narrower authoring contract. */
 function toAuthoringRollout(rollout: ReleaseRollout): DeployReleaseAuthoringRollout {
-  const android = rollout.android;
+  const { android } = rollout;
   const androidAuthoring =
     android?.mode === 'staged'
       ? stagedAndroidRollout(android.initialFraction)
@@ -42,10 +42,7 @@ function toAuthoringRollout(rollout: ReleaseRollout): DeployReleaseAuthoringRoll
 /*** Require the initial fraction guaranteed by canonical parsing for staged Android rollout. */
 function stagedAndroidRollout(
   initialFraction: string | undefined,
-): Extract<
-  NonNullable<DeployReleaseAuthoringRollout['android']>,
-  { readonly mode: 'staged' }
-> {
+): Extract<NonNullable<DeployReleaseAuthoringRollout['android']>, { readonly mode: 'staged' }> {
   if (initialFraction === undefined) throw new Error('DEPLOY_AUTHORING_VALUE_INVALID');
   return { mode: 'staged', initialFraction };
 }
