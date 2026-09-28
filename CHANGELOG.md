@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.13.2
+
+### Patch Changes
+
+- fb7fb2c: Update dependencies from Renovate pull request #127.
+
 ## 0.13.1
 
 ### Patch Changes
