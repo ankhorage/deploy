@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.13.3
+
+### Patch Changes
+
+- e7bd04e: Update dependencies from Renovate pull request #146.
+
 ## 0.13.2
 
 ### Patch Changes
