@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.13.5
+
+### Patch Changes
+
+- cee6a00: Update Renovate-managed workflows.
+
 ## 0.13.4
 
 ### Patch Changes
