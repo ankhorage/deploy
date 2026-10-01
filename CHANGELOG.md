@@ -1,5 +1,12 @@
 # @ankhorage/deploy
 
+## 0.13.41
+
+### Patch Changes
+
+- 006b3b2: Update Renovate-managed workflows.
+- cb97b71: Update dependencies: `@ankhorage/paradox`.
+
 ## 0.13.40
 
 ### Patch Changes
