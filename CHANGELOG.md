@@ -1,5 +1,12 @@
 # @ankhorage/deploy
 
+## 0.13.48
+
+### Patch Changes
+
+- 77288eb: Update dependencies: `@types/node`.
+- 6554c0b: Update dependencies: `@ankhorage/contracts`, `@ankhorage/paradox`.
+
 ## 0.13.47
 
 ### Patch Changes
