@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.13.6
+
+### Patch Changes
+
+- 708bd4c: Update dependencies: `@types/node`, `typescript`.
+
 ## 0.13.5
 
 ### Patch Changes
