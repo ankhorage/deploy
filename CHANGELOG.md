@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.13.47
+
+### Patch Changes
+
+- 103deed: Update Renovate-managed workflows.
+
 ## 0.13.46
 
 ### Patch Changes
