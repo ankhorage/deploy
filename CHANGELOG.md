@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.13.21
+
+### Patch Changes
+
+- d2d09e4: Update dependencies: `@ankhorage/contracts`.
+
 ## 0.13.20
 
 ### Patch Changes
