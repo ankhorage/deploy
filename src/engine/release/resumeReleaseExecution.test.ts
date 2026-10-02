@@ -30,7 +30,7 @@ test('resume starts from fresh inspection and blocks unresolved never-retry step
       mutations += 1;
       return Promise.resolve({ status: 'completed' });
     },
-  } satisfies Parameters<typeof resumeReleaseExecution>[0]['previous'];
+  });
   expect(result.status).toBe('blocked');
   expect(result.code).toBe('RELEASE_STEP_NON_RESUMABLE');
   expect(mutations).toBe(0);
