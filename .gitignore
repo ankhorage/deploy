@@ -1,6 +1,5 @@
 node_modules/
 dist/
-paradox/
 coverage/
 *.tsbuildinfo
 .DS_Store
