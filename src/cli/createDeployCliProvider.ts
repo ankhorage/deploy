@@ -21,7 +21,7 @@ export function createDeployCliProvider(runtime: DeployCliRuntime): AnkhRuntimeC
     id: packageJson.name,
     category: 'deploy',
     version: packageJson.version,
-    capabilities: ['deploy.inspect', 'deploy.plan', 'deploy.execute'],
+    capabilities: ['deploy.execute'],
     commands: [command],
     handlers: [
       {
