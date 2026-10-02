@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.13.84
+
+### Patch Changes
+
+- 0385f78: Update Renovate-managed workflows.
+
 ## 0.13.83
 
 ### Patch Changes
