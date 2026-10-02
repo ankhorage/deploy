@@ -1,5 +1,12 @@
 # @ankhorage/deploy
 
+## 0.13.58
+
+### Patch Changes
+
+- ab17dee: Update Renovate-managed workflows.
+- b0dbb99: Update dependencies: `@ankhorage/contracts`.
+
 ## 0.13.57
 
 ### Patch Changes
