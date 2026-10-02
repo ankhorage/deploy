@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.13.63
+
+### Patch Changes
+
+- c15038c: Update dependencies: `@ankhorage/contracts`.
+
 ## 0.13.62
 
 ### Patch Changes
