@@ -64,8 +64,6 @@
     "category": "deploy",
     "provider": "./dist/cli/index.js",
     "capabilities": [
-      "deploy.inspect",
-      "deploy.plan",
       "deploy.execute"
     ]
   },
