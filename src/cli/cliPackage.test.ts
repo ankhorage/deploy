@@ -21,6 +21,6 @@ test('package exposes and registers the Deploy CLI provider', async () => {
   expect(parsed.ankh).toEqual({
     category: 'deploy',
     provider: './dist/cli/index.js',
-    capabilities: ['deploy.inspect', 'deploy.plan', 'deploy.execute'],
+    capabilities: ['deploy.execute'],
   });
 });
