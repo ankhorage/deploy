@@ -1,13 +1,11 @@
 import { isAppDeployManifest } from '@ankhorage/contracts/deploy';
 
-import { isSafeSegment } from '../io/assertSafeSegment';
-import { hasOnlyKeys } from '../io/hasOnlyKeys';
-import { isRecord } from '../io/isRecord';
 import { PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION } from './historySchemaVersion';
 import type { ProjectDeploymentHistoryRecord } from './ProjectDeploymentHistoryRecord';
 import { isDeploymentExecution } from './validation/execution';
 import { isIsoTimestamp } from './validation/isIsoTimestamp';
 import { isDeploymentPlan } from './validation/plan';
+import { hasOnlyKeys, isRecord } from './validation/shared';
 import { isDeploymentVerification } from './validation/verification';
 
 const HISTORY_KEYS = new Set([
@@ -46,5 +44,16 @@ function isHistoryRecord(value: unknown): value is ProjectDeploymentHistoryRecor
     isDeploymentPlan(value.plan) &&
     isDeploymentExecution(value.execution) &&
     (value.verification === undefined || isDeploymentVerification(value.verification))
+  );
+}
+
+/*** Recognize one safe deployment-history path segment without consulting project I/O. */
+function isSafeSegment(value: string): boolean {
+  return (
+    value.trim().length > 0 &&
+    value !== '.' &&
+    value !== '..' &&
+    !value.includes('/') &&
+    !value.includes('\\')
   );
 }

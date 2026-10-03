@@ -1,13 +1,14 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
-import { assertContainedWritePath } from '../io/assertContainedPath';
-import { assertSafeSegment } from '../io/assertSafeSegment';
-import { atomicWriteJson } from '../io/atomicWriteJson';
-import { resolveDeployProject } from '../resolveDeployProject';
-import { parseProjectDeploymentHistoryRecord } from './parseProjectDeploymentHistoryRecord';
-import type { ProjectDeploymentHistoryRecord } from './ProjectDeploymentHistoryRecord';
+import { parseProjectDeploymentHistoryRecord } from './history/parseProjectDeploymentHistoryRecord';
+import type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
+import { assertContainedWritePath } from './io/assertContainedPath';
+import { assertSafeSegment } from './io/assertSafeSegment';
+import { atomicWriteJson } from './io/atomicWriteJson';
+import { resolveDeployProject } from './resolveDeployProject';
 
+/*** Persist one immutable canonical deployment history record for a validated Deploy project. */
 export async function recordProjectDeploymentHistory(options: {
   readonly projectRoot: string;
   readonly record: ProjectDeploymentHistoryRecord;

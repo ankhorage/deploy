@@ -1,6 +1,4 @@
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
-import { isNonEmptyString, isTargetId } from './shared';
+import { hasOnlyKeys, isNonEmptyString, isRecord, isTargetId } from './shared';
 
 const FAILURE_KEYS = new Set(['code', 'message', 'target', 'provider']);
 

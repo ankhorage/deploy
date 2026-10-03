@@ -1,9 +1,8 @@
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
 import { isPlanDiagnostic } from './diagnostic';
 import { isDeploymentFailure } from './failure';
 import { isPlanStep } from './planStep';
 import { isRequiredAction } from './requiredAction';
+import { hasOnlyKeys, isRecord } from './shared';
 import { isStepOutcome } from './stepOutcome';
 
 const RECORD_KEYS = new Set(['step', 'outcome']);

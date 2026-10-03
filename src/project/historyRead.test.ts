@@ -4,10 +4,10 @@ import path from 'node:path';
 import { expect, test } from 'bun:test';
 
 import { expectRejects } from './expectRejects.test';
-import { readProjectDeploymentHistory } from './history/readProjectDeploymentHistory';
-import { recordProjectDeploymentHistory } from './history/recordProjectDeploymentHistory';
 import { createHistoryRecord } from './historyTestSupport.test';
 import { createTempProject } from './manifestTestSupport.test';
+import { readProjectDeploymentHistory } from './readProjectDeploymentHistory';
+import { recordProjectDeploymentHistory } from './recordProjectDeploymentHistory';
 import { resolveProjectDeploymentPaths } from './resolveProjectDeploymentPaths';
 
 test('reads a canonical history record', async () => {

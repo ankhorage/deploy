@@ -17,10 +17,7 @@ export type {
   ProjectAndroidDeploymentInspectionResult,
 } from './android/ProjectAndroidDeploymentInspection';
 export { PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION } from './history/historySchemaVersion';
-export { listProjectDeploymentHistory } from './history/listProjectDeploymentHistory';
 export type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
-export { readProjectDeploymentHistory } from './history/readProjectDeploymentHistory';
-export { recordProjectDeploymentHistory } from './history/recordProjectDeploymentHistory';
 export { createProjectIosDeploymentPlan } from './ios/createProjectIosDeploymentPlan';
 export {
   executeProjectIosDeployment,
@@ -36,6 +33,7 @@ export type {
   ProjectIosDeploymentInspection,
   ProjectIosDeploymentInspectionResult,
 } from './ios/ProjectIosDeploymentInspection';
+export { listProjectDeploymentHistory } from './listProjectDeploymentHistory';
 export { createProjectMonetizationPlan } from './monetization/createProjectMonetizationPlan';
 export { executeProjectMonetizationSync } from './monetization/executeProjectMonetizationSync';
 export type { ExecuteProjectMonetizationSyncOptions } from './monetization/ExecuteProjectMonetizationSyncOptions';
@@ -51,6 +49,8 @@ export { readProjectMonetization } from './monetization/readProjectMonetization'
 export { writeProjectMonetization } from './monetization/writeProjectMonetization';
 export type { ProjectDeploymentPaths } from './ProjectDeploymentPaths';
 export { readProjectDeploymentConfig } from './readProjectDeploymentConfig';
+export { readProjectDeploymentHistory } from './readProjectDeploymentHistory';
+export { recordProjectDeploymentHistory } from './recordProjectDeploymentHistory';
 export { createProjectReleasePlan } from './release/createProjectReleasePlan';
 export { executeProjectRelease } from './release/executeProjectRelease';
 export { executeProjectReleaseControl } from './release/executeProjectReleaseControl';

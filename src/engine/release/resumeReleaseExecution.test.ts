@@ -4,18 +4,14 @@ import { createReleasePlan } from '../../domain/release/createReleasePlan';
 import { createReleaseRevision } from '../../domain/release/createReleaseRevision';
 import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredState';
 import type { ReleaseObservedState } from '../../domain/release/ReleaseObservedState';
-import { createProjectReleaseHistoryRecord } from '../../project/releaseHistory/createProjectReleaseHistoryRecord';
 import { resumeReleaseExecution } from './resumeReleaseExecution';
 
 test('resume starts from fresh inspection and blocks unresolved never-retry step', async () => {
   const desired = desiredState();
   const current = iosPendingRelease();
   const initialPlan = createReleasePlan(desired, current);
-  const previous = createProjectReleaseHistoryRecord({
-    executionId: 'attempt-1',
-    recordedAt: '2026-08-14T00:00:00.000Z',
+  const previous = {
     desired,
-    initialPlan,
     result: {
       status: 'failed',
       plan: initialPlan,
@@ -24,7 +20,7 @@ test('resume starts from fresh inspection and blocks unresolved never-retry step
       attemptedStepId: 'ios:release',
       code: 'APP_STORE_RELEASE_REQUEST_FAILED',
     },
-  });
+  } satisfies Parameters<typeof resumeReleaseExecution>[0]['previous'];
   let mutations = 0;
   const result = await resumeReleaseExecution({
     desired,
@@ -44,11 +40,8 @@ test('resume proceeds when fresh inspection proves irreversible step completed',
   const desired = desiredState();
   const before = iosPendingRelease();
   const initialPlan = createReleasePlan(desired, before);
-  const previous = createProjectReleaseHistoryRecord({
-    executionId: 'attempt-1',
-    recordedAt: '2026-08-14T00:00:00.000Z',
+  const previous = {
     desired,
-    initialPlan,
     result: {
       status: 'failed',
       plan: initialPlan,
@@ -57,7 +50,7 @@ test('resume proceeds when fresh inspection proves irreversible step completed',
       attemptedStepId: 'ios:release',
       code: 'RELEASE_READBACK_VERIFICATION_FAILED',
     },
-  });
+  } satisfies Parameters<typeof resumeReleaseExecution>[0]['previous'];
   const after = iosReleased();
   const result = await resumeReleaseExecution({
     desired,

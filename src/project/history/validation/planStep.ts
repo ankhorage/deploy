@@ -1,8 +1,6 @@
 import { DEPLOYMENT_CAPABILITIES } from '../../../domain/DeploymentCapability';
 import { DEPLOYMENT_STEP_OPERATIONS } from '../../../domain/DeploymentPlanStep';
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
-import { isNonEmptyString, isTargetId } from './shared';
+import { hasOnlyKeys, isNonEmptyString, isRecord, isTargetId } from './shared';
 
 const STEP_KEYS = new Set(['id', 'target', 'phase', 'operation', 'provider', 'reason']);
 

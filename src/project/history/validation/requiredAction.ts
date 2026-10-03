@@ -1,6 +1,4 @@
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
-import { isNonEmptyString, isTargetId } from './shared';
+import { hasOnlyKeys, isNonEmptyString, isRecord, isTargetId } from './shared';
 
 const AUTH_KEYS = new Set(['type', 'provider', 'target', 'code', 'message']);
 const MANUAL_KEYS = new Set(['type', 'target', 'provider', 'code', 'message', 'url']);

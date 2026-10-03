@@ -4,7 +4,7 @@ import type { DeploymentPlan } from '../../domain/DeploymentPlan';
 import type { DeploymentVerificationResult } from '../../domain/DeploymentVerificationResult';
 import type { IosDeploymentPublication } from '../../domain/IosDeploymentPublication';
 import { PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION } from '../history/historySchemaVersion';
-import { recordProjectDeploymentHistory } from '../history/recordProjectDeploymentHistory';
+import { recordProjectDeploymentHistory } from '../recordProjectDeploymentHistory';
 import type { ProjectIosDeploymentInspection } from './ProjectIosDeploymentInspection';
 
 export type RecordProjectIosHistoryResult =

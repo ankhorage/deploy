@@ -2,8 +2,8 @@ import type {
   DeploymentCurrentState,
   DeploymentObservedWebTarget,
 } from '../../domain/DeploymentCurrentState';
-import { listProjectDeploymentHistory } from '../history/listProjectDeploymentHistory';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
+import { listProjectDeploymentHistory } from '../listProjectDeploymentHistory';
 
 export async function readCurrentProjectWebDeployment(
   projectRoot: string,
