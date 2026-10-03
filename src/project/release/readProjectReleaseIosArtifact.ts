@@ -1,7 +1,7 @@
 import type { ReleaseObservedIosState } from '@ankhorage/contracts/deploy-provider';
 
 import type { IosDeploymentPublication } from '../../domain/IosDeploymentPublication';
-import { listProjectDeploymentHistory } from '../history/listProjectDeploymentHistory';
+import { listProjectDeploymentHistory } from '../listProjectDeploymentHistory';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
 import type { ProjectReleaseTargets } from './ProjectReleaseTargets';
 

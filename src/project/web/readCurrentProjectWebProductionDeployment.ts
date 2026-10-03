@@ -2,7 +2,7 @@ import type {
   DeploymentCurrentState,
   DeploymentObservedWebTarget,
 } from '../../domain/DeploymentCurrentState';
-import { listProjectDeploymentHistory } from '../history/listProjectDeploymentHistory';
+import { listProjectDeploymentHistory } from '../listProjectDeploymentHistory';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
 
 export async function readCurrentProjectWebProductionDeployment(
