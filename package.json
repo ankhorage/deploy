@@ -83,7 +83,7 @@
     "knip:check": "ankhorage-knip"
   },
   "dependencies": {
-    "@ankhorage/contracts": "^22.8.91",
+    "@ankhorage/contracts": "^22.8.99",
     "@ankhorage/deploy-provider-app-store-connect": "^0.0.0",
     "@ankhorage/deploy-provider-eas": "^0.0.0",
     "@ankhorage/deploy-provider-google-play": "^0.0.0"
@@ -91,7 +91,7 @@
   "devDependencies": {
     "@ankhorage/ankh": "^0.10.80",
     "@ankhorage/devtools": "^2.0.115",
-    "@ankhorage/paradox": "^0.2.25",
+    "@ankhorage/paradox": "^0.2.27",
     "@types/bun": "^1.4.2",
     "@types/node": "^26.6.4",
     "typescript": "^6.0.3"
