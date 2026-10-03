@@ -1,7 +1,7 @@
 import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredState';
 import { atomicWriteJson } from '../io/atomicWriteJson';
 import { resolveProjectDeploymentPaths } from '../resolveProjectDeploymentPaths';
-import { parseProjectRelease } from './parseProjectRelease';
+import { parseProjectRelease } from '../releaseInput/parseProjectRelease';
 import type { ProjectReleaseInput } from './ProjectReleaseInput';
 import { readProjectRelease } from './readProjectRelease';
 
