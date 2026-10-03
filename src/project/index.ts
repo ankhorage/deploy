@@ -17,10 +17,10 @@ export type {
   ProjectAndroidDeploymentInspectionResult,
 } from './android/ProjectAndroidDeploymentInspection';
 export { PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION } from './history/historySchemaVersion';
-export { listProjectDeploymentHistory } from './history/listProjectDeploymentHistory';
+export { listProjectDeploymentHistory } from './listProjectDeploymentHistory';
 export type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
-export { readProjectDeploymentHistory } from './history/readProjectDeploymentHistory';
-export { recordProjectDeploymentHistory } from './history/recordProjectDeploymentHistory';
+export { readProjectDeploymentHistory } from './readProjectDeploymentHistory';
+export { recordProjectDeploymentHistory } from './recordProjectDeploymentHistory';
 export { createProjectIosDeploymentPlan } from './ios/createProjectIosDeploymentPlan';
 export {
   executeProjectIosDeployment,

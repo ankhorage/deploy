@@ -4,8 +4,8 @@ import path from 'node:path';
 import { expect, test } from 'bun:test';
 
 import { expectRejects } from './expectRejects.test';
-import { listProjectDeploymentHistory } from './history/listProjectDeploymentHistory';
-import { recordProjectDeploymentHistory } from './history/recordProjectDeploymentHistory';
+import { listProjectDeploymentHistory } from './listProjectDeploymentHistory';
+import { recordProjectDeploymentHistory } from './recordProjectDeploymentHistory';
 import { createHistoryRecord } from './historyTestSupport.test';
 import { createTempProject } from './manifestTestSupport.test';
 import { resolveProjectDeploymentPaths } from './resolveProjectDeploymentPaths';
