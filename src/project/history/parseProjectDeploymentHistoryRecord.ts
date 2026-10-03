@@ -4,8 +4,8 @@ import { PROJECT_DEPLOYMENT_HISTORY_SCHEMA_VERSION } from './historySchemaVersio
 import type { ProjectDeploymentHistoryRecord } from './ProjectDeploymentHistoryRecord';
 import { isDeploymentExecution } from './validation/execution';
 import { isIsoTimestamp } from './validation/isIsoTimestamp';
-import { hasOnlyKeys, isRecord } from './validation/shared';
 import { isDeploymentPlan } from './validation/plan';
+import { hasOnlyKeys, isRecord } from './validation/shared';
 import { isDeploymentVerification } from './validation/verification';
 
 const HISTORY_KEYS = new Set([
@@ -46,7 +46,6 @@ function isHistoryRecord(value: unknown): value is ProjectDeploymentHistoryRecor
     (value.verification === undefined || isDeploymentVerification(value.verification))
   );
 }
-
 
 /*** Recognize one safe deployment-history path segment without consulting project I/O. */
 function isSafeSegment(value: string): boolean {
