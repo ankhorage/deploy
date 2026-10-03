@@ -9,10 +9,10 @@ import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredSta
 import type { ReleaseReconcileResult } from '../../domain/release/ReleaseReconcileResult';
 import { expectRejects } from '../expectRejects.test';
 import { createTempProject } from '../manifestTestSupport.test';
+import { resolveProjectDeploymentPaths } from '../resolveProjectDeploymentPaths';
 import { createProjectReleaseHistoryRecord } from './createProjectReleaseHistoryRecord';
 import { listProjectReleaseHistory } from './listProjectReleaseHistory';
 import { recordProjectReleaseHistory } from './recordProjectReleaseHistory';
-import { resolveProjectDeploymentPaths } from '../resolveProjectDeploymentPaths';
 
 test('records release history immutably and deterministically', async () => {
   const projectRoot = await createTempProject();
