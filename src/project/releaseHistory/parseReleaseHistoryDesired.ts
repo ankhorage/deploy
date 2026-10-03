@@ -2,7 +2,7 @@ import { createReleaseRevision } from '../../domain/release/createReleaseRevisio
 import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredState';
 import { hasOnlyKeys } from '../io/hasOnlyKeys';
 import { isRecord } from '../io/isRecord';
-import { parseProjectRelease } from '../release/parseProjectRelease';
+import { parseProjectRelease } from '../releaseInput/parseProjectRelease';
 
 const KEYS = new Set(['version', 'targets', 'notes', 'rollout', 'revision']);
 
