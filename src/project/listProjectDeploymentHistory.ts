@@ -5,6 +5,7 @@ import { resolveDeployProject } from './resolveDeployProject';
 import type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
 import { readProjectDeploymentHistory } from './readProjectDeploymentHistory';
 
+/*** List canonical deployment history records for one validated Deploy project. */
 export async function listProjectDeploymentHistory(options: {
   readonly projectRoot: string;
 }): Promise<readonly ProjectDeploymentHistoryRecord[]> {
