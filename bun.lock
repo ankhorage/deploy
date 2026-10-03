@@ -5,7 +5,7 @@
     "": {
       "name": "@ankhorage/deploy",
       "dependencies": {
-        "@ankhorage/contracts": "^22.8.101",
+        "@ankhorage/contracts": "^22.8.102",
         "@ankhorage/deploy-provider-app-store-connect": "^0.0.0",
         "@ankhorage/deploy-provider-eas": "^0.0.0",
         "@ankhorage/deploy-provider-google-play": "^0.0.0",
@@ -27,7 +27,7 @@
 
     "@ankhorage/color-theory": ["@ankhorage/color-theory@0.3.1", "", { "dependencies": { "culori": "^4.0.2" } }, "sha512-PqGeC16IkWzTA3Qig3T1p6CE6oN6JC1fv83cJ8SdohY5vlNE1YqJAZsLkzCy59ylJOwgPITA98TRH3jIVnlGBw=="],
 
-    "@ankhorage/contracts": ["@ankhorage/contracts@22.8.101", "", { "dependencies": { "@ankhorage/color-theory": "^0.3.1", "@ankhorage/utility": "^1.9.84" } }, "sha512-SRvqDaAmZJ51eBKlHmLrI2yamM67TdlbiKC1TiAIzWinCOYlVUAToHGg8MxUZ1u75FnbY+mS42rgsVXmVCbynw=="],
+    "@ankhorage/contracts": ["@ankhorage/contracts@22.8.102", "", { "dependencies": { "@ankhorage/color-theory": "^0.3.1", "@ankhorage/utility": "^1.9.85" } }, "sha512-tSQljqI08u+lMF4Zf3WeV3uPNDixhMfNy0vrSj7Q6lkt9VCxKzdGTsGgr5S8Th7fxjR2Io09YlF369eSXkswGA=="],
 
     "@ankhorage/deploy-provider-app-store-connect": ["@ankhorage/deploy-provider-app-store-connect@0.0.0", "", { "dependencies": { "@ankhorage/contracts": "^19.2.2", "@ankhorage/utility": "^0.8.0" } }, "sha512-M3ItX2ORlIq1ADXovX0edgpJEYBZqdpx/Z/eb3/nuPqZlmZXCceOQXmDVak4jhmPjtTekL2yQ7gjJPlAou+Hzw=="],
 
@@ -1537,7 +1537,7 @@
 
     "@ankhorage/apm/@ankhorage/utility": ["@ankhorage/utility@1.9.82", "", { "peerDependencies": { "fastify": "^5.12.5" }, "optionalPeers": ["fastify"] }, "sha512-HYInRFCIx5nMjvJWBZVhSCBm0CPYsQUBumqq5drW41kNhTMC547hUFm3BIQEnA3Mc+f69uikHyudw+tbHFf1hA=="],
 
-    "@ankhorage/contracts/@ankhorage/utility": ["@ankhorage/utility@1.9.84", "", { "peerDependencies": { "fastify": "^5.12.5" }, "optionalPeers": ["fastify"] }, "sha512-7OnmIbXffYvpXjS6NcWadYupyrShCS/nkIhrIcsW/++B1FsWW+KZKjukcvKX4H3aAYlTs4b35OVk0lQb1ClnaA=="],
+    "@ankhorage/contracts/@ankhorage/utility": ["@ankhorage/utility@1.9.85", "", { "peerDependencies": { "fastify": "^5.12.5" }, "optionalPeers": ["fastify"] }, "sha512-039OnOPntg5EY7BwMR4shCaHOO8N/DgNZOgQxkh/lxtsZbqIlf34bp47ZYh7NoPVibxLDwj8CeMl6m1Pw8y1aQ=="],
 
     "@ankhorage/deploy-provider-app-store-connect/@ankhorage/contracts": ["@ankhorage/contracts@19.5.0", "", { "dependencies": { "@ankhorage/color-theory": "^0.3.0", "@ankhorage/utility": "^0.8.0", "expo-splash-screen": "~57.0.9" } }, "sha512-v+vQ8bDuW6gVlImMIBa9+L6MbUDHEWE2hMJjyTdRDuzSp4CWAolLWDy9y0tsmnxVrk3L6N6lfLlHTRKIlW9BbQ=="],
 
