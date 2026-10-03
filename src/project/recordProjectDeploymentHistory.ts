@@ -8,6 +8,7 @@ import { resolveDeployProject } from './resolveDeployProject';
 import { parseProjectDeploymentHistoryRecord } from './history/parseProjectDeploymentHistoryRecord';
 import type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
 
+/*** Persist one immutable canonical deployment history record for a validated Deploy project. */
 export async function recordProjectDeploymentHistory(options: {
   readonly projectRoot: string;
   readonly record: ProjectDeploymentHistoryRecord;
