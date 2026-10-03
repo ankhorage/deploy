@@ -1,7 +1,5 @@
 import { DEPLOYMENT_PLAN_DIAGNOSTIC_CODES } from '../../../domain/DeploymentPlanDiagnostic';
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
-import { isTargetId } from './shared';
+import { hasOnlyKeys, isRecord, isTargetId } from './shared';
 
 const DIAGNOSTIC_KEYS = new Set(['code', 'target', 'message', 'stepId']);
 

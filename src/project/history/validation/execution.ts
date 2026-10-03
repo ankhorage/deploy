@@ -1,10 +1,9 @@
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
 import { isPlanDiagnostic } from './diagnostic';
 import { isDeploymentFailure } from './failure';
 import { isPlanStep } from './planStep';
 import { isRequiredAction } from './requiredAction';
 import { isStepOutcome } from './stepOutcome';
+import { hasOnlyKeys, isRecord } from './shared';
 
 const RECORD_KEYS = new Set(['step', 'outcome']);
 const BLOCKED_KEYS = new Set(['status', 'diagnostics', 'records']);

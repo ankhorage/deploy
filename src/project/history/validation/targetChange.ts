@@ -2,10 +2,8 @@ import {
   DEPLOYMENT_CHANGE_KINDS,
   DEPLOYMENT_CHANGE_REASONS,
 } from '../../../domain/DeploymentTargetChange';
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
 import { isObservedTarget } from './observedTarget';
-import { isTargetId } from './shared';
+import { hasOnlyKeys, isRecord, isTargetId } from './shared';
 
 const CHANGE_KEYS = new Set(['target', 'kind', 'desired', 'current', 'reason']);
 

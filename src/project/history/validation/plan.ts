@@ -1,8 +1,7 @@
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
 import { isPlanDiagnostic } from './diagnostic';
 import { isPlanStep } from './planStep';
 import { isTargetChange } from './targetChange';
+import { hasOnlyKeys, isRecord } from './shared';
 
 const PLAN_KEYS = new Set(['changes', 'steps', 'diagnostics', 'executable']);
 

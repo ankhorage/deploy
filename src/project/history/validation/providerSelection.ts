@@ -1,6 +1,4 @@
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
-import { isNonEmptyString } from './shared';
+import { hasOnlyKeys, isNonEmptyString, isRecord } from './shared';
 
 const PROVIDER_KEYS = new Set(['build', 'publish']);
 

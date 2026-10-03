@@ -1,7 +1,5 @@
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
 import { isProviderSelection } from './providerSelection';
-import { isNonEmptyString } from './shared';
+import { hasOnlyKeys, isNonEmptyString, isRecord } from './shared';
 
 const WEB_KEYS = new Set(['target', 'providers', 'revision']);
 const ANDROID_KEYS = new Set(['target', 'package', 'providers', 'revision']);
