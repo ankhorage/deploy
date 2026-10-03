@@ -3,16 +3,16 @@ import path from 'node:path';
 
 import { expect, test } from 'bun:test';
 
-import { createReleasePlan } from '../domain/release/createReleasePlan';
-import { createReleaseRevision } from '../domain/release/createReleaseRevision';
-import type { ReleaseDesiredState } from '../domain/release/ReleaseDesiredState';
-import type { ReleaseReconcileResult } from '../domain/release/ReleaseReconcileResult';
-import { expectRejects } from './expectRejects.test';
-import { createTempProject } from './manifestTestSupport.test';
-import { createProjectReleaseHistoryRecord } from './releaseHistory/createProjectReleaseHistoryRecord';
-import { listProjectReleaseHistory } from './releaseHistory/listProjectReleaseHistory';
-import { recordProjectReleaseHistory } from './releaseHistory/recordProjectReleaseHistory';
-import { resolveProjectDeploymentPaths } from './resolveProjectDeploymentPaths';
+import { createReleasePlan } from '../../domain/release/createReleasePlan';
+import { createReleaseRevision } from '../../domain/release/createReleaseRevision';
+import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredState';
+import type { ReleaseReconcileResult } from '../../domain/release/ReleaseReconcileResult';
+import { expectRejects } from '../expectRejects.test';
+import { createTempProject } from '../manifestTestSupport.test';
+import { resolveProjectDeploymentPaths } from '../resolveProjectDeploymentPaths';
+import { createProjectReleaseHistoryRecord } from './createProjectReleaseHistoryRecord';
+import { listProjectReleaseHistory } from './listProjectReleaseHistory';
+import { recordProjectReleaseHistory } from './recordProjectReleaseHistory';
 
 test('records release history immutably and deterministically', async () => {
   const projectRoot = await createTempProject();
