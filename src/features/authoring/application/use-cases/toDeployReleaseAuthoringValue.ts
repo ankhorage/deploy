@@ -1,6 +1,6 @@
 import type { ReleaseRollout } from '../../../../domain/release/ReleaseRollout';
-import { parseProjectRelease } from '../../../../project/releaseInput/parseProjectRelease';
 import type { ProjectReleaseInput } from '../../../../project/release/ProjectReleaseInput';
+import { parseProjectRelease } from '../../../../project/releaseInput/parseProjectRelease';
 import type {
   DeployReleaseAuthoringRollout,
   DeployReleaseAuthoringValue,

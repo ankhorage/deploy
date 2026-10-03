@@ -1,8 +1,8 @@
 import { createReleaseRevision } from '../../domain/release/createReleaseRevision';
 import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredState';
 import { readJsonFile } from '../io/readJsonFile';
-import { resolveProjectDeploymentPaths } from '../resolveProjectDeploymentPaths';
 import { parseProjectRelease } from '../releaseInput/parseProjectRelease';
+import { resolveProjectDeploymentPaths } from '../resolveProjectDeploymentPaths';
 
 export async function readProjectRelease(options: {
   readonly projectRoot: string;

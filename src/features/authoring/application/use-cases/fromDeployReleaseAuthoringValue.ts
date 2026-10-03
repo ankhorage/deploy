@@ -1,5 +1,5 @@
-import { parseProjectRelease } from '../../../../project/releaseInput/parseProjectRelease';
 import type { ProjectReleaseInput } from '../../../../project/release/ProjectReleaseInput';
+import { parseProjectRelease } from '../../../../project/releaseInput/parseProjectRelease';
 import type { DeployReleaseAuthoringValue } from '../../../../types/deployAuthoring';
 import { readDeployAuthoringRegistryValues } from '../../utils/readDeployAuthoringRegistryValues';
 
