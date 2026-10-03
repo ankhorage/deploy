@@ -1,6 +1,6 @@
 import path from 'node:path';
 
-export function isSafeSegment(value: string): boolean {
+function isSafeSegment(value: string): boolean {
   return (
     value.trim().length > 0 &&
     value !== '.' &&

@@ -1,12 +1,13 @@
 import path from 'node:path';
 
-import { assertSafeSegment } from '../io/assertSafeSegment';
-import { isMissingPathError } from '../io/isMissingPathError';
-import { readJsonFile } from '../io/readJsonFile';
-import { resolveDeployProject } from '../resolveDeployProject';
-import { parseProjectDeploymentHistoryRecord } from './parseProjectDeploymentHistoryRecord';
-import type { ProjectDeploymentHistoryRecord } from './ProjectDeploymentHistoryRecord';
+import { parseProjectDeploymentHistoryRecord } from './history/parseProjectDeploymentHistoryRecord';
+import type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
+import { assertSafeSegment } from './io/assertSafeSegment';
+import { isMissingPathError } from './io/isMissingPathError';
+import { readJsonFile } from './io/readJsonFile';
+import { resolveDeployProject } from './resolveDeployProject';
 
+/*** Read one canonical deployment history record from a validated Deploy project. */
 export async function readProjectDeploymentHistory(options: {
   readonly projectRoot: string;
   readonly deploymentId: string;

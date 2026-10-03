@@ -1,10 +1,11 @@
 import { type Dirent, promises as fs } from 'node:fs';
 
-import { isMissingPathError } from '../io/isMissingPathError';
-import { resolveDeployProject } from '../resolveDeployProject';
-import type { ProjectDeploymentHistoryRecord } from './ProjectDeploymentHistoryRecord';
+import type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
+import { isMissingPathError } from './io/isMissingPathError';
 import { readProjectDeploymentHistory } from './readProjectDeploymentHistory';
+import { resolveDeployProject } from './resolveDeployProject';
 
+/*** List canonical deployment history records for one validated Deploy project. */
 export async function listProjectDeploymentHistory(options: {
   readonly projectRoot: string;
 }): Promise<readonly ProjectDeploymentHistoryRecord[]> {

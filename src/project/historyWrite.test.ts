@@ -4,10 +4,10 @@ import path from 'node:path';
 import { expect, test } from 'bun:test';
 
 import { expectRejects } from './expectRejects.test';
-import { listProjectDeploymentHistory } from './history/listProjectDeploymentHistory';
-import { recordProjectDeploymentHistory } from './history/recordProjectDeploymentHistory';
 import { createHistoryRecord } from './historyTestSupport.test';
+import { listProjectDeploymentHistory } from './listProjectDeploymentHistory';
 import { createTempProject } from './manifestTestSupport.test';
+import { recordProjectDeploymentHistory } from './recordProjectDeploymentHistory';
 import { resolveProjectDeploymentPaths } from './resolveProjectDeploymentPaths';
 
 test('records and lists immutable deployment history deterministically', async () => {

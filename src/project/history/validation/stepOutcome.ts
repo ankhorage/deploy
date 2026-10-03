@@ -1,7 +1,6 @@
-import { hasOnlyKeys } from '../../io/hasOnlyKeys';
-import { isRecord } from '../../io/isRecord';
 import { isDeploymentFailure } from './failure';
 import { isRequiredAction } from './requiredAction';
+import { hasOnlyKeys, isRecord } from './shared';
 
 export function isStepOutcome(value: unknown): boolean {
   if (!isRecord(value)) return false;

@@ -6,7 +6,7 @@ import type {
   DeploymentObservedAndroidTarget,
 } from '../../domain/DeploymentCurrentState';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
-import { listProjectDeploymentHistory } from '../history/listProjectDeploymentHistory';
+import { listProjectDeploymentHistory } from '../listProjectDeploymentHistory';
 
 interface AndroidHistoryEvidence {
   readonly revision: string;

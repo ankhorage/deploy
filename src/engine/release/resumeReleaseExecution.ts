@@ -3,7 +3,6 @@ import type { ReleaseDesiredState } from '../../domain/release/ReleaseDesiredSta
 import type { ReleaseObservedState } from '../../domain/release/ReleaseObservedState';
 import type { ReleasePlanStep } from '../../domain/release/ReleasePlanStep';
 import type { ReleaseReconcileResult } from '../../domain/release/ReleaseReconcileResult';
-import type { ProjectReleaseHistoryRecord } from '../../project/releaseHistory/ProjectReleaseHistoryRecord';
 import { executeReleasePlan } from './executeReleasePlan';
 import type { ReleaseMutationResult } from './ReleaseMutationResult';
 
@@ -13,9 +12,15 @@ type MutateRelease = (
   current: ReleaseObservedState,
 ) => Promise<ReleaseMutationResult>;
 
+interface PreviousReleaseExecution {
+  readonly desired: ReleaseDesiredState;
+  readonly result: ReleaseReconcileResult;
+}
+
+/*** Resume a release from the exact prior engine state required for safe reconciliation. */
 export async function resumeReleaseExecution(options: {
   readonly desired: ReleaseDesiredState;
-  readonly previous: ProjectReleaseHistoryRecord;
+  readonly previous: PreviousReleaseExecution;
   readonly inspect: InspectRelease;
   readonly mutate: MutateRelease;
 }): Promise<ReleaseReconcileResult> {
@@ -36,8 +41,9 @@ export async function resumeReleaseExecution(options: {
   });
 }
 
+/*** Detect an unresolved never-retry step from the previous engine result. */
 function hasUnsafeNeverRetry(
-  previous: ProjectReleaseHistoryRecord,
+  previous: PreviousReleaseExecution,
   currentSteps: readonly ReleasePlanStep[],
 ): boolean {
   const attempted = previous.result.attemptedStepId;
@@ -47,6 +53,7 @@ function hasUnsafeNeverRetry(
   return currentSteps.some((step) => step.id === attempted);
 }
 
+/*** Return a stable blocked reconciliation result without mutation. */
 function blocked(plan: ReturnType<typeof createReleasePlan>, code: string): ReleaseReconcileResult {
   return {
     status: 'blocked',
@@ -57,7 +64,8 @@ function blocked(plan: ReturnType<typeof createReleasePlan>, code: string): Rele
   };
 }
 
-function inspectionFailed(previous: ProjectReleaseHistoryRecord): ReleaseReconcileResult {
+/*** Preserve the previous plan when fresh inspection cannot establish current state. */
+function inspectionFailed(previous: PreviousReleaseExecution): ReleaseReconcileResult {
   return {
     status: 'failed',
     plan: previous.result.plan,
