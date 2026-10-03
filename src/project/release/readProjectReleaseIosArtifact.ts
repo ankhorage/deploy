@@ -1,8 +1,8 @@
 import type { ReleaseObservedIosState } from '@ankhorage/contracts/deploy-provider';
 
 import type { IosDeploymentPublication } from '../../domain/IosDeploymentPublication';
-import { listProjectDeploymentHistory } from '../listProjectDeploymentHistory';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
+import { listProjectDeploymentHistory } from '../listProjectDeploymentHistory';
 import type { ProjectReleaseTargets } from './ProjectReleaseTargets';
 
 type IosArtifact = Pick<IosDeploymentPublication, 'revision' | 'version' | 'buildNumber'>;

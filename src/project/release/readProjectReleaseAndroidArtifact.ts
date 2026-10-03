@@ -1,8 +1,8 @@
 import type { ReleaseObservedAndroidState } from '@ankhorage/contracts/deploy-provider';
 
 import type { AndroidDeploymentPublication } from '../../domain/AndroidDeploymentPublication';
-import { listProjectDeploymentHistory } from '../listProjectDeploymentHistory';
 import type { ProjectDeploymentHistoryRecord } from '../history/ProjectDeploymentHistoryRecord';
+import { listProjectDeploymentHistory } from '../listProjectDeploymentHistory';
 import type { ProjectReleaseTargets } from './ProjectReleaseTargets';
 
 type AndroidArtifact = Pick<AndroidDeploymentPublication, 'revision' | 'versionCode' | 'track'>;

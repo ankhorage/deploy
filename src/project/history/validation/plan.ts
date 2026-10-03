@@ -1,7 +1,7 @@
 import { isPlanDiagnostic } from './diagnostic';
 import { isPlanStep } from './planStep';
-import { isTargetChange } from './targetChange';
 import { hasOnlyKeys, isRecord } from './shared';
+import { isTargetChange } from './targetChange';
 
 const PLAN_KEYS = new Set(['changes', 'steps', 'diagnostics', 'executable']);
 

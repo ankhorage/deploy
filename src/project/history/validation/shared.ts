@@ -6,10 +6,7 @@ export function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 /*** Reject unknown fields from canonical history payload objects. */
-export function hasOnlyKeys(
-  value: Record<string, unknown>,
-  allowed: ReadonlySet<string>,
-): boolean {
+export function hasOnlyKeys(value: Record<string, unknown>, allowed: ReadonlySet<string>): boolean {
   return Object.keys(value).every((key) => allowed.has(key));
 }
 

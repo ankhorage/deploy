@@ -1,11 +1,11 @@
 import path from 'node:path';
 
+import { parseProjectDeploymentHistoryRecord } from './history/parseProjectDeploymentHistoryRecord';
+import type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
 import { assertSafeSegment } from './io/assertSafeSegment';
 import { isMissingPathError } from './io/isMissingPathError';
 import { readJsonFile } from './io/readJsonFile';
 import { resolveDeployProject } from './resolveDeployProject';
-import { parseProjectDeploymentHistoryRecord } from './history/parseProjectDeploymentHistoryRecord';
-import type { ProjectDeploymentHistoryRecord } from './history/ProjectDeploymentHistoryRecord';
 
 /*** Read one canonical deployment history record from a validated Deploy project. */
 export async function readProjectDeploymentHistory(options: {
