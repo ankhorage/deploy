@@ -83,7 +83,7 @@
     "knip:check": "ankhorage-knip"
   },
   "dependencies": {
-    "@ankhorage/contracts": "^23.0.0",
+    "@ankhorage/contracts": "^24.0.0",
     "@ankhorage/deploy-provider-app-store-connect": "^0.0.0",
     "@ankhorage/deploy-provider-eas": "^0.0.0",
     "@ankhorage/deploy-provider-google-play": "^0.0.0"
