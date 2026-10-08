@@ -1,6 +1,7 @@
 import type { AnkhCommandContext } from '@ankhorage/ankh';
 import { expect, test } from 'bun:test';
 
+import { CAPABILITIES } from '../capabilities/index.js';
 import type { ReleasePlan } from '../index.js';
 import type {
   ExecuteProjectReleaseOptions,
@@ -48,6 +49,11 @@ test('provider exposes exactly one category-root deploy command', () => {
   const provider = createDeployCliProvider(runtime);
 
   expect(provider.category).toBe('deploy');
+  expect(provider.capabilities).toEqual(CAPABILITIES);
+  expect(provider.commands[0]?.capability).toBe('deploy.execute');
+  expect(new Set(provider.commands.map(({ capability }) => capability))).toEqual(
+    new Set(CAPABILITIES.map(({ id }) => id)),
+  );
   expect(provider.commands).toHaveLength(1);
   expect(provider.commands[0]?.path).toEqual([]);
   expect(provider.handlers?.[0]?.path).toEqual([]);
