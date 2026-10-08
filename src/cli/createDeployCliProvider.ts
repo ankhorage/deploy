@@ -1,14 +1,17 @@
 import type { AnkhRuntimeCommandProvider } from '@ankhorage/ankh';
+import type { Capability } from '@ankhorage/contracts/capabilities';
 
 import packageJson from '../../package.json';
+import { CAPABILITIES } from '../capabilities/index.js';
 import type { DeployCliRuntime } from './DeployCliRuntime.js';
 import { handleDeployCliCommand } from './handleDeployCliCommand.js';
 import { handleDeployCliPlan } from './handleDeployCliPlan.js';
 
+/*** Create the Deploy Ankh provider from the supplied package runtime. */
 export function createDeployCliProvider(runtime: DeployCliRuntime): AnkhRuntimeCommandProvider {
   const command = {
     path: [],
-    capability: 'deploy.execute',
+    capability: 'deploy.execute' satisfies Capability['id'],
     summary: 'Inspect, plan and execute the authored project release',
     examples: [
       'ankh deploy',
@@ -21,7 +24,7 @@ export function createDeployCliProvider(runtime: DeployCliRuntime): AnkhRuntimeC
     id: packageJson.name,
     category: 'deploy',
     version: packageJson.version,
-    capabilities: ['deploy.execute'],
+    capabilities: CAPABILITIES,
     commands: [command],
     handlers: [
       {
