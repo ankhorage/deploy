@@ -1,0 +1,5 @@
+sequenceDiagram
+  participant participant_createHash as createHash
+  participant participant_createReleaseCurrentRevision as createReleaseCurrentRevision
+  participant_createReleaseCurrentRevision->>participant_createHash: createHash()
+  participant_createHash-->>participant_createReleaseCurrentRevision: return

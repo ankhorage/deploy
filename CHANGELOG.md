@@ -1,5 +1,24 @@
 # @ankhorage/deploy
 
+## 0.14.0
+
+### Minor Changes
+
+- f1cd078: Publish Deploy's canonical capability descriptor and use it consistently across package metadata and the Ankh provider.
+
+### Patch Changes
+
+- 32d6d72: Update dependencies: `@ankhorage/ankh`, `@ankhorage/devtools`.
+- a29ded5: Update dependencies: `@ankhorage/contracts`, `@ankhorage/paradox`.
+- 14a5c81: Update dependencies: `@ankhorage/contracts`.
+- 0e0bf14: Update dependencies: `@ankhorage/contracts`.
+- bf91676: Update dependencies: `@ankhorage/contracts`.
+- dd3e979: Update dependencies: `@ankhorage/contracts`.
+- cdcea39: Update dependencies: `@ankhorage/contracts`.
+- 8c94269: Update dependencies: `@ankhorage/contracts`.
+- 40f1e49: Update dependencies: `@ankhorage/contracts`.
+- f1cd078: Update dependencies: `@ankhorage/ankh`, `@ankhorage/devtools`.
+
 ## 0.13.102
 
 ### Patch Changes

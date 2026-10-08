@@ -1,0 +1,5 @@
+sequenceDiagram
+  participant participant_createMonetizationPlan as createMonetizationPlan
+  participant participant_createProjectMonetizationPlan as createProjectMonetizationPlan
+  participant_createProjectMonetizationPlan->>participant_createMonetizationPlan: createMonetizationPlan()
+  participant_createMonetizationPlan-->>participant_createProjectMonetizationPlan: return

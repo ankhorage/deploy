@@ -1,0 +1,8 @@
+sequenceDiagram
+  participant participant_androidControls as androidControls
+  participant participant_iosControls as iosControls
+  participant participant_listReleaseLifecycleControls as listReleaseLifecycleControls
+  participant_listReleaseLifecycleControls->>participant_androidControls: androidControls()
+  participant_androidControls-->>participant_listReleaseLifecycleControls: return
+  participant_listReleaseLifecycleControls->>participant_iosControls: iosControls()
+  participant_iosControls-->>participant_listReleaseLifecycleControls: return

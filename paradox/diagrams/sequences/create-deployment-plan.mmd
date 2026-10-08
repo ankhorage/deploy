@@ -1,0 +1,23 @@
+sequenceDiagram
+  participant participant_appendTargetContribution as appendTargetContribution
+  participant participant_appendValidStep as appendValidStep
+  participant participant_createDeploymentChanges as createDeploymentChanges
+  participant participant_createDeploymentPlan as createDeploymentPlan
+  participant participant_createSteps as createSteps
+  participant participant_diagnostic as diagnostic
+  participant participant_safelyCreateSteps as safelyCreateSteps
+  participant participant_validatePlanStep as validatePlanStep
+  participant_createDeploymentPlan->>participant_createDeploymentChanges: createDeploymentChanges()
+  participant_createDeploymentChanges-->>participant_createDeploymentPlan: return
+  participant_createDeploymentPlan->>participant_appendTargetContribution: appendTargetContribution()
+  participant_appendTargetContribution->>participant_safelyCreateSteps: safelyCreateSteps()
+  participant_safelyCreateSteps->>participant_createSteps: contributor.createSteps()
+  participant_createSteps-->>participant_safelyCreateSteps: return
+  participant_safelyCreateSteps-->>participant_appendTargetContribution: return
+  participant_appendTargetContribution->>participant_appendValidStep: appendValidStep()
+  participant_appendValidStep->>participant_validatePlanStep: validatePlanStep()
+  participant_validatePlanStep->>participant_diagnostic: diagnostic()
+  participant_diagnostic-->>participant_validatePlanStep: return
+  participant_validatePlanStep-->>participant_appendValidStep: return
+  participant_appendValidStep-->>participant_appendTargetContribution: return
+  participant_appendTargetContribution-->>participant_createDeploymentPlan: return

@@ -1,0 +1,20 @@
+sequenceDiagram
+  participant participant_normalizeProjectRoot as normalizeProjectRoot
+  participant participant_parseAppManifest as parseAppManifest
+  participant participant_readJsonFile as readJsonFile
+  participant participant_readProjectDeploymentConfig as readProjectDeploymentConfig
+  participant participant_readProjectManifest as readProjectManifest
+  participant participant_resolveDeployProject as resolveDeployProject
+  participant participant_resolveProjectDeploymentPaths as resolveProjectDeploymentPaths
+  participant_readProjectDeploymentConfig->>participant_resolveDeployProject: resolveDeployProject()
+  participant_resolveDeployProject->>participant_normalizeProjectRoot: normalizeProjectRoot()
+  participant_normalizeProjectRoot-->>participant_resolveDeployProject: return
+  participant_resolveDeployProject->>participant_readProjectManifest: readProjectManifest()
+  participant_readProjectManifest->>participant_readJsonFile: readJsonFile()
+  participant_readJsonFile-->>participant_readProjectManifest: return
+  participant_readProjectManifest->>participant_parseAppManifest: parseAppManifest()
+  participant_parseAppManifest-->>participant_readProjectManifest: return
+  participant_readProjectManifest-->>participant_resolveDeployProject: return
+  participant_resolveDeployProject->>participant_resolveProjectDeploymentPaths: resolveProjectDeploymentPaths()
+  participant_resolveProjectDeploymentPaths-->>participant_resolveDeployProject: return
+  participant_resolveDeployProject-->>participant_readProjectDeploymentConfig: return
