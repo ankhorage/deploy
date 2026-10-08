@@ -52,6 +52,11 @@
       "types": "./dist/cli/index.d.ts",
       "import": "./dist/cli/index.js",
       "default": "./dist/cli/index.js"
+    },
+    "./capabilities": {
+      "types": "./dist/capabilities/index.d.ts",
+      "import": "./dist/capabilities/index.js",
+      "default": "./dist/capabilities/index.js"
     }
   },
   "files": [
@@ -64,7 +69,21 @@
     "category": "deploy",
     "provider": "./dist/cli/index.js",
     "capabilities": [
-      "deploy.execute"
+      {
+        "id": "deploy.execute",
+        "owner": "@ankhorage/deploy",
+        "access": [
+          "invoke"
+        ],
+        "binding": {
+          "kind": "action",
+          "bindableAs": [
+            "target"
+          ]
+        },
+        "label": "Execute deployment",
+        "description": "Inspect, plan and execute the authored project release."
+      }
     ]
   },
   "scripts": {
@@ -83,14 +102,14 @@
     "knip:check": "ankhorage-knip"
   },
   "dependencies": {
+    "@ankhorage/ankh": "^0.12.2",
     "@ankhorage/contracts": "^24.1.0",
     "@ankhorage/deploy-provider-app-store-connect": "^0.0.0",
     "@ankhorage/deploy-provider-eas": "^0.0.0",
     "@ankhorage/deploy-provider-google-play": "^0.0.0"
   },
   "devDependencies": {
-    "@ankhorage/ankh": "^0.11.1",
-    "@ankhorage/devtools": "^2.1.18",
+    "@ankhorage/devtools": "^2.2.2",
     "@ankhorage/paradox": "^0.3.1",
     "@types/bun": "^1.4.2",
     "@types/node": "^26.6.4",
