@@ -102,7 +102,7 @@
     "knip:check": "ankhorage-knip"
   },
   "dependencies": {
-    "@ankhorage/ankh": "^0.12.2",
+    "@ankhorage/ankh": "^0.13.0",
     "@ankhorage/contracts": "^24.2.1",
     "@ankhorage/deploy-provider-app-store-connect": "^0.0.0",
     "@ankhorage/deploy-provider-eas": "^0.0.0",
