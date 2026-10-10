@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.14.4
+
+### Patch Changes
+
+- 8fb3772: Migrate the Deploy capability catalog to the standalone capability toolkit.
+
 ## 0.14.3
 
 ### Patch Changes
