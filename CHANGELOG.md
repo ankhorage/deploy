@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.14.5
+
+### Patch Changes
+
+- 3758eca: Update dependencies: `@ankhorage/contracts`, `@ankhorage/paradox`.
+
 ## 0.14.4
 
 ### Patch Changes
