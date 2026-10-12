@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.14.6
+
+### Patch Changes
+
+- cd8b31d: Update dependencies: `@ankhorage/ankh`, `@ankhorage/devtools`.
+
 ## 0.14.5
 
 ### Patch Changes
