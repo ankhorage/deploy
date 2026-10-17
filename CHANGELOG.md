@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.14.8
+
+### Patch Changes
+
+- 3d1301c: Update dependencies: `@ankhorage/ankh`.
+
 ## 0.14.7
 
 ### Patch Changes
