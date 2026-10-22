@@ -104,7 +104,7 @@
   "dependencies": {
     "@ankhorage/ankh": "^0.13.2",
     "@ankhorage/capability": "^0.2.2",
-    "@ankhorage/contracts": "^26.0.0",
+    "@ankhorage/contracts": "^26.0.1",
     "@ankhorage/deploy-provider-app-store-connect": "^0.0.0",
     "@ankhorage/deploy-provider-eas": "^0.0.0",
     "@ankhorage/deploy-provider-google-play": "^0.0.0"
