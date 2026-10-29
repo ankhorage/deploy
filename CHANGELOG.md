@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.14.14
+
+### Patch Changes
+
+- 6cd0a9e: Update dependencies: `@ankhorage/ankh`, `@ankhorage/devtools`.
+
 ## 0.14.13
 
 ### Patch Changes
