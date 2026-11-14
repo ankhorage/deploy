@@ -3,7 +3,7 @@
 
 # @ankhorage/deploy
 
-![license: MIT](././paradox/badges/license.svg) ![npm: v0.14.21](././paradox/badges/npm.svg) ![runtime: bun](././paradox/badges/runtime.svg) ![typescript: strict](././paradox/badges/typescript.svg) ![eslint: checked](././paradox/badges/eslint.svg) ![prettier: checked](././paradox/badges/prettier.svg) ![build: checked](././paradox/badges/build.svg) ![tests: checked](././paradox/badges/tests.svg) ![paradox: warnings](././paradox/badges/docs.svg)
+![license: MIT](././paradox/badges/license.svg) ![npm: v0.14.22](././paradox/badges/npm.svg) ![runtime: bun](././paradox/badges/runtime.svg) ![typescript: strict](././paradox/badges/typescript.svg) ![eslint: checked](././paradox/badges/eslint.svg) ![prettier: checked](././paradox/badges/prettier.svg) ![build: checked](././paradox/badges/build.svg) ![tests: checked](././paradox/badges/tests.svg) ![paradox: warnings](././paradox/badges/docs.svg)
 
 Declarative deployment engine for Expo apps across web, iOS, and Android.
 
@@ -21,19 +21,17 @@ bun add --global @ankhorage/ankh
 ankh deploy --help
 ```
 
-## Generated documentation
+## Documentation
 
-- [Interactive documentation app](././paradox/index.html)
-- [Public API reference](././paradox/exports.md)
-- [Component registry](././paradox/components.md)
-- [Architecture overview](././paradox/diagrams/architecture-overview.mmd)
-- [Module relationships](././paradox/diagrams/module-relationships.mmd)
-- [Export graph](././paradox/diagrams/export-graph.mmd)
-- [createDeploymentPlan sequence](././paradox/diagrams/sequences/create-deployment-plan.mmd)
-- [createProjectMonetizationPlan sequence](././paradox/diagrams/sequences/create-project-monetization-plan.mmd)
-- [createProjectReleaseHistoryRecord sequence](././paradox/diagrams/sequences/create-project-release-history-record.mmd)
-- [createReleaseCurrentRevision sequence](././paradox/diagrams/sequences/create-release-current-revision.mmd)
-- [createReleaseRevision sequence](././paradox/diagrams/sequences/create-release-revision.mmd)
-- [listReleaseLifecycleControls sequence](././paradox/diagrams/sequences/list-release-lifecycle-controls.mmd)
-- [readProjectDeploymentConfig sequence](././paradox/diagrams/sequences/read-project-deployment-config.mmd)
-- [resolveDeployProject sequence](././paradox/diagrams/sequences/resolve-deploy-project.mmd)
+Open `./paradox/index.html` locally in your browser to browse the complete documentation.
+
+## Contributors
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
+
+## Donation
+
+If this project is useful to you, you can support its continued development.
+
+[Support @ankhorage](https://github.com/sponsors/ankhorage)
