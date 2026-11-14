@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.14.21
+
+### Patch Changes
+
+- fd9961d: Update dependencies: `@ankhorage/contracts`.
+
 ## 0.14.20
 
 ### Patch Changes
