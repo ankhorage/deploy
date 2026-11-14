@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "kind": "library",
+  "title": "Ankhorage Deploy",
+  "summary": "Provides declarative deployment orchestration for Expo applications across web, iOS, and Android.",
+  "purpose": "Centralize application release planning and execution while delegating provider-specific behavior to explicit adapters.",
+  "domain": "application deployment",
+  "responsibilities": [
+    "Provide deployment, authoring, project, CLI, and capability entrypoints.",
+    "Plan and execute web, iOS, and Android application releases.",
+    "Delegate provider-specific shipment to declared deployment-provider packages."
+  ],
+  "boundaries": [
+    "Does not implement provider-specific deployment protocols in its core.",
+    "Does not own application source code or provider credentials."
+  ],
+  "audience": [
+    "Application teams and tooling that author and execute deployment releases."
+  ],
+  "useCases": [
+    "Plan and execute an Expo application release.",
+    "Integrate deployment capability through the package CLI and authoring entrypoints."
+  ],
+  "architecture": {
+    "role": "A deployment orchestration library with explicit provider integrations.",
+    "invariants": [
+      "Provider-specific behavior is delegated through declared dependencies.",
+      "Deployment intent remains explicit and portable."
+    ]
+  },
+  "constraints": {
+    "platforms": [
+      "Expo",
+      "web",
+      "iOS",
+      "Android"
+    ],
+    "limitations": [
+      "Provider availability and credentials remain external configuration."
+    ]
+  }
+}
