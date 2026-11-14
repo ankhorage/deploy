@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.14.25
+
+### Patch Changes
+
+- 9861bbd: Update dependencies: `@ankhorage/capability`.
+
 ## 0.14.24
 
 ### Patch Changes
