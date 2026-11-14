@@ -14,9 +14,7 @@
     "Does not implement provider-specific deployment protocols in its core.",
     "Does not own application source code or provider credentials."
   ],
-  "audience": [
-    "Application teams and tooling that author and execute deployment releases."
-  ],
+  "audience": ["Application teams and tooling that author and execute deployment releases."],
   "useCases": [
     "Plan and execute an Expo application release.",
     "Integrate deployment capability through the package CLI and authoring entrypoints."
@@ -29,14 +27,7 @@
     ]
   },
   "constraints": {
-    "platforms": [
-      "Expo",
-      "web",
-      "iOS",
-      "Android"
-    ],
-    "limitations": [
-      "Provider availability and credentials remain external configuration."
-    ]
+    "platforms": ["Expo", "web", "iOS", "Android"],
+    "limitations": ["Provider availability and credentials remain external configuration."]
   }
 }
