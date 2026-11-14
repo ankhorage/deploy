@@ -1,5 +1,11 @@
 # @ankhorage/deploy
 
+## 0.14.24
+
+### Patch Changes
+
+- 5a91f5a: Add canonical repository metadata for package discovery and documentation.
+
 ## 0.14.23
 
 ### Patch Changes
