@@ -1,7 +1,8 @@
 {
   "packageName": "@ankhorage/deploy",
   "packageId": "@ankhorage/deploy",
-  "description": "Declarative deployment engine for Expo apps across web, iOS, and Android.",
+  "description": "Provides declarative deployment orchestration for Expo applications across web, iOS, and Android.",
+  "purpose": "Centralize application release planning and execution while delegating provider-specific behavior to explicit adapters.",
   "collaborators": true,
   "donation": {
     "account": "ankhorage"
@@ -16,7 +17,7 @@
     {
       "id": "npm",
       "label": "npm",
-      "value": "v0.14.25",
+      "value": "v0.14.26",
       "color": "cb3837"
     },
     {

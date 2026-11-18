@@ -3,9 +3,11 @@
 
 # @ankhorage/deploy
 
-![license: MIT](././paradox/badges/license.svg) ![npm: v0.14.25](././paradox/badges/npm.svg) ![runtime: bun](././paradox/badges/runtime.svg) ![typescript: strict](././paradox/badges/typescript.svg) ![eslint: checked](././paradox/badges/eslint.svg) ![prettier: checked](././paradox/badges/prettier.svg) ![build: checked](././paradox/badges/build.svg) ![tests: checked](././paradox/badges/tests.svg) ![paradox: warnings](././paradox/badges/docs.svg)
+![license: MIT](././paradox/badges/license.svg) ![npm: v0.14.26](././paradox/badges/npm.svg) ![runtime: bun](././paradox/badges/runtime.svg) ![typescript: strict](././paradox/badges/typescript.svg) ![eslint: checked](././paradox/badges/eslint.svg) ![prettier: checked](././paradox/badges/prettier.svg) ![build: checked](././paradox/badges/build.svg) ![tests: checked](././paradox/badges/tests.svg) ![paradox: warnings](././paradox/badges/docs.svg)
 
-Declarative deployment engine for Expo apps across web, iOS, and Android.
+Provides declarative deployment orchestration for Expo applications across web, iOS, and Android.
+
+Centralize application release planning and execution while delegating provider-specific behavior to explicit adapters.
 
 ## Usage
 
